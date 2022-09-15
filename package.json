@@ -18,11 +18,10 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "react-scripts build && electron .",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject",
-        "start-electron": "electron ."
+        "eject": "react-scripts eject"
     },
     "eslintConfig": {
         "extends": [
@@ -43,6 +42,9 @@
         ]
     },
     "devDependencies": {
-        "electron": "^20.1.3"
+        "autoprefixer": "^10.4.11",
+        "electron": "^20.1.3",
+        "postcss": "^8.4.16",
+        "tailwindcss": "^3.1.8"
     }
 }
