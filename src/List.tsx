@@ -9,7 +9,7 @@ type ListItemProps = {
 class ListItem extends React.Component<ListItemProps> {
     render() {
         return (
-            <div className="border-gray-400 bg-gray-300 border border-solid flex items-center py-2 px-8 rounded-3xl my-0.5 mx-2 drop-shadow-0.5">
+            <div className="border-gray-400 bg-gray-300 border border-solid flex items-center py-1 px-8 drop-shadow-0.5">
                 <div className="flex flex-col items-start">
                     <div className="text-md font-bold">
                         {this.props.websiteName}
