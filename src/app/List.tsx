@@ -1,5 +1,4 @@
 import React from "react";
-import "./List.css";
 
 type ListItemProps = {
     websiteName: string;
