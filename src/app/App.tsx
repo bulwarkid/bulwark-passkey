@@ -1,5 +1,6 @@
 import React from "react";
-import { List } from "./List";
+import { IdentityList } from "./IdentityList";
+import { TabBar } from "./TabBar";
 
 export class App extends React.Component {
     render() {
@@ -11,8 +12,9 @@ export class App extends React.Component {
             });
         }
         return (
-            <div className="text-center w-screen h-screen">
-                <List identities={identities} />
+            <div className="w-screen h-screen flex flex-col">
+                <IdentityList identities={identities} />
+                <TabBar />
             </div>
         );
     }
