@@ -1,6 +1,14 @@
 import React from "react";
 
-export class SettingsIcon extends React.Component {
+type SettingsIconProps = {
+    color?: string;
+};
+
+export class SettingsIcon extends React.Component<SettingsIconProps> {
+    static defaultProps = {
+        color: "currentColor",
+    };
+
     render() {
         return (
             <svg
@@ -9,7 +17,7 @@ export class SettingsIcon extends React.Component {
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor"
+                stroke={this.props.color}
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
