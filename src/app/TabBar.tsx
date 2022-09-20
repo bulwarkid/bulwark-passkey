@@ -1,40 +1,20 @@
 import React from "react";
-import { LockIcon } from "../icons/lock";
-import { SettingsIcon } from "../icons/settings";
+import { Tab, TabID } from "./App";
 
 const ACTIVE_TAB_COLOR = "#0000FF";
 const INACTIVE_TAB_COLOR = "#000000";
 
-export const defaultTabs = [
-    { name: "Identities", icon: LockIcon },
-    { name: "Settings", icon: SettingsIcon },
-];
-
-export type Tab = {
-    name: string;
-    icon: React.ComponentClass<{ color?: string }>;
-};
-
 type TabBarProps = {
     tabs: Tab[];
+    activeTab: TabID;
+    onChangeTab: (tab: Tab) => void;
 };
 
-type TabBarState = {
-    activeTab: string;
-};
-
-export class TabBar extends React.Component<TabBarProps, TabBarState> {
-    constructor(props: TabBarProps) {
-        super(props);
-        this.state = {
-            activeTab: props.tabs.length > 0 ? props.tabs[0].name : "",
-        };
-    }
-
+export class TabBar extends React.Component<TabBarProps> {
     render() {
         const tabComponents = this.props.tabs.map((tab) => {
             const color =
-                tab.name == this.state.activeTab
+                tab.id === this.props.activeTab
                     ? ACTIVE_TAB_COLOR
                     : INACTIVE_TAB_COLOR;
             const icon = React.createElement(tab.icon, {
@@ -53,9 +33,8 @@ export class TabBar extends React.Component<TabBarProps, TabBarState> {
             );
         });
         return (
-            <div className="w-full bg-slate-400 grow">
-                <div className="h-0.5 bg-slate-700"></div>
-                <div className="h-14 my-1 flex justify-evenly items-center">
+            <div className="bg-slate-400 border-t-2 border-slate-700 py-1">
+                <div className="h-14 flex justify-evenly items-center">
                     {tabComponents}
                 </div>
             </div>
@@ -63,6 +42,6 @@ export class TabBar extends React.Component<TabBarProps, TabBarState> {
     }
 
     onClick = (tab: Tab) => {
-        this.setState({ activeTab: tab.name });
+        this.props.onChangeTab(tab);
     };
 }

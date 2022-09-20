@@ -41,10 +41,6 @@ export class IdentityList extends React.Component<ListProps> {
                 />
             );
         }
-        return (
-            <div className="shrink overflow-y-scroll flex flex-col bg-gray-200 py-4">
-                {items}
-            </div>
-        );
+        return <div className="flex flex-col bg-gray-200 py-4">{items}</div>;
     }
 }
