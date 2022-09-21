@@ -9,7 +9,7 @@ type ListItemProps = {
 class ListItem extends React.Component<ListItemProps> {
     render() {
         return (
-            <div className="border-gray-400 bg-gray-300 border border-solid flex justify-between items-center py-1 drop-shadow-0.5 ">
+            <div className="border-gray-500 bg-gray-300 border-b border-solid flex justify-between items-center py-1 drop-shadow-0.5 ">
                 <div className="flex flex-col items-start ml-8">
                     <div className="text-md font-bold">
                         {this.props.websiteName}
@@ -41,6 +41,10 @@ export class IdentityList extends React.Component<ListProps> {
                 />
             );
         }
-        return <div className="flex flex-col bg-gray-200 py-4">{items}</div>;
+        return (
+            <div className="flex flex-col my-4 border-t border-gray-500 border-solid">
+                {items}
+            </div>
+        );
     }
 }

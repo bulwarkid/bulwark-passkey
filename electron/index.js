@@ -3,6 +3,7 @@ const path = require("path");
 
 const createWindow = () => {
     const win = new BrowserWindow({
+        title: "Bulwark Passkey",
         width: 400,
         height: 650,
         webPreferences: {
@@ -13,6 +14,7 @@ const createWindow = () => {
     win.loadFile("build/index.html");
 };
 
+app.name = "Bulwark Passkey";
 app.whenReady().then(() => {
     createWindow();
 
