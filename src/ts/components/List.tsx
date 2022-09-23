@@ -3,17 +3,18 @@ import { ChevronRightIcon } from "../icons/chevron-right";
 
 export class ListItem extends React.Component<{
     text: string;
-    onClick?: React.MouseEventHandler<HTMLDivElement>;
+    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }> {
     render() {
         return (
-            <div
-                className="h-12 bg-gray-400 flex items-center justify-between border-b border-gray-500 px-4"
-                onClick={this.props.onClick}
-            >
-                {this.props.text}
-                <ChevronRightIcon />
-            </div>
+            <li className="bg-gray-400">
+                <a onClick={this.props.onClick}>
+                    <div className="flex items-center justify-between w-full h-full">
+                        {this.props.text}
+                        <ChevronRightIcon />
+                    </div>
+                </a>
+            </li>
         );
     }
 }
@@ -24,11 +25,11 @@ export class ListSection extends React.Component<{
 }> {
     render() {
         return (
-            <div>
-                <div className="pl-4 text-md text-slate-700">
-                    {this.props.title}
-                </div>
-                <div className="border-t border-gray-500">
+            <div className="daisy-form-control">
+                <label className="daisy-label">
+                    <span className="daisy-label-text">{this.props.title}</span>
+                </label>
+                <div className="daisy-menu rounded-box px-2">
                     {this.props.children}
                 </div>
             </div>
