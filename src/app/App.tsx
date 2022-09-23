@@ -46,7 +46,7 @@ export class App extends React.Component<{}, AppState> {
     }
     render() {
         let modalClassName =
-            "w-screen h-screen absolute top-0 modal z-10 bg-gray-300";
+            "w-screen h-screen absolute top-0 modal z-10 bg-gray-200";
         if (this.state.activeModal && this.state.isModalActive) {
             modalClassName += " modal-active";
         } else {
