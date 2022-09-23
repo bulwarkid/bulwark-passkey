@@ -1,22 +1,21 @@
 import React from "react";
+import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import * as modal from "../ModalContainer";
 
 export class PassphraseModal extends React.Component {
     render() {
         return (
             <div>
-                <div className="h-12 flex justify-between items-center bg-slate-400 border-b border-slate-500 px-2">
-                    <div
-                        className="daisy-btn daisy-btn-sm daisy-btn-ghost"
-                        onClick={this.onCancel_}
-                    >
-                        Cancel
-                    </div>
-                    <div className="font-bold text-lg">Passphrase</div>
-                    <div className="daisy-btn daisy-btn-sm daisy-btn-ghost">
-                        Save
-                    </div>
-                </div>
+                <TitleBar
+                    title="Passphrase"
+                    leftButton={
+                        <TitleBarButton
+                            text="Cancel"
+                            onClick={this.onCancel_}
+                        />
+                    }
+                    rightButton={<TitleBarButton text="Save" />}
+                />
                 <div className="mt-8 w-full px-4 flex flex-col">
                     <div className="daisy-form-control">
                         <label className="daisy-label">
