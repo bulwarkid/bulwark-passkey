@@ -2,6 +2,7 @@ import React from "react";
 import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
 import { IdentityList } from "./IdentityList";
+import { ModalContainer, setModalContainer } from "./ModalContainer";
 import { Settings } from "./Settings";
 import { TabBar } from "./TabBar";
 
@@ -34,10 +35,12 @@ type AppState = {
 };
 
 export class App extends React.Component<{}, AppState> {
+    private modalRef_ = React.createRef<ModalContainer>();
     private tabs_: Tab[];
     constructor(props: {}) {
         super(props);
         this.tabs_ = defaultTabs;
+        setModalContainer(this.modalRef_);
         this.state = {
             activeTab: this.tabs_[0].id,
             activeModal: null,
@@ -45,13 +48,6 @@ export class App extends React.Component<{}, AppState> {
         };
     }
     render() {
-        let modalClassName =
-            "w-screen h-screen absolute top-0 modal z-10 bg-gray-200";
-        if (this.state.activeModal && this.state.isModalActive) {
-            modalClassName += " modal-active";
-        } else {
-            modalClassName += " modal-inactive";
-        }
         let page;
         if (this.state.activeTab === TabID.SETTINGS) {
             page = <Settings />;
@@ -79,26 +75,12 @@ export class App extends React.Component<{}, AppState> {
                         }
                     </div>
                 </div>
-                <div className={modalClassName}>{this.state.activeModal}</div>
+                <ModalContainer ref={this.modalRef_} />
             </div>
         );
     }
 
     onChangeTab_ = (tab: Tab) => {
         this.setState({ activeTab: tab.id });
-    };
-
-    showModal = (modal: React.ReactElement) => {
-        this.setState({ activeModal: modal, isModalActive: true });
-    };
-    cancelModal = () => {
-        this.setState({ isModalActive: false }, () => {
-            // Clear modal 1s later so the modal has time to transition out
-            setTimeout(() => {
-                if (!this.state.isModalActive) {
-                    this.setState({ activeModal: null });
-                }
-            }, 1000);
-        });
     };
 }

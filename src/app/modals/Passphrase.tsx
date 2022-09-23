@@ -1,7 +1,5 @@
 import React from "react";
-import { ListItem, ListSection } from "../../components/List";
-import { app } from "../App";
-import "../Modal.css";
+import * as modal from "../ModalContainer";
 
 export class PassphraseModal extends React.Component {
     render() {
@@ -60,6 +58,6 @@ export class PassphraseModal extends React.Component {
     }
 
     onCancel_ = () => {
-        app.current?.cancelModal();
+        modal.hideModal();
     };
 }

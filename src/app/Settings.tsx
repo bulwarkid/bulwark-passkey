@@ -2,6 +2,7 @@ import React from "react";
 import { ListItem, ListSection } from "../components/List";
 import { app, App } from "./App";
 import { PassphraseModal } from "./modals/Passphrase";
+import * as modal from "./ModalContainer";
 
 export class Settings extends React.Component {
     render() {
@@ -11,7 +12,7 @@ export class Settings extends React.Component {
                     <ListItem
                         text="Passphrase"
                         onClick={() => {
-                            app?.current?.showModal(<PassphraseModal />);
+                            modal.showModal(<PassphraseModal />);
                         }}
                     />
                     <ListItem text="Vault File" />
