@@ -1,0 +1,12 @@
+.modal {
+    transition-property: top;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-out;
+}
+.modal.modal-active {
+    top: 0vh;
+}
+
+.modal.modal-inactive {
+    top: 100vh;
+}

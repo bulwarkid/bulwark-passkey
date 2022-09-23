@@ -1,10 +1,16 @@
 import React from "react";
 import { ChevronRightIcon } from "../icons/chevron-right";
 
-export class ListItem extends React.Component<{ text: string }> {
+export class ListItem extends React.Component<{
+    text: string;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+}> {
     render() {
         return (
-            <div className="h-12 bg-gray-400 flex items-center justify-between border-b border-gray-500 px-4">
+            <div
+                className="h-12 bg-gray-400 flex items-center justify-between border-b border-gray-500 px-4"
+                onClick={this.props.onClick}
+            >
                 {this.props.text}
                 <ChevronRightIcon />
             </div>
