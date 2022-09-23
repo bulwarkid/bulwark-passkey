@@ -62,7 +62,7 @@ export class App extends React.Component<{}, AppState> {
             page = <IdentityList identities={identities} />;
         }
         return (
-            <div className="relative">
+            <div className="relative overflow-hidden w-screen h-screen">
                 <div className="w-screen h-screen flex flex-col bg-gray-300">
                     <div className="grow overflow-y-scroll">{page}</div>
                     <div>

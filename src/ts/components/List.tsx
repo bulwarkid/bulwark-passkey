@@ -20,15 +20,19 @@ export class ListItem extends React.Component<{
 }
 
 export class ListSection extends React.Component<{
-    title: string;
+    title?: string;
     children?: React.ReactNode;
 }> {
     render() {
         return (
             <div className="daisy-form-control">
-                <label className="daisy-label">
-                    <span className="daisy-label-text">{this.props.title}</span>
-                </label>
+                {this.props.title ? (
+                    <label className="daisy-label">
+                        <span className="daisy-label-text">
+                            {this.props.title}
+                        </span>
+                    </label>
+                ) : undefined}
                 <div className="daisy-menu rounded-box px-2">
                     {this.props.children}
                 </div>

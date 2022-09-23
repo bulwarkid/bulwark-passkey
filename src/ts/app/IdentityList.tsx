@@ -1,4 +1,5 @@
 import React from "react";
+import { TitleBar } from "../components/TitleBar";
 import { InfoIcon } from "../icons/info";
 
 type ListItemProps = {
