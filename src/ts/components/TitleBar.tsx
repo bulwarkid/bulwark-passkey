@@ -29,9 +29,13 @@ export class TitleBar extends React.Component<TitleBarProps> {
         // Add empty divs if there are no buttons so flexbox spacing works correctly with only 1 button
         return (
             <div className="h-12 flex justify-between items-center bg-slate-400 border-b border-slate-500 px-2">
-                {this.props.leftButton || <div />}
+                <div className="grow basis-0 flex justify-start items-center">
+                    {this.props.leftButton}
+                </div>
                 <div className="font-bold text-lg">{this.props.title}</div>
-                {this.props.rightButton || <div />}
+                <div className="grow basis-0 flex justify-end items-center">
+                    {this.props.rightButton}
+                </div>
             </div>
         );
     }

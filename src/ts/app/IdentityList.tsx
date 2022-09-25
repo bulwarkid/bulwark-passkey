@@ -1,6 +1,8 @@
 import React from "react";
 import { TitleBar } from "../components/TitleBar";
 import { InfoIcon } from "../icons/info";
+import { showModal } from "./ModalContainer";
+import { IdentityInfoModal } from "./modals/IdentityInfo";
 
 type ListItemProps = {
     websiteName: string;
@@ -19,12 +21,18 @@ class ListItem extends React.Component<ListItemProps> {
                         {this.props.userName}
                     </div>
                 </div>
-                <div className="mr-4">
+                <div
+                    className="mr-4 daisy-btn daisy-btn-square daisy-btn-ghost"
+                    onClick={this.onClick_}
+                >
                     <InfoIcon />
                 </div>
             </div>
         );
     }
+    onClick_ = () => {
+        showModal(<IdentityInfoModal />);
+    };
 }
 
 type ListProps = {
