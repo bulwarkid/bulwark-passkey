@@ -1,14 +1,6 @@
-import React from "react";
+import { Icon } from "./icon";
 
-type LockIconProps = {
-    color?: string;
-};
-
-export class LockIcon extends React.Component<LockIconProps> {
-    static defaultProps = {
-        color: "currentColor",
-    };
-
+export class LockIcon extends Icon {
     render() {
         return (
             <svg

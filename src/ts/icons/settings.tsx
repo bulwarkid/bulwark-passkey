@@ -1,14 +1,6 @@
-import React from "react";
+import { Icon } from "./icon";
 
-type SettingsIconProps = {
-    color?: string;
-};
-
-export class SettingsIcon extends React.Component<SettingsIconProps> {
-    static defaultProps = {
-        color: "currentColor",
-    };
-
+export class SettingsIcon extends Icon {
     render() {
         return (
             <svg
