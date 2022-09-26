@@ -1,5 +1,5 @@
 import React from "react";
-import { TitleBar } from "../components/TitleBar";
+import { Identity } from "../data/Identity";
 import { InfoIcon } from "../icons/info";
 import { showModal } from "./ModalContainer";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
@@ -31,7 +31,13 @@ class ListItem extends React.Component<ListItemProps> {
         );
     }
     onClick_ = () => {
-        showModal(<IdentityInfoModal />);
+        const exampleIdentity = new Identity();
+        exampleIdentity.website = "apple.com";
+        exampleIdentity.userName = "Chris";
+        exampleIdentity.publicKey = new Uint8Array([1, 2, 3, 4, 5]);
+        exampleIdentity.hash = new Uint8Array([23, 14, 52, 32, 12]);
+        exampleIdentity.signatureCount = 13;
+        showModal(<IdentityInfoModal identity={exampleIdentity} />);
     };
 }
 

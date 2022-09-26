@@ -2,7 +2,6 @@ import React from "react";
 import { ListItem, ListSection } from "../components/List";
 import { PassphraseModal } from "./modals/Passphrase";
 import * as modal from "./ModalContainer";
-import { TitleBar } from "../components/TitleBar";
 
 export class Settings extends React.Component {
     render() {
