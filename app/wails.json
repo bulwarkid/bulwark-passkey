@@ -1,0 +1,8 @@
+{
+    "name": "Bulwark Passkey",
+    "outputfilename": "bulwark_passkey",
+    "author": {
+        "name": "Chris de la Iglesia",
+        "email": "chris@cmdli.dev"
+    }
+}
