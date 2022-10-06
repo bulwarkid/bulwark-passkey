@@ -20,25 +20,7 @@ func checkErr(err error, msg string) {
 	}
 }
 
-type ClientHelper struct {}
-
-func (helper *ClientHelper) SaveData(data []byte) {
-
-}
-
-func (helper *ClientHelper) RetrieveData() []byte {
-	return nil
-}
-
-func (helper *ClientHelper) Passphrase() string {
-	return "test_passphrase"
-}
-
-func (helper *ClientHelper) ApproveClientAction(action virtual_fido.ClientAction, params virtual_fido.ClientActionRequestParams) bool {
-	return true
-}
-
-func startFIDOServer() {
+func startFIDOServer(helper *ClientHelper) {
 	// TODO: Load actual, persistent cert for signing identities
 	// TODO: Persist encryption key across startups
 	// ALL OF THIS IS INSECURE, FOR TESTING PURPOSES ONLY
@@ -60,8 +42,7 @@ func startFIDOServer() {
 	authorityCertBytes, err := x509.CreateCertificate(rand.Reader, authority, authority, &privateKey.PublicKey, privateKey)
 	checkErr(err, "Could not generate attestation CA cert bytes")
 	encryptionKey := sha256.Sum256([]byte("test"))
-	helper := ClientHelper{}
 
 	virtual_fido.SetLogOutput(os.Stdout)
-	virtual_fido.Start(virtual_fido.NewClient(authorityCertBytes, privateKey, encryptionKey, &helper, &helper))
+	virtual_fido.Start(virtual_fido.NewClient(authorityCertBytes, privateKey, encryptionKey, helper, helper))
 }

@@ -11,10 +11,9 @@ import (
 var assets embed.FS
 
 func main() {
-	go startFIDOServer()
-
-	// Create an instance of the app structure
 	app := NewApp()
+
+	go startFIDOServer(app.helper)
 
 	// Create application with options
 	err := wails.Run(&options.App{

@@ -3,16 +3,59 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/bulwarkid/virtual-fido/virtual_fido"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
+
+
+type ClientHelper struct {
+	app *App
+}
+
+func (helper *ClientHelper) SaveData(data []byte) {
+
+}
+
+func (helper *ClientHelper) RetrieveData() []byte {
+	return nil
+}
+
+func (helper *ClientHelper) Passphrase() string {
+	return "test_passphrase"
+}
+
+func actionToString(action virtual_fido.ClientAction) string {
+	switch action {
+	case virtual_fido.CLIENT_ACTION_FIDO_GET_ASSERTION:
+		return "fido_get_assertion"
+	case virtual_fido.CLIENT_ACTION_FIDO_MAKE_CREDENTIAL:
+		return "fido_make_credential"
+	case virtual_fido.CLIENT_ACTION_U2F_AUTHENTICATE:
+		return "u2f_authenticate"
+	case virtual_fido.CLIENT_ACTION_U2F_REGISTER:
+		return "u2f_register"
+	default:
+		panic("Unhandled action name!")
+	}
+}
+
+func (helper *ClientHelper) ApproveClientAction(action virtual_fido.ClientAction, params virtual_fido.ClientActionRequestParams) bool {
+	runtime.EventsEmit(helper.app.ctx, "fido-approveClientAction", actionToString(action), params.RelyingParty, params.UserName)
+	return true
+}
 
 // App struct
 type App struct {
 	ctx context.Context
+	helper *ClientHelper
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	app := &App{helper: &ClientHelper{}}
+	app.helper.app = app
+	return app
 }
 
 // startup is called when the app starts. The context is saved
