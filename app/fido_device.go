@@ -38,7 +38,7 @@ func (helper *ClientHelper) ApproveClientAction(action virtual_fido.ClientAction
 	return true
 }
 
-func start() {
+func startFIDOServer() {
 	// TODO: Load actual, persistent cert for signing identities
 	// TODO: Persist encryption key across startups
 	// ALL OF THIS IS INSECURE, FOR TESTING PURPOSES ONLY

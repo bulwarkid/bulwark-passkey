@@ -10,7 +10,7 @@ frontend/build:
 output: frontend/build
 	rm -r app/frontend_dist || true
 	cp -r frontend/build app/frontend_dist
-	cd app && wails build -s
+	cd app && wails build -s -skipbindings
 	mkdir output || true
 	rm -r output/Bulwark\ Passkey.app || true
 	mv app/build/bin/Bulwark\ Passkey.app output
