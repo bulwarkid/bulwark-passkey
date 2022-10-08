@@ -1,16 +1,21 @@
 package main
 
 import (
+	//"context"
 	"embed"
+	"fmt"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
+	//"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend_dist
 var assets embed.FS
 
 func main() {
+	fmt.Println("Starting...")
+	//runtime.LogPrintf(context.Background(), "Starting...\n")
 	app := NewApp()
 
 	go startFIDOServer(app.helper)

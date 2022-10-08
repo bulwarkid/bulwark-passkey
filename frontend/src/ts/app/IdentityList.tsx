@@ -2,6 +2,7 @@ import React from "react";
 import { Identity } from "../data/Identity";
 import { InfoIcon } from "../icons/info";
 import { showModal } from "./ModalContainer";
+import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
 
 type ListItemProps = {

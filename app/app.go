@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 
@@ -41,8 +40,8 @@ func actionToString(action virtual_fido.ClientAction) string {
 }
 
 func (helper *ClientHelper) ApproveClientAction(action virtual_fido.ClientAction, params virtual_fido.ClientActionRequestParams) bool {
-	runtime.EventsEmit(helper.app.ctx, "fido-approveClientAction", actionToString(action), params.RelyingParty, params.UserName)
-	return true
+	response := callRPC(helper.app.ctx, "fido-approveClientAction", actionToString(action), params.RelyingParty, params.UserName)
+	return response[0].(bool)
 }
 
 // App struct
