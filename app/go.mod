@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/bulwarkid/virtual-fido/virtual_fido v0.0.0-20220926234740-4e4639cd59c5
 	github.com/wailsapp/wails/v2 v2.0.0
+	google.golang.org/protobuf v1.28.1
 )
 
 require (
