@@ -3,7 +3,7 @@ JS_PLUGIN=../external/protobuf-javascript/bazel-bin/generator/protoc-gen-js
 JS_OUT=../frontend/src/proto
 GO_OUT=../app
 
-build: clean js go
+all: clean js go
 
 clean:
 	rm -rf $(JS_OUT) || true

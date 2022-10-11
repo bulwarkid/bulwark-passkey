@@ -13,3 +13,12 @@ export function base64ToBytes(base64: string): Uint8Array {
             .map((c) => c.charCodeAt(0))
     );
 }
+
+export function randomBytes(length: number) {
+    const arr = new Uint8Array(length);
+    return crypto.getRandomValues(arr);
+}
+
+export function setImmediate(callback: () => void) {
+    setTimeout(callback, 0);
+}

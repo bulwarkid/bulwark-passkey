@@ -1,13 +1,13 @@
 import React from "react";
-import { Identity } from "../data/Identity";
+import { Identity } from "../../proto/data";
+import * as identity from "../data/Identity";
 import { InfoIcon } from "../icons/info";
+import { LogDebug } from "../wailsjs/runtime/runtime";
 import { showModal } from "./ModalContainer";
-import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
 
 type ListItemProps = {
-    websiteName: string;
-    userName: string;
+    identity: Identity;
 };
 
 class ListItem extends React.Component<ListItemProps> {
@@ -16,10 +16,10 @@ class ListItem extends React.Component<ListItemProps> {
             <div className="border-gray-500 bg-gray-300 border-b border-solid flex justify-between items-center py-1 drop-shadow-0.5 ">
                 <div className="flex flex-col items-start ml-8">
                     <div className="text-md font-bold">
-                        {this.props.websiteName}
+                        {this.props.identity.website?.name}
                     </div>
                     <div className="text-sm text-gray-500">
-                        {this.props.userName}
+                        {this.props.identity.user?.displayName}
                     </div>
                 </div>
                 <div
@@ -31,31 +31,29 @@ class ListItem extends React.Component<ListItemProps> {
             </div>
         );
     }
+
     onClick_ = () => {
-        const exampleIdentity = new Identity();
-        exampleIdentity.website = "apple.com";
-        exampleIdentity.userName = "Chris";
-        exampleIdentity.publicKey = new Uint8Array([1, 2, 3, 4, 5]);
-        exampleIdentity.hash = new Uint8Array([23, 14, 52, 32, 12]);
-        exampleIdentity.signatureCount = 13;
-        showModal(<IdentityInfoModal identity={exampleIdentity} />);
+        showModal(<IdentityInfoModal identity={this.props.identity} />);
     };
 }
 
-type ListProps = {
-    identities: { websiteName: string; userName: string }[];
+type ListState = {
+    identities: Identity[];
 };
 
-export class IdentityList extends React.Component<ListProps> {
+export class IdentityList extends React.Component<{}, ListState> {
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            identities: [],
+        };
+        identity.listenForUpdate(this.refreshIdentities_);
+        identity.update();
+    }
     render() {
         const items = [];
-        for (const identity of this.props.identities) {
-            items.push(
-                <ListItem
-                    websiteName={identity.websiteName}
-                    userName={identity.userName}
-                />
-            );
+        for (const identity of this.state.identities) {
+            items.push(<ListItem identity={identity} />);
         }
         return (
             <div className="flex flex-col my-4 border-t border-gray-500 border-solid">
@@ -63,4 +61,8 @@ export class IdentityList extends React.Component<ListProps> {
             </div>
         );
     }
+
+    refreshIdentities_ = (identities: Identity[]) => {
+        this.setState({ identities });
+    };
 }

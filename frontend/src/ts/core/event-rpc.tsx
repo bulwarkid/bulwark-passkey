@@ -1,15 +1,26 @@
-import { LogPrint } from "../wailsjs/runtime/runtime";
-import { EventsEmit, EventsOn } from "../wailsjs/runtime/runtime";
+import {
+    EventsEmit,
+    EventsOn,
+    EventsOnce,
+    LogDebug,
+} from "../wailsjs/runtime/runtime";
 
 export function registerHandler(
     event: string,
     handler: (...data: any) => Promise<any>
 ) {
     EventsOn(event + "-request", (...data: any) => {
-        LogPrint("Received " + event)
         handler(data).then((responseData) => {
-            LogPrint("Sending " + event)
             EventsEmit(event + "-response", responseData);
         });
+    });
+}
+
+export async function callRPC(name: string, ...data: any): Promise<any> {
+    return new Promise<any>((resolve) => {
+        EventsOnce(name + "-response", (responseData: any) => {
+            resolve(responseData);
+        });
+        EventsEmit(name + "-request", ...data);
     });
 }

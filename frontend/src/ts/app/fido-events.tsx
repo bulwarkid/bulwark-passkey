@@ -1,4 +1,5 @@
 import { registerHandler } from "../core/event-rpc";
+import * as identity from "../data/Identity";
 import { hideModal, showModal } from "./ModalContainer";
 import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
 
@@ -33,3 +34,7 @@ registerHandler(
         });
     }
 );
+
+registerHandler("update", async () => {
+    await identity.update();
+});

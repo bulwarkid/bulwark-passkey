@@ -2,21 +2,26 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func callRPC(ctx context.Context, name string, data ...interface{}) []interface{} {
-	fmt.Printf("Starting RPC %s\n", name)
 	responseChan := make(chan []interface{})
 	responseHandler := func(data ...interface{}) {
-		fmt.Printf("Received callback for %s\n", name)
 		responseChan <- data
 	}
 	runtime.EventsOnce(ctx, name+"-response", responseHandler)
 	runtime.EventsEmit(ctx, name+"-request", data...)
 	response := <-responseChan
-	fmt.Printf("Received response: %v\n", response)
+	runtime.LogDebugf(ctx, "GO -> JS: %s(%v) -> %v\n", name, data, response)
 	return response
+}
+
+func registerHandler(ctx context.Context, name string, handler func(... interface{})interface{}) {
+	runtime.EventsOn(ctx, name + "-request", func(optionalData ...interface{}) {
+		response := handler(optionalData...)
+		runtime.LogDebugf(ctx, "JS -> GO: %s(%v) -> %v\n", name, optionalData, response)
+		runtime.EventsEmit(ctx, name + "-response", response)
+	})
 }

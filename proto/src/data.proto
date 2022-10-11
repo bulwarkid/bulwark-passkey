@@ -2,7 +2,23 @@ syntax = "proto3";
 
 option go_package = "/proto";
 
+message RelyingParty {
+    optional string id = 1;
+    optional string name = 2;
+}
+
+message User {
+    optional bytes id = 1;
+    optional string display_name = 2;
+    optional string name = 3;
+}
+
 message Identity {
-    optional string test = 1;
+    optional bytes id = 1;
+    optional RelyingParty website = 2;
+    optional User user = 3;
+    optional bytes private_key = 4;
+    optional bytes public_key = 5;
+    optional int32 signature_counter = 6;
 }
 

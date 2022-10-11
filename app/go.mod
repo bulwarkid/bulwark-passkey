@@ -1,4 +1,4 @@
-module changeme
+module github.com/bulwarkid/bulwark-passkey/app
 
 go 1.18
 

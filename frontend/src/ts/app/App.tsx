@@ -1,6 +1,7 @@
 import React from "react";
 import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
+import { LogDebug } from "../wailsjs/runtime/runtime";
 import { IdentityList } from "./IdentityList";
 import { ModalContainer, setModalContainer } from "./ModalContainer";
 import { Settings } from "./Settings";
@@ -47,19 +48,13 @@ export class App extends React.Component<{}, AppState> {
             isModalActive: false,
         };
     }
+
     render() {
         let page;
         if (this.state.activeTab === TabID.SETTINGS) {
             page = <Settings />;
         } else if (this.state.activeTab === TabID.IDENTITIES) {
-            const identities = [];
-            for (let i = 0; i < 50; i++) {
-                identities.push({
-                    websiteName: "Website " + i,
-                    userName: "User " + i,
-                });
-            }
-            page = <IdentityList identities={identities} />;
+            page = <IdentityList />;
         }
         return (
             <div className="relative overflow-hidden w-screen h-screen">
