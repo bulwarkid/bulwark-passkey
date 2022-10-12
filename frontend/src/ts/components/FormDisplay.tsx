@@ -9,8 +9,10 @@ export class FormItem extends React.Component<FormItemProps> {
     render() {
         return (
             <div className="p-3 flex justify-between items-center">
-                <div>{this.props.left}</div>
-                <div className="text-gray-600">{this.props.right}</div>
+                <div className="whitespace-nowrap grow mr-4">
+                    {this.props.left}
+                </div>
+                <div className="text-gray-600 truncate">{this.props.right}</div>
             </div>
         );
     }
