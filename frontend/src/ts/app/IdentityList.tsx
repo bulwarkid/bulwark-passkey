@@ -1,8 +1,7 @@
 import React from "react";
 import { Identity } from "../../proto/data";
-import * as identity from "../data/Identity";
+import * as identities from "../data/identities";
 import { InfoIcon } from "../icons/info";
-import { LogDebug } from "../wailsjs/runtime/runtime";
 import { showModal } from "./ModalContainer";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
 
@@ -47,8 +46,8 @@ export class IdentityList extends React.Component<{}, ListState> {
         this.state = {
             identities: [],
         };
-        identity.listenForUpdate(this.refreshIdentities_);
-        identity.update();
+        identities.listenForUpdate(this.refreshIdentities_);
+        identities.update();
     }
     render() {
         const items = [];

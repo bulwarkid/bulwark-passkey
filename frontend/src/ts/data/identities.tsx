@@ -1,4 +1,4 @@
-import { callRPC } from "../core/event-rpc";
+import { callRPC, registerHandler } from "../core/event-rpc";
 import { base64ToBytes, setImmediate } from "../core/util";
 import { Identity } from "../../proto/data";
 import { LogDebug } from "../wailsjs/runtime/runtime";
@@ -45,3 +45,7 @@ export async function getIdentities(): Promise<Identity[]> {
 }
 
 export function deleteIdentity(id: string) {}
+
+registerHandler("update", async () => {
+    await update();
+});

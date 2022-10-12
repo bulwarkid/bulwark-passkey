@@ -1,5 +1,6 @@
 import { registerHandler } from "../core/event-rpc";
-import * as identity from "../data/Identity";
+import * as identities from "../data/identities";
+import { LogDebug } from "../wailsjs/runtime/runtime";
 import { hideModal, showModal } from "./ModalContainer";
 import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
 
@@ -12,9 +13,11 @@ const actionStringToAction = new Map([
 
 registerHandler(
     "fido-approveClientAction",
-    (actionString: string, relyingParty?: string, userName?: string) => {
+    (requestData: [actionString: string, relyingParty?: string, userName?: string]) => {
         return new Promise((resolve) => {
+            const [actionString, relyingParty, userName] = requestData;
             let action = actionStringToAction.get(actionString)!;
+            LogDebug(JSON.stringify(actionString))
             console.assert(
                 action != undefined,
                 "Undefined client action: " + actionString
@@ -36,5 +39,5 @@ registerHandler(
 );
 
 registerHandler("update", async () => {
-    await identity.update();
+    await identities.update();
 });

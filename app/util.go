@@ -2,7 +2,7 @@ package main
 
 import "crypto/rand"
 
-const DEBUG = true
+const DEBUG = false
 
 func randomBytes(length int) []byte {
 	bytes := make([]byte, length)

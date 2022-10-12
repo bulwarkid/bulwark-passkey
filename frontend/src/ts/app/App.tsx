@@ -1,7 +1,6 @@
 import React from "react";
 import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
-import { LogDebug } from "../wailsjs/runtime/runtime";
 import { IdentityList } from "./IdentityList";
 import { ModalContainer, setModalContainer } from "./ModalContainer";
 import { Settings } from "./Settings";
