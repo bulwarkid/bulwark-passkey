@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/elliptic"
 	"crypto/x509"
+	"encoding/base64"
 	"fmt"
 
 	pb "github.com/bulwarkid/bulwark-passkey/app/proto"
@@ -57,16 +58,16 @@ func demoIdentities() [][]byte {
 		var val int32 = 0
 		id := pb.Identity{
 			Website: &pb.RelyingParty{
-				Id: &websites[i],
+				Id:   &websites[i],
 				Name: &websites[i],
 			},
 			User: &pb.User{
-				Id: randomBytes(16),
+				Id:          randomBytes(16),
 				DisplayName: &names[i],
-				Name: &names[i],
+				Name:        &names[i],
 			},
-			PrivateKey: randomBytes(16),
-			PublicKey: randomBytes(16),
+			PrivateKey:       randomBytes(16),
+			PublicKey:        randomBytes(16),
 			SignatureCounter: &val,
 		}
 		idBytes, err := proto.Marshal(&id)
@@ -99,7 +100,7 @@ func credentialSourceToIdentity(source *virtual_fido.CredentialSource) *pb.Ident
 
 func HandleIdentities(client *ClientHelper) func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
-		if (DEBUG) {
+		if DEBUG {
 			return demoIdentities()
 		}
 		sources := client.client.Identities()
@@ -111,6 +112,14 @@ func HandleIdentities(client *ClientHelper) func(...interface{}) interface{} {
 			protos = append(protos, idBytes)
 		}
 		return protos
+	}
+}
+
+func HandleDeleteIdentity(client *ClientHelper) func(...interface{}) interface{} {
+	return func(data ...interface{}) interface{} {
+		id, err := base64.StdEncoding.DecodeString(data[0].(string))
+		checkErr(err, "Could not decode identity ID to delete")
+		return client.client.DeleteIdentity(id)
 	}
 }
 
@@ -132,6 +141,7 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	registerHandler(ctx, "get_identities", HandleIdentities(a.helper))
+	registerHandler(ctx, "delete_identity", HandleDeleteIdentity(a.helper))
 	runtime.LogSetLogLevel(ctx, 1)
 }
 

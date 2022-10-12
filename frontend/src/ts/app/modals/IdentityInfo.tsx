@@ -5,6 +5,7 @@ import { bytesToBase64 } from "../../core/util";
 import { Identity } from "../../../proto/data";
 import { XIcon } from "../../icons/x";
 import { hideModal } from "../ModalContainer";
+import * as identities from "../../data/identities";
 
 type IdentityInfoModalProps = {
     identity: Identity;
@@ -44,10 +45,24 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
                         />
                     </FormDisplay>
                 </div>
-                <div className="daisy-btn daisy-btn-error mx-4">Delete</div>
+                <div
+                    className="daisy-btn daisy-btn-error mx-4"
+                    onClick={this.delete_}
+                >
+                    Delete
+                </div>
             </div>
         );
     }
+
+    delete_ = async () => {
+        const id = this.props.identity.id;
+        if (id) {
+            if (await identities.deleteIdentity(id)) {
+                hideModal();
+            }
+        }
+    };
 
     onCancel_ = () => {
         hideModal();
