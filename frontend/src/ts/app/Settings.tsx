@@ -10,7 +10,7 @@ export class Settings extends React.Component {
                 <div className="flex justify-center">
                     <span className="text-xl font-bold">Settings</span>
                 </div>
-                <div className="pt-4">
+                <div className="p-4">
                     <ListSection>
                         <ListItem
                             text="Passphrase"
