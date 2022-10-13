@@ -5,7 +5,6 @@ import (
 	"crypto/elliptic"
 	"crypto/x509"
 	"encoding/base64"
-	"fmt"
 
 	pb "github.com/bulwarkid/bulwark-passkey/app/proto"
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
@@ -27,7 +26,8 @@ func (helper *ClientHelper) RetrieveData() []byte {
 }
 
 func (helper *ClientHelper) Passphrase() string {
-	return "test_passphrase"
+	passphrase := callRPC(helper.app.ctx, "get_passphrase")
+	return passphrase[0].(string)
 }
 
 func actionToString(action virtual_fido.ClientAction) string {
@@ -123,33 +123,25 @@ func HandleDeleteIdentity(client *ClientHelper) func(...interface{}) interface{}
 	}
 }
 
-// App struct
 type App struct {
 	ctx    context.Context
 	helper *ClientHelper
 }
 
-// NewApp creates a new App application struct
 func NewApp() *App {
 	app := &App{helper: &ClientHelper{}}
 	app.helper.app = app
 	return app
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-	registerHandler(ctx, "get_identities", HandleIdentities(a.helper))
-	registerHandler(ctx, "delete_identity", HandleDeleteIdentity(a.helper))
+func (app *App) startup(ctx context.Context) {
+	app.ctx = ctx
+	registerHandler(ctx, "get_identities", HandleIdentities(app.helper))
+	registerHandler(ctx, "delete_identity", HandleDeleteIdentity(app.helper))
 	runtime.LogSetLogLevel(ctx, 1)
 }
 
-func (a *App) onDomReady(ctx context.Context) {
-	//callRPC(ctx, "update")
+func (app *App) onDomReady(ctx context.Context) {
+	go startFIDOServer(app.helper)
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}

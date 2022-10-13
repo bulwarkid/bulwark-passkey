@@ -1,4 +1,5 @@
 import React from "react";
+import { masterPassword } from "../data/credentials";
 import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
 import { IdentityList } from "./IdentityList";
@@ -46,6 +47,10 @@ export class App extends React.Component<{}, AppState> {
             activeModal: null,
             isModalActive: false,
         };
+    }
+
+    componentDidMount(): void {
+        masterPassword(); // Load master password on startup
     }
 
     render() {
