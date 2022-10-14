@@ -20,20 +20,14 @@ run-Windows:
 	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\run.ps1"
 
 run-Darwin:
-	./output/$(RUN_COMMAND)
+	bash ./build/mac/run.sh
 
 build: clean output
 
 output: output-$(OS_NAME)
 
-frontend/build:
-	cd frontend && npm run build
-
-output-Darwin: frontend/build
-	cp -r frontend/build app/frontend_dist
-	cd app && wails build -s -skipbindings
-	mkdir output || true
-	mv app/build/bin/$(OUTPUT) output
+output-Darwin:
+	bash ./build/mac/build.sh
 
 output-Windows:
 	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\build.ps1"
@@ -41,10 +35,7 @@ output-Windows:
 clean: clean-$(OS_NAME)
 
 clean-Darwin:
-	rm -r output || true
-	rm -r frontend/build || true
-	rm -r app/build/bin || true
-	rm -r app/frontend_dist || true
+	bash ./build/mac/clean.sh
 
 clean-Windows:
 	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\clean.ps1"
