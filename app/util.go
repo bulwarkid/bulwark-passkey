@@ -1,8 +1,11 @@
 package main
 
-import "crypto/rand"
+import (
+	"crypto/rand"
+	"fmt"
+)
 
-const DEBUG = true
+const DEBUG = false
 
 func randomBytes(length int) []byte {
 	bytes := make([]byte, length)
@@ -12,6 +15,6 @@ func randomBytes(length int) []byte {
 
 func checkErr(err error, msg string) {
 	if err != nil {
-		panic(msg)
+		panic(fmt.Sprintf("Error - %v - %s", err, msg))
 	}
 }

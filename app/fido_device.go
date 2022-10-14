@@ -1,20 +1,25 @@
 package main
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"fmt"
 	"math/big"
 	"os"
+	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
+	wails_runtime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func startFIDOServer(helper *ClientHelper) {
+func startFIDOServer(ctx context.Context, helper *ClientHelper) {
 	// TODO: Load actual, persistent cert for signing identities
 	// TODO: Persist encryption key across startups
 	// ALL OF THIS IS INSECURE, FOR TESTING PURPOSES ONLY
@@ -40,5 +45,45 @@ func startFIDOServer(helper *ClientHelper) {
 	helper.client = client
 
 	virtual_fido.SetLogOutput(os.Stdout)
+
+	go attachUSBIPServer(ctx)
 	virtual_fido.Start(client)
+}
+
+func attachUSBIPServer(ctx context.Context) {
+	time.Sleep(1000 * time.Millisecond)
+	if runtime.GOOS == "windows" {
+		attachUSBIPWindows()
+	} else if runtime.GOOS == "linux" {
+		attachUSBIPLinux()
+	} else {
+		wails_runtime.LogErrorf(ctx, "Could not find USBIP command for OS %s\n", runtime.GOOS)
+		return
+	}
+}
+
+func attachUSBIPLinux() {
+	commandList := []string{"sudo", "usbip", "attach", "-r", "127.0.0.1", "-b", "2-2"}
+
+	prog := exec.Command(commandList[0], commandList[1:]...)
+	prog.Stdin = os.Stdin
+	prog.Stdout = os.Stdout
+	prog.Stderr = os.Stderr
+	err := prog.Run()
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+	}
+}
+
+func attachUSBIPWindows() {
+	commandList := []string{"./usbip/usbip.exe", "attach", "-r", "127.0.0.1", "-b", "2-2"}
+
+	prog := exec.Command(commandList[0], commandList[1:]...)
+	prog.Stdin = os.Stdin
+	prog.Stdout = os.Stdout
+	prog.Stderr = os.Stderr
+	err := prog.Run()
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+	}
 }

@@ -64,6 +64,5 @@ func (app *App) startup(ctx context.Context) {
 }
 
 func (app *App) onDomReady(ctx context.Context) {
-	go startFIDOServer(app.helper)
+	go startFIDOServer(ctx, app.helper)
 }
-

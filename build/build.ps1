@@ -11,3 +11,4 @@ Pop-Location
 
 New-Item .\output -ItemType Directory
 Copy-Item ".\app\build\bin\bulwark_passkey.exe" -Destination .\output
+Copy-Item ".\external\usbip" -Destination .\output -Recurse

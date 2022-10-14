@@ -14,9 +14,12 @@ else
 	endif
 endif
 
+run: run-$(OS_NAME)
 
+run-Windows:
+	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\run.ps1"
 
-run: output
+run-Darwin:
 	./output/$(RUN_COMMAND)
 
 build: clean output
