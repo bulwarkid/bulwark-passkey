@@ -26,7 +26,7 @@ registerHandler(
             let action = actionStringToAction.get(actionString)!;
             LogDebug(JSON.stringify(actionString));
             console.assert(
-                action != undefined,
+                action !== undefined,
                 "Undefined client action: " + actionString
             );
             const onResponse = (approved: boolean) => {

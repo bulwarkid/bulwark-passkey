@@ -7,6 +7,11 @@ type UnlockModalProps = {
 
 export class UnlockModal extends React.Component<UnlockModalProps> {
     private inputRef_ = React.createRef<HTMLInputElement>();
+
+    componentDidMount() {
+        this.inputRef_.current?.focus();
+    }
+
     render() {
         return (
             <div className="w-screen h-screen flex flex-col">

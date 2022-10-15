@@ -66,7 +66,7 @@ func HandleIdentities(client *ClientHelper) func(...interface{}) interface{} {
 		if DEBUG {
 			return demoIdentities()
 		}
-		sources := client.client.Identities()
+		sources := client.fidoClient().Identities()
 		protos := make([][]byte, 0)
 		for _, source := range sources {
 			identity := credentialSourceToIdentity(&source)
@@ -82,6 +82,6 @@ func HandleDeleteIdentity(client *ClientHelper) func(...interface{}) interface{}
 	return func(data ...interface{}) interface{} {
 		id, err := base64.StdEncoding.DecodeString(data[0].(string))
 		checkErr(err, "Could not decode identity ID to delete")
-		return client.client.DeleteIdentity(id)
+		return client.fidoClient().DeleteIdentity(id)
 	}
 }

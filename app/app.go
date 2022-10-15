@@ -12,12 +12,24 @@ type ClientHelper struct {
 	client virtual_fido.Client
 }
 
+func NewClientHelper() *ClientHelper {
+	return &ClientHelper{app: nil, client: nil}
+}
+
+func (helper *ClientHelper) fidoClient() virtual_fido.Client {
+	for helper.client == nil {
+		// Wait for client to be populated
+	}
+	return helper.client
+}
+
 func (helper *ClientHelper) SaveData(data []byte) {
 	callRPC(helper.app.ctx, "update")
+	saveVaultToFile(data)
 }
 
 func (helper *ClientHelper) RetrieveData() []byte {
-	return nil
+	return readVaultFromFile()
 }
 
 func (helper *ClientHelper) Passphrase() string {

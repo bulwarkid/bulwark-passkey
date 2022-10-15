@@ -4,6 +4,7 @@ import (
 	"embed"
 
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 )
 
@@ -13,17 +14,18 @@ var assets embed.FS
 func main() {
 	app := NewApp()
 
-
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:            "Bulwark Passkey",
-		Width:            400,
-		Height:           650,
-		DisableResize:    true,
-		Assets:           assets,
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
-		OnDomReady:       app.onDomReady,
+		Title:              "Bulwark Passkey",
+		Width:              400,
+		Height:             650,
+		DisableResize:      true,
+		Assets:             assets,
+		BackgroundColour:   &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:          app.startup,
+		OnDomReady:         app.onDomReady,
+		LogLevel:           logger.DEBUG,
+		LogLevelProduction: logger.ERROR,
 	})
 
 	if err != nil {

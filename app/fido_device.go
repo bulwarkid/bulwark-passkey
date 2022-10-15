@@ -20,6 +20,12 @@ import (
 )
 
 func startFIDOServer(ctx context.Context, helper *ClientHelper) {
+
+	log_fd, _ := os.Create("test.log")
+	log_fd.Write([]byte{63})
+	defer log_fd.Close()
+	virtual_fido.SetLogOutput(log_fd)
+
 	// TODO: Load actual, persistent cert for signing identities
 	// TODO: Persist encryption key across startups
 	// ALL OF THIS IS INSECURE, FOR TESTING PURPOSES ONLY
@@ -44,14 +50,12 @@ func startFIDOServer(ctx context.Context, helper *ClientHelper) {
 	client := virtual_fido.NewClient(authorityCertBytes, privateKey, encryptionKey, helper, helper)
 	helper.client = client
 
-	virtual_fido.SetLogOutput(os.Stdout)
-
 	go attachUSBIPServer(ctx)
 	virtual_fido.Start(client)
 }
 
 func attachUSBIPServer(ctx context.Context) {
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(250 * time.Millisecond)
 	if runtime.GOOS == "windows" {
 		attachUSBIPWindows()
 	} else if runtime.GOOS == "linux" {
