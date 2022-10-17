@@ -1,5 +1,7 @@
 
-Remove-Item .\output -Recurse -ErrorAction Continue
-Remove-Item .\frontend\build -Recurse -ErrorAction Continue
-Remove-Item -Path .\app\build\bin -Recurse -ErrorAction Continue
-Remove-Item -Path .\app\frontend_dist -Recurse -ErrorAction Continue
+$files = ".\output",".\frontend\build",".\app\build\bin",".\app\frontend_dist"
+foreach($file in $files) {
+    if (Test-Path $file) {
+        Remove-Item -Path $file -Recurse
+    }
+}
