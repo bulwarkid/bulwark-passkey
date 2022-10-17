@@ -13,7 +13,7 @@ func configDir() string {
 
 func vaultFilename() string {
 	configDir := configDir()
-	return filepath.Join(configDir, "vault.data")
+	return filepath.Join(configDir, "vault.json")
 }
 
 func saveVaultToFile(data []byte) {

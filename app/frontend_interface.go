@@ -25,6 +25,11 @@ func approveClientAction(ctx context.Context, action string, relyingParty string
 	return response[0].(bool)
 }
 
+func loadFrontendHandlers(app *App) {
+	registerHandler(app.ctx, "get_identities", handleIdentities(app))
+	registerHandler(app.ctx, "delete_identity", handleDeleteIdentity(app))
+}
+
 func demoIdentities() [][]byte {
 	websites := []string{"Apple", "Facebook", "Github", "Amazon", "Quip"}
 	names := []string{"Chris de la Iglesia", "Chris", "Bob", "Alice", "Terry"}
@@ -74,7 +79,7 @@ func credentialSourceToIdentity(source *virtual_fido.CredentialSource) *pb.Ident
 	}
 }
 
-func HandleIdentities(app *App) func(...interface{}) interface{} {
+func handleIdentities(app *App) func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		if DEBUG {
 			return demoIdentities()
@@ -91,7 +96,7 @@ func HandleIdentities(app *App) func(...interface{}) interface{} {
 	}
 }
 
-func HandleDeleteIdentity(app *App) func(...interface{}) interface{} {
+func handleDeleteIdentity(app *App) func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		id, err := base64.StdEncoding.DecodeString(data[0].(string))
 		checkErr(err, "Could not decode identity ID to delete")

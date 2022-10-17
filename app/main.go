@@ -12,7 +12,7 @@ import (
 var assets embed.FS
 
 func main() {
-	app := NewApp()
+	app := newApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
