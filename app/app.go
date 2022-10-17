@@ -9,14 +9,14 @@ import (
 
 type ClientHelper struct {
 	app    *App
-	client virtual_fido.Client
+	client *Client
 }
 
 func NewClientHelper() *ClientHelper {
 	return &ClientHelper{app: nil, client: nil}
 }
 
-func (helper *ClientHelper) fidoClient() virtual_fido.Client {
+func (helper *ClientHelper) fidoClient() *Client {
 	for helper.client == nil {
 		// Wait for client to be populated
 	}
@@ -39,13 +39,13 @@ func (helper *ClientHelper) Passphrase() string {
 
 func actionToString(action virtual_fido.ClientAction) string {
 	switch action {
-	case virtual_fido.CLIENT_ACTION_FIDO_GET_ASSERTION:
+	case virtual_fido.ClientActionFIDOGetAssertion:
 		return "fido_get_assertion"
-	case virtual_fido.CLIENT_ACTION_FIDO_MAKE_CREDENTIAL:
+	case virtual_fido.ClientActionFIDOMakeCredential:
 		return "fido_make_credential"
-	case virtual_fido.CLIENT_ACTION_U2F_AUTHENTICATE:
+	case virtual_fido.ClientActionU2FAuthenticate:
 		return "u2f_authenticate"
-	case virtual_fido.CLIENT_ACTION_U2F_REGISTER:
+	case virtual_fido.ClientActionU2FRegister:
 		return "u2f_register"
 	default:
 		panic("Unhandled action name!")

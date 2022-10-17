@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/elliptic"
 	"crypto/x509"
 	"encoding/base64"
@@ -10,7 +11,19 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+func getPassphrase(ctx context.Context) string {
+	passphrase := callRPC(ctx, "get_passphrase")
+	return passphrase[0].(string)
+}
 
+func updateData(ctx context.Context) {
+	callRPC(ctx, "update")
+}
+
+func approveClientAction(ctx context.Context, action string, relyingParty string, userName string) bool {
+	response := callRPC(ctx, "fido-approveClientAction", action, relyingParty, userName)
+	return response[0].(bool)
+}
 
 func demoIdentities() [][]byte {
 	websites := []string{"Apple", "Facebook", "Github", "Amazon", "Quip"}
@@ -66,10 +79,10 @@ func HandleIdentities(client *ClientHelper) func(...interface{}) interface{} {
 		if DEBUG {
 			return demoIdentities()
 		}
-		sources := client.fidoClient().Identities()
+		sources := client.fidoClient().identities()
 		protos := make([][]byte, 0)
 		for _, source := range sources {
-			identity := credentialSourceToIdentity(&source)
+			identity := credentialSourceToIdentity(source)
 			idBytes, err := proto.Marshal(identity)
 			checkErr(err, "Could not marshall protobuf identity")
 			protos = append(protos, idBytes)
@@ -82,6 +95,6 @@ func HandleDeleteIdentity(client *ClientHelper) func(...interface{}) interface{}
 	return func(data ...interface{}) interface{} {
 		id, err := base64.StdEncoding.DecodeString(data[0].(string))
 		checkErr(err, "Could not decode identity ID to delete")
-		return client.fidoClient().DeleteIdentity(id)
+		return client.fidoClient().deleteIdentity(id)
 	}
 }
