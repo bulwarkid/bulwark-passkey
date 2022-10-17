@@ -1,7 +1,6 @@
 import React from "react";
 import { ListItem, ListSection } from "../components/List";
-import { PassphraseModal } from "./modals/Passphrase";
-import * as modal from "./ModalContainer";
+import { showUpdatePassphrase } from "./modals/Passphrase";
 import { TitleBar } from "../components/TitleBar";
 
 export class Settings extends React.Component {
@@ -13,9 +12,7 @@ export class Settings extends React.Component {
                     <ListSection>
                         <ListItem
                             text="Passphrase"
-                            onClick={() => {
-                                modal.showModal(<PassphraseModal />);
-                            }}
+                            onClick={showUpdatePassphrase}
                         />
                         <ListItem text="Vault File" />
                         <ListItem text="About" />

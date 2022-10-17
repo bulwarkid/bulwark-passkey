@@ -1,5 +1,19 @@
 import React from "react";
 import { TitleBar } from "../../components/TitleBar";
+import { hideModal, showModal } from "../ModalContainer";
+
+export async function requestPassphraseFromUser(): Promise<string> {
+    return new Promise<string>((resolve) => {
+        showModal(
+            <UnlockModal
+                onUnlock={(passphrase) => {
+                    hideModal();
+                    resolve(passphrase);
+                }}
+            />
+        );
+    });
+}
 
 type UnlockModalProps = {
     onUnlock: (passphrase: string) => void;

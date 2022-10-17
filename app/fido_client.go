@@ -11,6 +11,7 @@ import (
 	"time"
 
 	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Client struct {
@@ -137,10 +138,36 @@ func (client *Client) identities() []*vfido.CredentialSource {
 	return client.vault.CredentialSources
 }
 
+func (client *Client) loadDataFromFile() {
+	runtime.LogPrintf(client.ctx, "Loading data...")
+	data := readVaultFromFile()
+	if data != nil {
+		runtime.LogPrintf(client.ctx, "Data loaded: %s", string(data))
+		if client.passphrase == nil {
+			client.requestPassphraseFromUser()
+		}
+		config, err := vfido.DecryptWithPassphrase(data, *client.passphrase)
+		checkErr(err, "Could not decrypt vault file")
+		runtime.LogPrintf(client.ctx, "Config: %#v", config)
+		cert, err := x509.ParseCertificate(config.AttestationCertificate)
+		checkErr(err, "Could not parse x509 cert")
+		privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
+		checkErr(err, "Could not parse private key")
+		client.authenticationCounter = config.AuthenticationCounter
+		client.certificateAuthority = cert
+		client.certPrivateKey = privateKey
+		client.encryptionKey = config.EncryptionKey
+		client.vault = vfido.NewIdentityVault()
+		client.vault.Import(config.Sources)
+		updateData(client.ctx)
+	} else {
+		runtime.LogPrintf(client.ctx, "No data found at %s", vaultFilename())
+	}
+}
+
 func (client *Client) save() {
 	if client.passphrase == nil {
-		passphrase := getPassphrase(client.ctx)
-		client.passphrase = &passphrase
+		client.requestPassphraseFromUser()
 	}
 	privateKey, err := x509.MarshalECPrivateKey(client.certPrivateKey)
 	checkErr(err, "Could not encode private key")
@@ -155,4 +182,14 @@ func (client *Client) save() {
 	checkErr(err, "Could not encode device state")
 	saveVaultToFile(stateBytes)
 	updateData(client.ctx)
+}
+
+func (client *Client) requestPassphraseFromUser() {
+	passphrase := requestPassphraseFromUser(client.ctx)
+	client.passphrase = &passphrase
+}
+
+func (client *Client) setPassphrase(passphrase string) {
+	client.passphrase = &passphrase
+	client.save()
 }

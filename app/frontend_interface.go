@@ -11,23 +11,25 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func getPassphrase(ctx context.Context) string {
-	passphrase := callRPC(ctx, "get_passphrase")
-	return passphrase[0].(string)
-}
-
 func updateData(ctx context.Context) {
 	callRPC(ctx, "update")
 }
 
 func approveClientAction(ctx context.Context, action string, relyingParty string, userName string) bool {
-	response := callRPC(ctx, "fido-approveClientAction", action, relyingParty, userName)
+	response := callRPC(ctx, "approveClientAction", action, relyingParty, userName)
 	return response[0].(bool)
 }
 
+func requestPassphraseFromUser(ctx context.Context) string {
+	response := callRPC(ctx, "requestPassphraseFromUser")
+	return response[0].(string)
+}
+
 func loadFrontendHandlers(app *App) {
-	registerHandler(app.ctx, "get_identities", handleIdentities(app))
-	registerHandler(app.ctx, "delete_identity", handleDeleteIdentity(app))
+	registerHandler(app.ctx, "getIdentities", handleIdentities(app))
+	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity(app))
+	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase(app))
+	registerHandler(app.ctx, "setPassphrase", handleSetPassphrase(app))
 }
 
 func demoIdentities() [][]byte {
@@ -101,5 +103,18 @@ func handleDeleteIdentity(app *App) func(...interface{}) interface{} {
 		id, err := base64.StdEncoding.DecodeString(data[0].(string))
 		checkErr(err, "Could not decode identity ID to delete")
 		return app.client.deleteIdentity(id)
+	}
+}
+
+func handleGetPassphrase(app *App) func(...interface{}) interface{} {
+	return func(data ...interface{}) interface{} {
+		return app.client.passphrase
+	}
+}
+
+func handleSetPassphrase(app *App) func(...interface{}) interface{} {
+	return func(data ...interface{}) interface{} {
+		app.client.setPassphrase(data[0].(string))
+		return nil
 	}
 }

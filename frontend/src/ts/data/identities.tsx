@@ -1,4 +1,4 @@
-import { callRPC, registerHandler } from "../core/event-rpc";
+import { callRPC } from "../core/rpc";
 import { base64ToBytes, bytesToBase64, setImmediate } from "../core/util";
 import { Identity } from "../../proto/data";
 import { LogDebug } from "../wailsjs/runtime/runtime";
@@ -32,7 +32,7 @@ export async function update() {
 }
 
 export async function getIdentities(): Promise<Identity[]> {
-    const protosRaw = (await callRPC("get_identities")) as string[];
+    const protosRaw = (await callRPC("getIdentities")) as string[];
     const identities = [];
     for (const protoRaw of protosRaw) {
         const protoBytes = base64ToBytes(protoRaw); // Wails events converts bytes to base64
@@ -45,9 +45,13 @@ export async function getIdentities(): Promise<Identity[]> {
 }
 
 export async function deleteIdentity(id: Uint8Array) {
-    return await callRPC("delete_identity", bytesToBase64(id));
+    return await callRPC("deleteIdentity", bytesToBase64(id));
 }
 
-registerHandler("update", async () => {
-    await update();
-});
+export async function getPassphrase(): Promise<string> {
+    return await callRPC("getPassphrase");
+}
+
+export async function setPassphrase(passphrase: string): Promise<void> {
+    return await callRPC("setPassphrase", passphrase);
+}

@@ -14,7 +14,6 @@ import (
 
 func startFIDOServer(ctx context.Context, client *Client) {
 	log_fd, _ := os.Create("test.log")
-	log_fd.Write([]byte{63})
 	defer log_fd.Close()
 	virtual_fido.SetLogOutput(log_fd)
 

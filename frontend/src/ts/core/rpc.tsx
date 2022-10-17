@@ -1,9 +1,4 @@
-import {
-    EventsEmit,
-    EventsOn,
-    EventsOnce,
-    LogDebug,
-} from "../wailsjs/runtime/runtime";
+import { EventsEmit, EventsOn, EventsOnce } from "../wailsjs/runtime/runtime";
 
 export function registerHandler(
     event: string,

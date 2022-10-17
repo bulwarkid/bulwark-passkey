@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"log"
+	"os"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
@@ -13,9 +15,12 @@ var assets embed.FS
 
 func main() {
 	app := newApp()
+	logFile, err := os.OpenFile("log.txt", os.O_CREATE|os.O_TRUNC, 0755)
+	defer logFile.Close()
+	consoleLogger := &ConsoleLogger{log: log.New(logFile, "", 0)}
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:              "Bulwark Passkey",
 		Width:              400,
 		Height:             650,
@@ -25,7 +30,8 @@ func main() {
 		OnStartup:          app.startup,
 		OnDomReady:         app.onDomReady,
 		LogLevel:           logger.DEBUG,
-		LogLevelProduction: logger.ERROR,
+		LogLevelProduction: logger.DEBUG,
+		Logger:             consoleLogger,
 	})
 
 	if err != nil {
