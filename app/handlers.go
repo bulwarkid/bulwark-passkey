@@ -74,12 +74,12 @@ func credentialSourceToIdentity(source *virtual_fido.CredentialSource) *pb.Ident
 	}
 }
 
-func HandleIdentities(client *ClientHelper) func(...interface{}) interface{} {
+func HandleIdentities(app *App) func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		if DEBUG {
 			return demoIdentities()
 		}
-		sources := client.fidoClient().identities()
+		sources := app.client.identities()
 		protos := make([][]byte, 0)
 		for _, source := range sources {
 			identity := credentialSourceToIdentity(source)
@@ -91,10 +91,10 @@ func HandleIdentities(client *ClientHelper) func(...interface{}) interface{} {
 	}
 }
 
-func HandleDeleteIdentity(client *ClientHelper) func(...interface{}) interface{} {
+func HandleDeleteIdentity(app *App) func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		id, err := base64.StdEncoding.DecodeString(data[0].(string))
 		checkErr(err, "Could not decode identity ID to delete")
-		return client.fidoClient().deleteIdentity(id)
+		return app.client.deleteIdentity(id)
 	}
 }

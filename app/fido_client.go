@@ -23,7 +23,7 @@ type Client struct {
 	authenticationCounter uint32
 }
 
-func newClient(helper *ClientHelper) *Client {
+func newClient(ctx context.Context) *Client {
 	authority := &x509.Certificate{
 		SerialNumber: big.NewInt(0),
 		Subject: pkix.Name{
@@ -46,7 +46,7 @@ func newClient(helper *ClientHelper) *Client {
 	encryptionKey := randomBytes(32)
 	vault := vfido.NewIdentityVault()
 	return &Client{
-		ctx:                   helper.app.ctx,
+		ctx:                   ctx,
 		passphrase:            nil,
 		encryptionKey:         encryptionKey[:],
 		certificateAuthority:  certificateAuthority,

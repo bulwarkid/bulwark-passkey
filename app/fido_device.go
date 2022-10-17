@@ -12,17 +12,14 @@ import (
 	wails_runtime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func startFIDOServer(ctx context.Context, helper *ClientHelper) {
-
+func startFIDOServer(ctx context.Context, client *Client) {
 	log_fd, _ := os.Create("test.log")
 	log_fd.Write([]byte{63})
 	defer log_fd.Close()
 	virtual_fido.SetLogOutput(log_fd)
 
-	helper.client = newClient(helper)
-
 	go attachUSBIPServer(ctx)
-	virtual_fido.Start(helper.client)
+	virtual_fido.Start(client)
 }
 
 func attachUSBIPServer(ctx context.Context) {
