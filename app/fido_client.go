@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -11,11 +10,9 @@ import (
 	"time"
 
 	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Client struct {
-	ctx                   context.Context
 	passphrase            *string
 	vault                 *vfido.IdentityVault
 	certificateAuthority  *x509.Certificate
@@ -24,7 +21,7 @@ type Client struct {
 	authenticationCounter uint32
 }
 
-func newClient(ctx context.Context) *Client {
+func newClient() *Client {
 	authority := &x509.Certificate{
 		SerialNumber: big.NewInt(0),
 		Subject: pkix.Name{
@@ -47,7 +44,6 @@ func newClient(ctx context.Context) *Client {
 	encryptionKey := randomBytes(32)
 	vault := vfido.NewIdentityVault()
 	return &Client{
-		ctx:                   ctx,
 		passphrase:            nil,
 		encryptionKey:         encryptionKey[:],
 		certificateAuthority:  certificateAuthority,
@@ -111,19 +107,19 @@ func (client *Client) CreateAttestationCertificiate(privateKey *ecdsa.PrivateKey
 }
 
 func (client *Client) ApproveAccountCreation(relyingParty string) bool {
-	return approveClientAction(client.ctx, "fido_make_credential", relyingParty, "")
+	return approveClientAction("fido_make_credential", relyingParty, "")
 }
 
 func (client *Client) ApproveAccountLogin(credentialSource *vfido.CredentialSource) bool {
-	return approveClientAction(client.ctx, "fido_get_assertion", credentialSource.RelyingParty.Name, credentialSource.User.DisplayName)
+	return approveClientAction("fido_get_assertion", credentialSource.RelyingParty.Name, credentialSource.User.DisplayName)
 }
 
 func (client *Client) ApproveU2FRegistration(keyHandle *vfido.KeyHandle) bool {
-	return approveClientAction(client.ctx, "u2f_register", "", "")
+	return approveClientAction("u2f_register", "", "")
 }
 
 func (client *Client) ApproveU2FAuthentication(keyHandle *vfido.KeyHandle) bool {
-	return approveClientAction(client.ctx, "u2f_authenticate", "", "")
+	return approveClientAction("u2f_authenticate", "", "")
 }
 
 func (client *Client) deleteIdentity(id []byte) bool {
@@ -139,16 +135,13 @@ func (client *Client) identities() []*vfido.CredentialSource {
 }
 
 func (client *Client) loadDataFromFile() {
-	runtime.LogPrintf(client.ctx, "Loading data...")
 	data := readVaultFromFile()
 	if data != nil {
-		runtime.LogPrintf(client.ctx, "Data loaded: %s", string(data))
 		if client.passphrase == nil {
 			client.requestPassphraseFromUser()
 		}
 		config, err := vfido.DecryptWithPassphrase(data, *client.passphrase)
 		checkErr(err, "Could not decrypt vault file")
-		runtime.LogPrintf(client.ctx, "Config: %#v", config)
 		cert, err := x509.ParseCertificate(config.AttestationCertificate)
 		checkErr(err, "Could not parse x509 cert")
 		privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
@@ -159,9 +152,9 @@ func (client *Client) loadDataFromFile() {
 		client.encryptionKey = config.EncryptionKey
 		client.vault = vfido.NewIdentityVault()
 		client.vault.Import(config.Sources)
-		updateData(client.ctx)
+		updateData()
 	} else {
-		runtime.LogPrintf(client.ctx, "No data found at %s", vaultFilename())
+		debugf("No vault file found at %s", vaultFilename())
 	}
 }
 
@@ -181,11 +174,11 @@ func (client *Client) save() {
 	stateBytes, err := vfido.EncryptWithPassphrase(config, *client.passphrase)
 	checkErr(err, "Could not encode device state")
 	saveVaultToFile(stateBytes)
-	updateData(client.ctx)
+	updateData()
 }
 
 func (client *Client) requestPassphraseFromUser() {
-	passphrase := requestPassphraseFromUser(client.ctx)
+	passphrase := requestPassphraseFromUser()
 	client.passphrase = &passphrase
 }
 

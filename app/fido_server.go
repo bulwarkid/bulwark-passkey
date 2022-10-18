@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -9,26 +8,25 @@ import (
 	"time"
 
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
-	wails_runtime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func startFIDOServer(ctx context.Context, client *Client) {
+func startFIDOServer(client *Client) {
 	log_fd, _ := os.Create("test.log")
 	defer log_fd.Close()
 	virtual_fido.SetLogOutput(log_fd)
 
-	go attachUSBIPServer(ctx)
+	go attachUSBIPServer()
 	virtual_fido.Start(client)
 }
 
-func attachUSBIPServer(ctx context.Context) {
+func attachUSBIPServer() {
 	time.Sleep(250 * time.Millisecond)
 	if runtime.GOOS == "windows" {
 		attachUSBIPWindows()
 	} else if runtime.GOOS == "linux" {
 		attachUSBIPLinux()
 	} else {
-		wails_runtime.LogErrorf(ctx, "Could not find USBIP command for OS %s\n", runtime.GOOS)
+		debugf("Could not find USBIP command for OS %s\n", runtime.GOOS)
 		return
 	}
 }

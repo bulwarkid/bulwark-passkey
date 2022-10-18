@@ -14,10 +14,10 @@ import (
 var assets embed.FS
 
 func main() {
-	app := newApp()
+	app = newApp()
 	logFile, err := os.OpenFile("log.txt", os.O_CREATE|os.O_TRUNC, 0755)
 	defer logFile.Close()
-	consoleLogger := &ConsoleLogger{log: log.New(logFile, "", 0)}
+	consoleLogger := &Logger{log: log.New(logFile, "", 0)}
 
 	// Create application with options
 	err = wails.Run(&options.App{

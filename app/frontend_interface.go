@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"crypto/elliptic"
 	"crypto/x509"
 	"encoding/base64"
@@ -11,25 +10,25 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func updateData(ctx context.Context) {
-	callRPC(ctx, "update")
+func updateData() {
+	callRPC(app.ctx, "update")
 }
 
-func approveClientAction(ctx context.Context, action string, relyingParty string, userName string) bool {
-	response := callRPC(ctx, "approveClientAction", action, relyingParty, userName)
+func approveClientAction(action string, relyingParty string, userName string) bool {
+	response := callRPC(app.ctx, "approveClientAction", action, relyingParty, userName)
 	return response[0].(bool)
 }
 
-func requestPassphraseFromUser(ctx context.Context) string {
-	response := callRPC(ctx, "requestPassphraseFromUser")
+func requestPassphraseFromUser() string {
+	response := callRPC(app.ctx, "requestPassphraseFromUser")
 	return response[0].(string)
 }
 
-func loadFrontendHandlers(app *App) {
-	registerHandler(app.ctx, "getIdentities", handleIdentities(app))
-	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity(app))
-	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase(app))
-	registerHandler(app.ctx, "setPassphrase", handleSetPassphrase(app))
+func loadFrontendHandlers() {
+	registerHandler(app.ctx, "getIdentities", handleIdentities())
+	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity())
+	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase())
+	registerHandler(app.ctx, "setPassphrase", handleSetPassphrase())
 }
 
 func demoIdentities() [][]byte {
@@ -81,7 +80,7 @@ func credentialSourceToIdentity(source *virtual_fido.CredentialSource) *pb.Ident
 	}
 }
 
-func handleIdentities(app *App) func(...interface{}) interface{} {
+func handleIdentities() func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		if DEBUG {
 			return demoIdentities()
@@ -98,7 +97,7 @@ func handleIdentities(app *App) func(...interface{}) interface{} {
 	}
 }
 
-func handleDeleteIdentity(app *App) func(...interface{}) interface{} {
+func handleDeleteIdentity() func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		id, err := base64.StdEncoding.DecodeString(data[0].(string))
 		checkErr(err, "Could not decode identity ID to delete")
@@ -106,13 +105,13 @@ func handleDeleteIdentity(app *App) func(...interface{}) interface{} {
 	}
 }
 
-func handleGetPassphrase(app *App) func(...interface{}) interface{} {
+func handleGetPassphrase() func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		return app.client.passphrase
 	}
 }
 
-func handleSetPassphrase(app *App) func(...interface{}) interface{} {
+func handleSetPassphrase() func(...interface{}) interface{} {
 	return func(data ...interface{}) interface{} {
 		app.client.setPassphrase(data[0].(string))
 		return nil
