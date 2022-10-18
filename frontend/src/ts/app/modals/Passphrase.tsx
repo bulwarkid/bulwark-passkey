@@ -148,6 +148,7 @@ class PassphraseModal extends React.Component<
         this.setState({ errorMessage: undefined });
         if (this.props.passphraseUpdated) {
             this.props.passphraseUpdated(passphrase1!);
+            modal.hideModal();
         }
     };
 

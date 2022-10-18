@@ -2,7 +2,12 @@
     "name": "Bulwark Passkey",
     "outputfilename": "bulwark_passkey",
     "author": {
-        "name": "Chris de la Iglesia",
-        "email": "chris@cmdli.dev"
+        "name": "BulwarkID",
+        "email": "corp@bulwark.id"
+    },
+    "info": {
+        "companyName": "BulwarkID",
+        "productName": "Bulwark Passkey",
+        "comments": "Manage and Sync Passkeys Across your Devices"
     }
 }
