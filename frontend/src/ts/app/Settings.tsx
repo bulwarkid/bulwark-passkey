@@ -14,7 +14,6 @@ export class Settings extends React.Component {
                             text="Passphrase"
                             onClick={showUpdatePassphrase}
                         />
-                        <ListItem text="Vault File" />
                         <ListItem text="About" />
                     </ListSection>
                 </div>

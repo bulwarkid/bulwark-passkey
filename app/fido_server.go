@@ -11,7 +11,7 @@ import (
 )
 
 func startFIDOServer(client *Client) {
-	log_fd, _ := os.Create("test.log")
+	log_fd, _ := os.Create("device.log")
 	defer log_fd.Close()
 	virtual_fido.SetLogOutput(log_fd)
 

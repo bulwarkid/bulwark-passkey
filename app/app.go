@@ -22,6 +22,6 @@ func (app *App) startup(ctx context.Context) {
 }
 
 func (app *App) onDomReady(ctx context.Context) {
-	go app.client.loadDataFromFile()
+	go app.client.initializeData()
 	go startFIDOServer(app.client)
 }

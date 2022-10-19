@@ -22,34 +22,8 @@ type Client struct {
 }
 
 func newClient() *Client {
-	authority := &x509.Certificate{
-		SerialNumber: big.NewInt(0),
-		Subject: pkix.Name{
-			Organization: []string{"Bulwark Passkey"},
-			Country:      []string{"US"},
-		},
-		NotBefore:             time.Now(),
-		NotAfter:              time.Now().AddDate(10, 0, 0),
-		IsCA:                  true,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
-		BasicConstraintsValid: true,
-	}
-	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	checkErr(err, "Could not generate attestation CA private key")
-	authorityCertBytes, err := x509.CreateCertificate(rand.Reader, authority, authority, &privateKey.PublicKey, privateKey)
-	checkErr(err, "Could not generate attestation CA cert bytes")
-	certificateAuthority, err := x509.ParseCertificate(authorityCertBytes)
-	checkErr(err, "Could not parse cert authority")
-	encryptionKey := randomBytes(32)
-	vault := vfido.NewIdentityVault()
 	return &Client{
-		passphrase:            nil,
-		encryptionKey:         encryptionKey[:],
-		certificateAuthority:  certificateAuthority,
-		vault:                 vault,
-		certPrivateKey:        privateKey,
-		authenticationCounter: 0,
+		vault: vfido.NewIdentityVault(),
 	}
 }
 
@@ -134,7 +108,42 @@ func (client *Client) identities() []*vfido.CredentialSource {
 	return client.vault.CredentialSources
 }
 
-func (client *Client) loadDataFromFile() {
+func (client *Client) initializeData() {
+	if !client.loadDataFromFile() {
+		client.configureNewDevice()
+	}
+	updateData()
+}
+
+func (client *Client) configureNewDevice() {
+	authority := &x509.Certificate{
+		SerialNumber: big.NewInt(0),
+		Subject: pkix.Name{
+			Organization: []string{"Bulwark Passkey"},
+			Country:      []string{"US"},
+		},
+		NotBefore:             time.Now(),
+		NotAfter:              time.Now().AddDate(10, 0, 0),
+		IsCA:                  true,
+		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
+		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
+		BasicConstraintsValid: true,
+	}
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	checkErr(err, "Could not generate attestation CA private key")
+	authorityCertBytes, err := x509.CreateCertificate(rand.Reader, authority, authority, &privateKey.PublicKey, privateKey)
+	checkErr(err, "Could not generate attestation CA cert bytes")
+	certificateAuthority, err := x509.ParseCertificate(authorityCertBytes)
+	checkErr(err, "Could not parse cert authority")
+	encryptionKey := randomBytes(32)
+	client.authenticationCounter = 0
+	client.certificateAuthority = certificateAuthority
+	client.certPrivateKey = privateKey
+	client.encryptionKey = encryptionKey
+	client.vault = vfido.NewIdentityVault()
+}
+
+func (client *Client) loadDataFromFile() bool {
 	data := readVaultFromFile()
 	if data != nil {
 		if client.passphrase == nil {
@@ -152,9 +161,10 @@ func (client *Client) loadDataFromFile() {
 		client.encryptionKey = config.EncryptionKey
 		client.vault = vfido.NewIdentityVault()
 		client.vault.Import(config.Sources)
-		updateData()
+		return true
 	} else {
 		debugf("No vault file found at %s", vaultFilename())
+		return false
 	}
 }
 
