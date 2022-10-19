@@ -34,6 +34,8 @@ Unicode true
 ####
 !include "wails_tools.nsh"
 
+!include "bulwark_tools.nsh"
+
 # The version information for this two must consist of 4 parts
 VIProductVersion "${INFO_PRODUCTVERSION}.0"
 VIFileVersion    "${INFO_PRODUCTVERSION}.0"
@@ -87,6 +89,8 @@ Section
     CreateShortCut "$DESKTOP\${INFO_PRODUCTNAME}.lnk" "$INSTDIR\${PRODUCT_EXECUTABLE}"
 
     !insertmacro wails.writeUninstaller
+
+    !insertmacro bulwark.usbip
 SectionEnd
 
 Section "uninstall" 
