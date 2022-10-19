@@ -15,7 +15,7 @@ var assets embed.FS
 
 func main() {
 	app = newApp()
-	logFile, err := os.OpenFile("log.txt", os.O_CREATE|os.O_TRUNC, 0755)
+	logFile, err := os.OpenFile("main.log", os.O_CREATE|os.O_TRUNC, 0755)
 	defer logFile.Close()
 	consoleLogger := &Logger{log: log.New(logFile, "", 0)}
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -10,28 +11,39 @@ func debugf(format string, args ...interface{}) {
 	runtime.LogDebugf(app.ctx, format, args)
 }
 
+func fatalf(format string, args ...interface{}) {
+	runtime.LogFatalf(app.ctx, format, args)
+}
+
 type Logger struct {
 	log *log.Logger
 }
 
+func (logger *Logger) printInternal(format string, args ...interface{}) {
+	fmt.Println(fmt.Sprintf(format, args...))
+	logger.log.Printf(format, args...)
+}
+
 func (logger *Logger) Print(message string) {
-	logger.log.Printf("[PRINT] %s", message)
+	logger.printInternal("[PRINT] %s", message)
 }
 func (logger *Logger) Trace(message string) {
-	logger.log.Printf("[TRACE] %s", message)
+	logger.printInternal("[TRACE] %s", message)
 }
 func (logger *Logger) Debug(message string) {
-	logger.log.Printf("[DEBUG] %s", message)
+	logger.printInternal("[DEBUG] %s", message)
 }
 func (logger *Logger) Info(message string) {
-	logger.log.Printf("[INFO] %s", message)
+	logger.printInternal("[INFO] %s", message)
 }
 func (logger *Logger) Warning(message string) {
-	logger.log.Printf("[WARN] %s", message)
+	logger.printInternal("[WARN] %s", message)
 }
 func (logger *Logger) Error(message string) {
-	logger.log.Printf("[ERROR] %s", message)
+	logger.printInternal("[ERROR] %s", message)
 }
 func (logger *Logger) Fatal(message string) {
-	logger.log.Fatalf("[FATAL] %s", message)
+	errorMsg := fmt.Sprintf("[FATAL %s", message)
+	fmt.Println(errorMsg)
+	logger.log.Fatalf(errorMsg)
 }

@@ -15,6 +15,7 @@ func randomBytes(length int) []byte {
 
 func checkErr(err error, msg string) {
 	if err != nil {
-		panic(fmt.Sprintf("Error - %v - %s", err, msg))
+		errorMsg := fmt.Sprintf("Error - %v - %s", err, msg)
+		fatalf(errorMsg)
 	}
 }
