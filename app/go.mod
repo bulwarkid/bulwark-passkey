@@ -3,7 +3,7 @@ module github.com/bulwarkid/bulwark-passkey/app
 go 1.18
 
 require (
-	github.com/bulwarkid/virtual-fido v0.0.0-20221017194540-48aa3f4268e4
+	github.com/bulwarkid/virtual-fido v0.0.0-20221019224725-04b3e82fbbea
 	github.com/wailsapp/wails/v2 v2.0.0
 	google.golang.org/protobuf v1.28.1
 )

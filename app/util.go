@@ -7,6 +7,12 @@ import (
 
 const DEBUG = false
 
+func assert(test bool, message string) {
+	if !test {
+		fatalf("Assertion Failure: %s", message)
+	}
+}
+
 func randomBytes(length int) []byte {
 	bytes := make([]byte, length)
 	rand.Read(bytes)

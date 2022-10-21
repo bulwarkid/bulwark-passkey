@@ -29,6 +29,7 @@ func loadFrontendHandlers() {
 	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity())
 	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase())
 	registerHandler(app.ctx, "setPassphrase", handleSetPassphrase())
+	registerHandler(app.ctx, "tryPassphrase", handleTryPassphrase)
 }
 
 func demoIdentities() [][]byte {
@@ -116,4 +117,9 @@ func handleSetPassphrase() func(...interface{}) interface{} {
 		app.client.setPassphrase(data[0].(string))
 		return nil
 	}
+}
+
+
+func handleTryPassphrase(data ...interface{}) interface{} {
+	return app.client.tryPassphrase(data[0].(string))
 }

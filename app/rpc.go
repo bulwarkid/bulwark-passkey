@@ -18,10 +18,10 @@ func callRPC(ctx context.Context, name string, data ...interface{}) []interface{
 	return response
 }
 
-func registerHandler(ctx context.Context, name string, handler func(... interface{})interface{}) {
-	runtime.EventsOn(ctx, name + "-request", func(optionalData ...interface{}) {
+func registerHandler(ctx context.Context, name string, handler func(...interface{}) interface{}) {
+	runtime.EventsOn(ctx, name+"-request", func(optionalData ...interface{}) {
 		response := handler(optionalData...)
 		runtime.LogDebugf(ctx, "JS -> GO: %s(%v) -> %v\n", name, optionalData, response)
-		runtime.EventsEmit(ctx, name + "-response", response)
+		runtime.EventsEmit(ctx, name+"-response", response)
 	})
 }

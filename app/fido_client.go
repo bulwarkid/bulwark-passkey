@@ -196,3 +196,12 @@ func (client *Client) setPassphrase(passphrase string) {
 	client.passphrase = &passphrase
 	client.save()
 }
+
+func (client *Client) tryPassphrase(passphrase string) bool {
+	data := readVaultFromFile()
+	if data == nil {
+		return true
+	}
+	_, err := vfido.DecryptWithPassphrase(data, passphrase)
+	return err == nil
+}

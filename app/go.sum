@@ -1,7 +1,7 @@
 github.com/bep/debounce v1.2.1 h1:v67fRdBA9UQu2NhLFXrSg0Brw7CexQekrBwDMM8bzeY=
 github.com/bep/debounce v1.2.1/go.mod h1:H8yggRPQKLUhUoqrJC1bO2xNya7vanpDl7xR3ISbCJ0=
-github.com/bulwarkid/virtual-fido v0.0.0-20221017194540-48aa3f4268e4 h1:TVfRJzGSozXqP0Grz/lYv/SP+HjuNiZTvEsi+avfVbQ=
-github.com/bulwarkid/virtual-fido v0.0.0-20221017194540-48aa3f4268e4/go.mod h1:pNHOgvE3SmxJXBWOj13uKDDhSSfQAm/YavqWyxB1YJ4=
+github.com/bulwarkid/virtual-fido v0.0.0-20221019224725-04b3e82fbbea h1:Qx82Iix6yxcG4Sd/L/mvmAW2x+xE9RU1sit5wWX1jmw=
+github.com/bulwarkid/virtual-fido v0.0.0-20221019224725-04b3e82fbbea/go.mod h1:pNHOgvE3SmxJXBWOj13uKDDhSSfQAm/YavqWyxB1YJ4=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
