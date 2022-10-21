@@ -2,9 +2,10 @@
     transition-property: top;
     transition-duration: 0.2s;
     transition-timing-function: ease-out;
+    transition-delay: 0s;
 }
 .modal.modal-active {
-    top: 0vh;
+    top: 0;
 }
 
 .modal.modal-inactive {

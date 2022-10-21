@@ -2,7 +2,7 @@ import React from "react";
 import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
 import { IdentityList } from "./IdentityList";
-import { ModalContainer, setModalContainer } from "./ModalContainer";
+import { ModalStack, setModalContainer } from "./ModalContainer";
 import { Settings } from "./Settings";
 import { TabBar } from "./TabBar";
 
@@ -35,7 +35,7 @@ type AppState = {
 };
 
 export class App extends React.Component<{}, AppState> {
-    private modalRef_ = React.createRef<ModalContainer>();
+    private modalRef_ = React.createRef<ModalStack>();
     private tabs_: Tab[];
     constructor(props: {}) {
         super(props);
@@ -56,7 +56,7 @@ export class App extends React.Component<{}, AppState> {
             page = <IdentityList />;
         }
         return (
-            <div className="relative overflow-hidden w-screen h-screen">
+            <div className="w-screen h-screen">
                 <div className="w-screen h-screen flex flex-col bg-gray-300">
                     <div className="grow overflow-y-scroll">{page}</div>
                     <div>
@@ -69,7 +69,7 @@ export class App extends React.Component<{}, AppState> {
                         }
                     </div>
                 </div>
-                <ModalContainer ref={this.modalRef_} />
+                <ModalStack ref={this.modalRef_} />
             </div>
         );
     }
