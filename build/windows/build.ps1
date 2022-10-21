@@ -16,5 +16,5 @@ if (-not $?) {
 Pop-Location
 
 New-Item .\output -ItemType Directory
-Copy-Item ".\app\build\bin\" -Destination .\output -Recurse
+Copy-Item ".\app\build\bin\*" -Destination .\output -Recurse
 Copy-Item ".\external\usbip" -Destination .\output -Recurse
