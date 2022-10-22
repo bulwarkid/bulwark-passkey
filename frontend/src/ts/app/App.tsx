@@ -2,7 +2,7 @@ import React from "react";
 import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
 import { IdentityList } from "./IdentityList";
-import { ModalStack, setModalContainer } from "./ModalContainer";
+import { ModalStack, setModalContainer } from "./ModalStack";
 import { Settings } from "./Settings";
 import { TabBar } from "./TabBar";
 

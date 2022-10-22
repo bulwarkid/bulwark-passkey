@@ -2,7 +2,7 @@ import React from "react";
 import { Identity } from "../../proto/data";
 import * as identities from "../data/identities";
 import { InfoIcon } from "../icons/info";
-import { showModal } from "./ModalContainer";
+import { showModal } from "./ModalStack";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
 import { UnlockModal } from "./modals/Unlock";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
-import { hideModal, showModal } from "../ModalContainer";
+import { hideModal, showModal } from "../ModalStack";
 
 async function tryPassphrase(passphrase: string): Promise<boolean> {
     return await callRPC("tryPassphrase", passphrase);

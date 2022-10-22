@@ -1,7 +1,7 @@
 import React from "react";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { getPassphrase, setPassphrase } from "../../data/identities";
-import * as modal from "../ModalContainer";
+import * as modal from "../ModalStack";
 
 export async function showUpdatePassphrase() {
     const oldPassphrase = await getPassphrase();

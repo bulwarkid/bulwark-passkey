@@ -4,7 +4,7 @@ import { TitleBar } from "../../components/TitleBar";
 import { bytesToBase64 } from "../../core/util";
 import { Identity } from "../../../proto/data";
 import { XIcon } from "../../icons/x";
-import { hideModal } from "../ModalContainer";
+import { hideModal } from "../ModalStack";
 import * as identities from "../../data/identities";
 
 type IdentityInfoModalProps = {

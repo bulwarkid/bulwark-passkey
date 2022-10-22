@@ -1,7 +1,7 @@
 import { registerHandler } from "../core/rpc";
 import * as identities from "../data/identities";
 import { LogDebug } from "../wailsjs/runtime/runtime";
-import { hideModal, showModal } from "./ModalContainer";
+import { hideModal, showModal } from "./ModalStack";
 import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
 import { requestPassphraseFromUser } from "./modals/Unlock";
 
