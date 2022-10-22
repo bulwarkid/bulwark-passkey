@@ -1,19 +1,25 @@
 import React from "react";
 import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
+import { LogDebug } from "../../wailsjs/runtime/runtime";
 import { hideModal, showModal } from "../ModalStack";
+import { NewVaultModal } from "./NewVault";
 
 async function tryPassphrase(passphrase: string): Promise<boolean> {
     return await callRPC("tryPassphrase", passphrase);
 }
 
-export async function requestPassphraseFromUser(): Promise<string> {
-    return new Promise<string>((resolve) => {
+export async function requestExistingPassphrase(): Promise<[string, string]> {
+    return new Promise<[string, string]>((resolve) => {
         showModal(
             <UnlockModal
-                onSubmit={(passphrase) => {
+                onUnlock={(passphrase) => {
                     hideModal();
-                    resolve(passphrase);
+                    resolve([passphrase, ""]);
+                }}
+                onClearVault={(newPasphrase) => {
+                    hideModal();
+                    resolve(["", newPasphrase]);
                 }}
             />
         );
@@ -21,7 +27,8 @@ export async function requestPassphraseFromUser(): Promise<string> {
 }
 
 type UnlockModalProps = {
-    onSubmit: (passphrase: string) => void;
+    onUnlock: (passphrase: string) => void;
+    onClearVault: (newPassphrase: string) => void;
 };
 
 type UnlockModalState = {
@@ -63,11 +70,14 @@ export class UnlockModal extends React.Component<
                         onKeyUp={this.onKeyUp_}
                         type="password"
                         placeholder="Passphrase"
-                        className="daisy-input w-full max-w-xs mx-4"
+                        className="daisy-input daisy-input-bordered w-full max-w-xs mx-4"
                     />
                     <div className="daisy-btn mt-2" onClick={this.onSubmit_}>
                         Unlock
                     </div>
+                </div>
+                <div className="flex justify-center items-center">
+                    <div onClick={this.onDeleteVault_} className="daisy-btn daisy-btn-ghost daisy-btn-sm my-4 text-base-400">Delete Existing Vault</div>
                 </div>
             </div>
         );
@@ -85,7 +95,21 @@ export class UnlockModal extends React.Component<
         if (!success) {
             this.setState({ error: true });
         } else {
-            this.props.onSubmit(passphrase);
+            this.props.onUnlock(passphrase);
         }
+    };
+
+    onDeleteVault_ = () => {
+        showModal(
+            <NewVaultModal
+                onSubmit={(passphrase: string) => {
+                    hideModal();
+                    this.props.onClearVault(passphrase);
+                }}
+                onCancel={() => {
+                    hideModal();
+                }}
+            />
+        );
     };
 }

@@ -52,6 +52,30 @@ export async function getPassphrase(): Promise<string> {
     return await callRPC("getPassphrase");
 }
 
-export async function setPassphrase(passphrase: string): Promise<void> {
-    return await callRPC("setPassphrase", passphrase);
+export async function changePassphrase(passphrase: string): Promise<void> {
+    return await callRPC("changePassphrase", passphrase);
+}
+
+export function validatePassphrases(
+    passphrase1?: string,
+    passphrase2?: string,
+    oldPassphrase?: string
+): string | undefined {
+    if (passphrase1 === undefined || passphrase1 === "") {
+        // Invalid passphrase
+        return "No new passphrase specified.";
+    }
+    if (passphrase1 !== passphrase2) {
+        // Passphrases do not match
+        return "Passphrases do not match.";
+    }
+    if (passphrase1 === oldPassphrase) {
+        // Passphrase did not change
+        return "Passphrase cannot be the same as the old passphrase.";
+    }
+    if (passphrase1!.length < 8) {
+        // Passphrase is not long enough
+        return "Passphrase must be at least 8 characters long.";
+    }
+    return undefined;
 }

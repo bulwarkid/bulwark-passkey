@@ -16,8 +16,8 @@ root.render(
 );
 
 setTimeout(() => {
-    // HACK: Sometimes, when immediately showing a modal, the entire windows 
+    // HACK: Sometimes, when immediately showing a modal, the entire windows
     // scrolls down. Set scroll back to the top 100ms after startup for this
     // occurance.
-    window.scroll(0,0);
-},100);
+    window.scroll(0, 0);
+}, 100);

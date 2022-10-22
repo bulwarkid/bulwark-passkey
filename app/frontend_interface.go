@@ -16,19 +16,26 @@ func updateData() {
 
 func approveClientAction(action string, relyingParty string, userName string) bool {
 	response := callRPC(app.ctx, "approveClientAction", action, relyingParty, userName)
-	return response[0].(bool)
+	return response.(bool)
 }
 
-func requestPassphraseFromUser() string {
-	response := callRPC(app.ctx, "requestPassphraseFromUser")
-	return response[0].(string)
+func requestExistingPassphrase() (string, string) {
+	// First return value is the current passphrase, second value is a potential new passphrase
+	// If a new passphrase is returned, create a new vault with it and delete the old one
+	response := callRPC(app.ctx, "requestExistingPassphrase").([]interface{})
+	return response[0].(string), response[1].(string)
+}
+
+func requestNewPassphrase() string {
+	response := callRPC(app.ctx, "requestNewPassphrase")
+	return response.(string)
 }
 
 func loadFrontendHandlers() {
-	registerHandler(app.ctx, "getIdentities", handleIdentities())
-	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity())
-	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase())
-	registerHandler(app.ctx, "setPassphrase", handleSetPassphrase())
+	registerHandler(app.ctx, "getIdentities", handleIdentities)
+	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity)
+	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase)
+	registerHandler(app.ctx, "changePassphrase", handleChangePassphrase)
 	registerHandler(app.ctx, "tryPassphrase", handleTryPassphrase)
 }
 
@@ -81,44 +88,38 @@ func credentialSourceToIdentity(source *virtual_fido.CredentialSource) *pb.Ident
 	}
 }
 
-func handleIdentities() func(...interface{}) interface{} {
-	return func(data ...interface{}) interface{} {
-		if DEBUG {
-			return demoIdentities()
-		}
-		sources := app.client.identities()
-		protos := make([][]byte, 0)
-		for _, source := range sources {
-			identity := credentialSourceToIdentity(source)
-			idBytes, err := proto.Marshal(identity)
-			checkErr(err, "Could not marshall protobuf identity")
-			protos = append(protos, idBytes)
-		}
-		return protos
+func handleIdentities(data ...interface{}) interface{} {
+	if DEBUG {
+		return demoIdentities()
 	}
+	if app.client == nil {
+		return [][]byte{}
+	}
+	sources := app.client.identities()
+	protos := make([][]byte, 0)
+	for _, source := range sources {
+		identity := credentialSourceToIdentity(source)
+		idBytes, err := proto.Marshal(identity)
+		checkErr(err, "Could not marshall protobuf identity")
+		protos = append(protos, idBytes)
+	}
+	return protos
 }
 
-func handleDeleteIdentity() func(...interface{}) interface{} {
-	return func(data ...interface{}) interface{} {
-		id, err := base64.StdEncoding.DecodeString(data[0].(string))
-		checkErr(err, "Could not decode identity ID to delete")
-		return app.client.deleteIdentity(id)
-	}
+func handleDeleteIdentity(data ...interface{}) interface{} {
+	id, err := base64.StdEncoding.DecodeString(data[0].(string))
+	checkErr(err, "Could not decode identity ID to delete")
+	return app.client.deleteIdentity(id)
 }
 
-func handleGetPassphrase() func(...interface{}) interface{} {
-	return func(data ...interface{}) interface{} {
-		return app.client.passphrase
-	}
+func handleGetPassphrase(data ...interface{}) interface{} {
+	return app.client.passphrase
 }
 
-func handleSetPassphrase() func(...interface{}) interface{} {
-	return func(data ...interface{}) interface{} {
-		app.client.setPassphrase(data[0].(string))
-		return nil
-	}
+func handleChangePassphrase(data ...interface{}) interface{} {
+	app.client.changePassphrase(data[0].(string))
+	return nil
 }
-
 
 func handleTryPassphrase(data ...interface{}) interface{} {
 	return app.client.tryPassphrase(data[0].(string))

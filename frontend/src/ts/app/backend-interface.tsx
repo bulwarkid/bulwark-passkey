@@ -3,7 +3,8 @@ import * as identities from "../data/identities";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 import { hideModal, showModal } from "./ModalStack";
 import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
-import { requestPassphraseFromUser } from "./modals/Unlock";
+import { requestNewPassphrase } from "./modals/NewVault";
+import { requestExistingPassphrase } from "./modals/Unlock";
 
 const actionStringToAction = new Map([
     ["fido_get_assertion", ClientAction.FIDOGetAssertion],
@@ -49,4 +50,6 @@ registerHandler("update", async () => {
     await identities.update();
 });
 
-registerHandler("requestPassphraseFromUser", requestPassphraseFromUser);
+registerHandler("requestExistingPassphrase", requestExistingPassphrase);
+
+registerHandler("requestNewPassphrase", requestNewPassphrase);

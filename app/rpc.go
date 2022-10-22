@@ -6,10 +6,10 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func callRPC(ctx context.Context, name string, data ...interface{}) []interface{} {
-	responseChan := make(chan []interface{})
+func callRPC(ctx context.Context, name string, data ...interface{}) interface{} {
+	responseChan := make(chan interface{})
 	responseHandler := func(data ...interface{}) {
-		responseChan <- data
+		responseChan <- data[0]
 	}
 	runtime.EventsOnce(ctx, name+"-response", responseHandler)
 	runtime.EventsEmit(ctx, name+"-request", data...)

@@ -41,9 +41,15 @@ export class ModalStack extends React.Component {
     render() {
         const modals = [];
         for (let i = 0; i < this.NUM_MAX_MODALS; i++) {
-            modals.push(<ModalContainer ref={this.modalRefs_[i]} zIndex={i*10+10}/>);
+            modals.push(
+                <ModalContainer ref={this.modalRefs_[i]} zIndex={i * 10 + 10} />
+            );
         }
-        return <div className="w-screen h-screen top-0 absolute">{modals}</div>;
+        return (
+            <div>
+                {modals}
+            </div>
+        );
     }
 
     showModal = (modal: React.ReactElement) => {
@@ -67,7 +73,7 @@ export class ModalStack extends React.Component {
 
 type ModalContainerProps = {
     zIndex: number;
-}
+};
 
 class ModalContainer extends React.Component<ModalContainerProps, ModalState> {
     constructor(props: ModalContainerProps) {
@@ -79,17 +85,20 @@ class ModalContainer extends React.Component<ModalContainerProps, ModalState> {
     }
 
     render() {
-        const style ={
+        const style = {
             zIndex: this.props.zIndex,
-        }
-        let modalClassName =
-            "w-screen h-screen relative modal bg-gray-200";
+        };
+        let modalClassName = "w-screen h-screen absolute modal bg-gray-200 pointer-events-auto";
         if (this.state.activeModal && this.state.isModalActive) {
             modalClassName += " modal-active";
         } else {
             modalClassName += " modal-inactive";
         }
-        return <div style={style} className={modalClassName}>{this.state.activeModal}</div>;
+        return (
+            <div style={style} className={modalClassName}>
+                {this.state.activeModal}
+            </div>
+        );
     }
 
     showModal = (modal: React.ReactElement) => {

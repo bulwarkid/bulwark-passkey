@@ -1,15 +1,19 @@
 import React from "react";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
-import { getPassphrase, setPassphrase } from "../../data/identities";
+import {
+    getPassphrase,
+    changePassphrase,
+    validatePassphrases,
+} from "../../data/identities";
 import * as modal from "../ModalStack";
 
 export async function showUpdatePassphrase() {
     const oldPassphrase = await getPassphrase();
     modal.showModal(
-        <PassphraseModal
+        <EditPassphraseModal
             oldPassphrase={oldPassphrase}
             passphraseUpdated={(passphrase: string) => {
-                setPassphrase(passphrase);
+                changePassphrase(passphrase);
             }}
         />
     );
@@ -25,7 +29,7 @@ type PassphraseModalState = {
     errorMessage?: string;
 };
 
-class PassphraseModal extends React.Component<
+class EditPassphraseModal extends React.Component<
     PassphraseModalProps,
     PassphraseModalState
 > {
@@ -118,36 +122,14 @@ class PassphraseModal extends React.Component<
     };
 
     onSubmit_ = () => {
-        const passphrase1 = this.passphraseRef1_.current?.value;
-        const passphrase2 = this.passphraseRef2_.current?.value;
-        if (passphrase1 === undefined || passphrase1 === "") {
-            // Invalid passphrase
-            this.setState({ errorMessage: "No new passphrase specified." });
-            return;
-        }
-        if (passphrase1 !== passphrase2) {
-            // Passphrases do not match
-            this.setState({ errorMessage: "Passphrases do not match." });
-            return;
-        }
-        if (passphrase1 === this.props.oldPassphrase) {
-            // Passphrase did not change
-            this.setState({
-                errorMessage:
-                    "Passphrase cannot be the same as the old passphrase.",
-            });
-            return;
-        }
-        if (passphrase1!.length < 8) {
-            // Passphrase is not long enough
-            this.setState({
-                errorMessage: "Passphrase must be at least 8 characters long.",
-            });
-            return;
-        }
-        this.setState({ errorMessage: undefined });
-        if (this.props.passphraseUpdated) {
-            this.props.passphraseUpdated(passphrase1!);
+        const errorMessage = validatePassphrases(
+            this.passphraseRef1_.current?.value,
+            this.passphraseRef2_.current?.value,
+            this.props.oldPassphrase
+        );
+        this.setState({ errorMessage });
+        if (!errorMessage && this.props.passphraseUpdated) {
+            this.props.passphraseUpdated(this.passphraseRef1_.current!.value);
             modal.hideModal();
         }
     };
