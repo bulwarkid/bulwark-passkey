@@ -1,7 +1,6 @@
 import React from "react";
 import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
-import { LogDebug } from "../../wailsjs/runtime/runtime";
 import { hideModal, showModal } from "../ModalStack";
 import { NewVaultModal } from "./NewVault";
 
@@ -77,7 +76,12 @@ export class UnlockModal extends React.Component<
                     </div>
                 </div>
                 <div className="flex justify-center items-center">
-                    <div onClick={this.onDeleteVault_} className="daisy-btn daisy-btn-ghost daisy-btn-sm my-4 text-base-400">Delete Existing Vault</div>
+                    <div
+                        onClick={this.onDeleteVault_}
+                        className="daisy-btn daisy-btn-ghost daisy-btn-sm my-4 text-base-400"
+                    >
+                        Delete Existing Vault
+                    </div>
                 </div>
             </div>
         );

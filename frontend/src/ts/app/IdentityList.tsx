@@ -4,7 +4,6 @@ import * as identities from "../data/identities";
 import { InfoIcon } from "../icons/info";
 import { showModal } from "./ModalStack";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
-import { UnlockModal } from "./modals/Unlock";
 
 type ListItemProps = {
     identity: Identity;
