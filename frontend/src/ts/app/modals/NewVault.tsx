@@ -1,7 +1,6 @@
 import React, { FormEvent } from "react";
 import { TitleBar } from "../../components/TitleBar";
 import { validatePassphrases } from "../../data/identities";
-import { LogDebug } from "../../wailsjs/runtime/runtime";
 import { hideModal, showModal } from "../ModalStack";
 
 export async function requestNewPassphrase(): Promise<string> {

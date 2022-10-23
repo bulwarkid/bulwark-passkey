@@ -9,7 +9,7 @@ Pop-Location
 Copy-Item -Path .\frontend\build -Destination .\app\frontend_dist -Recurse
 
 Push-Location .\app
-wails build -s -skipbindings -debug -nsis
+wails build -s -skipbindings -debug
 if (-not $?) {
     throw "App build failure"
 }

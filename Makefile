@@ -22,6 +22,9 @@ run-Windows:
 run-Darwin:
 	bash -x ./build/mac/run.sh
 
+nsis:
+	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\windows\nsis.ps1"
+
 build: clean output
 
 output: output-$(OS_NAME)
