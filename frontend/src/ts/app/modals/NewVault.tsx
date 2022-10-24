@@ -1,5 +1,6 @@
 import React, { FormEvent } from "react";
-import { TitleBar } from "../../components/TitleBar";
+import { VerticalInputGroup, Input } from "../../components/Input";
+import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { validatePassphrases } from "../../data/identities";
 import { hideModal, showModal } from "../ModalStack";
 
@@ -49,12 +50,7 @@ export class NewVaultModal extends React.Component<
         let cancelButton;
         if (this.props.onCancel) {
             cancelButton = (
-                <div
-                    className="daisy-btn daisy-btn-sm daisy-btn-ghost"
-                    onClick={this.props.onCancel}
-                >
-                    Cancel
-                </div>
+                <TitleBarButton text="Cancel" onClick={this.props.onCancel} />
             );
         }
         return (
@@ -65,20 +61,18 @@ export class NewVaultModal extends React.Component<
                     className="flex flex-col justify-center items-center grow"
                 >
                     {errorMessageDiv}
-                    <div className="daisy-input-group daisy-input-group-vertical flex justify-center items-center">
-                        <input
-                            ref={this.inputRef1_}
+                    <VerticalInputGroup>
+                        <Input
+                            inputRef={this.inputRef1_}
                             type="password"
                             placeholder="New Passphrase"
-                            className="daisy-input daisy-input-bordered w-full max-w-xs"
                         />
-                        <input
-                            ref={this.inputRef2_}
+                        <Input
+                            inputRef={this.inputRef2_}
                             type="password"
-                            placeholder="Confirm Passphrase"
-                            className="daisy-input daisy-input-bordered w-full max-w-xs"
+                            placeholder="Confirm Passprhase"
                         />
-                    </div>
+                    </VerticalInputGroup>
                     <input
                         type="submit"
                         value="Create New Vault"

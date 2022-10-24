@@ -1,4 +1,5 @@
 import React from "react";
+import { VerticalInputGroup, Input } from "../../components/Input";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import {
     getPassphrase,
@@ -97,20 +98,18 @@ class EditPassphraseModal extends React.Component<
                                 New Passphrase
                             </span>
                         </label>
-                        <div className="daisy-input-group daisy-input-group-vertical">
-                            <input
-                                ref={this.passphraseRef1_}
+                        <VerticalInputGroup>
+                            <Input
+                                inputRef={this.passphraseRef1_}
                                 type="password"
                                 placeholder="New Passphrase"
-                                className="daisy-input daisy-input-bordered daisy-input-md"
-                            ></input>
-                            <input
-                                ref={this.passphraseRef2_}
+                            />
+                            <Input
+                                inputRef={this.passphraseRef2_}
                                 type="password"
                                 placeholder="Confirm Passphrase"
-                                className="daisy-input daisy-input-bordered daisy-input-md"
-                            ></input>
-                        </div>
+                            />
+                        </VerticalInputGroup>
                     </div>
                 </div>
             </div>
