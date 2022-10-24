@@ -1,7 +1,7 @@
 import React from "react";
-import { ListItem, ListSection } from "../components/List";
 import { showUpdatePassphrase } from "./modals/Passphrase";
 import { TitleBar } from "../components/TitleBar";
+import { FormDisplay, FormLink } from "../components/FormDisplay";
 
 export class Settings extends React.Component {
     render() {
@@ -9,13 +9,13 @@ export class Settings extends React.Component {
             <div className="w-full">
                 <TitleBar title="Settings" />
                 <div className="p-4">
-                    <ListSection>
-                        <ListItem
+                    <FormDisplay>
+                        <FormLink
                             text="Passphrase"
                             onClick={showUpdatePassphrase}
                         />
-                        <ListItem text="About" />
-                    </ListSection>
+                        <FormLink text="About" onClick={() => {}} />
+                    </FormDisplay>
                 </div>
             </div>
         );

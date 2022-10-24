@@ -1,0 +1,13 @@
+.list > :first-child {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.list > :last-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.list > div {
+    background-color: rgb(209 213 219);
+}

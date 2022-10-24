@@ -1,5 +1,5 @@
 import React from "react";
-import { FormDisplay, FormItem } from "../../components/FormDisplay";
+import { FormDisplay, FormData } from "../../components/FormDisplay";
 import { TitleBar } from "../../components/TitleBar";
 import { bytesToBase64 } from "../../core/util";
 import { Identity } from "../../../proto/data";
@@ -32,16 +32,16 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
 
                 <div className="m-4">
                     <FormDisplay>
-                        <FormItem left="ID" right={hash} />
-                        <FormItem left="Website" right={id.website?.name} />
-                        <FormItem
-                            left="User Name"
-                            right={id.user?.displayName}
+                        <FormData label="ID" value={hash} />
+                        <FormData label="Website" value={id.website?.name} />
+                        <FormData
+                            label="User Name"
+                            value={id.user?.displayName}
                         />
-                        <FormItem left="Public Key" right={publicKey} />
-                        <FormItem
-                            left="Signature Counter"
-                            right={id.signatureCounter?.toString()}
+                        <FormData label="Public Key" value={publicKey} />
+                        <FormData
+                            label="Signature Counter"
+                            value={id.signatureCounter?.toString()}
                         />
                     </FormDisplay>
                 </div>

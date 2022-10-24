@@ -57,7 +57,7 @@ export class App extends React.Component<{}, AppState> {
         }
         return (
             <div className="w-screen h-screen">
-                <div className="w-screen h-screen flex flex-col bg-gray-300">
+                <div className="w-screen h-screen flex flex-col bg-gray-200">
                     <div className="grow overflow-y-scroll">{page}</div>
                     <div>
                         {

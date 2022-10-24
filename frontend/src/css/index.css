@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "./modal.css";
+@import "./list.css";
 
 body {
     margin: 0;
