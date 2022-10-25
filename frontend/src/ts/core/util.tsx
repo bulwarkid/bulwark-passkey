@@ -1,3 +1,5 @@
+import { LogDebug } from "../wailsjs/runtime/runtime";
+
 // TODO: Replace this base64 mess with something more efficient/better
 // Base64 in JS/Node is an entire mess of things; see
 // https://stackoverflow.com/questions/12710001/how-to-convert-uint8-array-to-base64-encoded-string
@@ -22,3 +24,17 @@ export function randomBytes(length: number) {
 export function setImmediate(callback: () => void) {
     setTimeout(callback, 0);
 }
+
+declare global {
+    interface Console {
+        NOCOMMIT(...data: any[]): void;
+    }
+}
+
+console.NOCOMMIT = (...data: any[]) => {
+    let out = "";
+    for (const item of data) {
+        out = out + item;
+    }
+    LogDebug(out);
+};

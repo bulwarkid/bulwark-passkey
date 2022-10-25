@@ -7,6 +7,10 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+func nocommitf(format string, args ...interface{}) {
+	runtime.LogDebugf(app.ctx, format, args...)
+}
+
 func debugf(format string, args ...interface{}) {
 	runtime.LogDebugf(app.ctx, format, args)
 }
