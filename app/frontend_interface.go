@@ -7,6 +7,7 @@ import (
 
 	pb "github.com/bulwarkid/bulwark-passkey/app/proto"
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
+	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,23 +20,30 @@ func approveClientAction(action string, relyingParty string, userName string) bo
 	return response.(bool)
 }
 
-func requestExistingPassphrase() (string, string) {
-	// First return value is the current passphrase, second value is a potential new passphrase
-	// If a new passphrase is returned, create a new vault with it and delete the old one
-	response := callRPC(app.ctx, "requestExistingPassphrase").([]interface{})
-	return response[0].(string), response[1].(string)
+func logIn(vaultType string) bool {
+	response := callRPC(app.ctx, "unlockVault", vaultType)
+	return response.(bool)
 }
 
-func requestNewPassphrase() string {
-	response := callRPC(app.ctx, "requestNewPassphrase")
+func createNewVault() string {
+	response := callRPC(app.ctx, "createNewVault")
 	return response.(string)
+}
+
+func getPassphrase() string {
+	response := callRPC(app.ctx, "getPassphrase")
+	return response.(string)
+}
+
+func getVaultData() []byte {
+	// TODO: Get vault data from backend
+	return nil
 }
 
 func loadFrontendHandlers() {
 	registerHandler(app.ctx, "getIdentities", handleIdentities)
 	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity)
-	registerHandler(app.ctx, "getPassphrase", handleGetPassphrase)
-	registerHandler(app.ctx, "changePassphrase", handleChangePassphrase)
+	registerHandler(app.ctx, "passphraseChanged", handlePassphraseChanged)
 	registerHandler(app.ctx, "tryPassphrase", handleTryPassphrase)
 }
 
@@ -112,15 +120,17 @@ func handleDeleteIdentity(data ...interface{}) interface{} {
 	return app.client.deleteIdentity(id)
 }
 
-func handleGetPassphrase(data ...interface{}) interface{} {
-	return app.client.passphrase
-}
-
-func handleChangePassphrase(data ...interface{}) interface{} {
-	app.client.changePassphrase(data[0].(string))
+func handlePassphraseChanged(data ...interface{}) interface{} {
+	app.client.save()
 	return nil
 }
 
-func handleTryPassphrase(data ...interface{}) interface{} {
-	return app.client.tryPassphrase(data[0].(string))
+func handleTryPassphrase(args ...interface{}) interface{} {
+	passphrase := args[0].(string)
+	data := readVaultFromFile()
+	if data == nil {
+		return true
+	}
+	_, err := vfido.DecryptWithPassphrase(data.Data, passphrase)
+	return err == nil
 }

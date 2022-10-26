@@ -25,6 +25,17 @@ export function setImmediate(callback: () => void) {
     setTimeout(callback, 0);
 }
 
+export function setRecurring(callback: () => Promise<boolean>, time: number) {
+    function recurrence() {
+        callback().then((recur) => {
+            if (recur) {
+                setTimeout(recurrence, time);
+            }
+        });
+    }
+    setTimeout(recurrence, time);
+}
+
 declare global {
     interface Console {
         NOCOMMIT(...data: any[]): void;
@@ -32,9 +43,5 @@ declare global {
 }
 
 console.NOCOMMIT = (...data: any[]) => {
-    let out = "";
-    for (const item of data) {
-        out = out + item;
-    }
-    LogDebug(out);
+    console.log(...data);
 };

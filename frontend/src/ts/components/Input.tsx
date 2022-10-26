@@ -1,5 +1,15 @@
 import React from "react";
 
+export class InputLabel extends React.Component<{ children: React.ReactNode }> {
+    render() {
+        return (
+            <label className="daisy-label">
+                <span className="daisy-label-text">{this.props.children}</span>
+            </label>
+        );
+    }
+}
+
 export class Input extends React.Component<{
     inputRef?: React.RefObject<HTMLInputElement>;
     placeholder?: string;

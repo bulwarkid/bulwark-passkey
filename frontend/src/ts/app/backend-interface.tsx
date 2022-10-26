@@ -3,8 +3,14 @@ import * as identities from "../data/identities";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 import { hideModal, showModal } from "./ModalStack";
 import { ApproveActionModal, ClientAction } from "./modals/ApproveAction";
-import { requestNewPassphrase } from "./modals/NewVault";
-import { requestExistingPassphrase } from "./modals/Unlock";
+import { createNewVault } from "./signup/CreateAccount";
+import {
+    ACCOUNT_VAULT_TYPE,
+    getPassphrase,
+    LOCAL_VAULT_TYPE,
+} from "../data/passphrase";
+import { unlockLocalVault } from "./modals/Unlock";
+import { LogError } from "../wailsjs/runtime/runtime";
 
 const actionStringToAction = new Map([
     ["fido_get_assertion", ClientAction.FIDOGetAssertion],
@@ -50,6 +56,19 @@ registerHandler("update", async () => {
     await identities.update();
 });
 
-registerHandler("requestExistingPassphrase", requestExistingPassphrase);
+registerHandler("logIn", async (vaultType: string) => {
+    if (vaultType === LOCAL_VAULT_TYPE) {
+        return await unlockLocalVault();
+    } else if (vaultType === ACCOUNT_VAULT_TYPE) {
+        // TODO: Log in
+        return true;
+    } else {
+        LogError("Invalid vault type: " + vaultType);
+    }
+});
 
-registerHandler("requestNewPassphrase", requestNewPassphrase);
+registerHandler("createNewVault", createNewVault);
+
+registerHandler("getPassphrase", async () => {
+    return getPassphrase() || "";
+});

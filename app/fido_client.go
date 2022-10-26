@@ -13,7 +13,7 @@ import (
 )
 
 type Client struct {
-	passphrase            *string
+	vaultType string
 	vault                 *vfido.IdentityVault
 	certificateAuthority  *x509.Certificate
 	certPrivateKey        *ecdsa.PrivateKey
@@ -108,29 +108,7 @@ func (client *Client) identities() []*vfido.CredentialSource {
 	return client.vault.CredentialSources
 }
 
-func (client *Client) initializeData() {
-	vaultData := readVaultFromFile()
-	if vaultData == nil {
-		// Create new vault
-		passphrase := requestNewPassphrase()
-		client.configureNewDevice(passphrase)
-	} else {
-		// Existing vault
-		existingPassphrase, newPassphrase := requestExistingPassphrase()
-		if existingPassphrase != "" {
-			// 1. Unlock with passphrase
-			client.loadData(existingPassphrase, vaultData)
-		} else if newPassphrase != "" {
-			// 2. Eject and create new vault with passphrase
-			client.configureNewDevice(newPassphrase)
-		} else {
-			fatalf("No passphrase specified when loading client")
-		}
-	}
-	updateData()
-}
-
-func (client *Client) configureNewDevice(passphrase string) {
+func (client *Client) configureNewDevice(vaultType string) {
 	authority := &x509.Certificate{
 		SerialNumber: big.NewInt(0),
 		Subject: pkix.Name{
@@ -151,22 +129,23 @@ func (client *Client) configureNewDevice(passphrase string) {
 	certificateAuthority, err := x509.ParseCertificate(authorityCertBytes)
 	checkErr(err, "Could not parse cert authority")
 	encryptionKey := randomBytes(32)
-	client.passphrase = &passphrase
+	client.vaultType = vaultType
 	client.authenticationCounter = 0
 	client.certificateAuthority = certificateAuthority
 	client.certPrivateKey = privateKey
 	client.encryptionKey = encryptionKey
 	client.vault = vfido.NewIdentityVault()
+	client.save()
 }
 
-func (client *Client) loadData(passphrase string, data []byte) {
-	client.passphrase = &passphrase
-	config, err := vfido.DecryptWithPassphrase(data, *client.passphrase)
+func (client *Client) loadData(vaultType string, data []byte) {
+	config, err := vfido.DecryptWithPassphrase(data, client.passphrase())
 	checkErr(err, "Could not decrypt vault file")
 	cert, err := x509.ParseCertificate(config.AttestationCertificate)
 	checkErr(err, "Could not parse x509 cert")
 	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
 	checkErr(err, "Could not parse private key")
+	client.vaultType = vaultType
 	client.authenticationCounter = config.AuthenticationCounter
 	client.certificateAuthority = cert
 	client.certPrivateKey = privateKey
@@ -185,22 +164,15 @@ func (client *Client) save() {
 		EncryptionKey:          client.encryptionKey,
 		Sources:                client.vault.Export(),
 	}
-	stateBytes, err := vfido.EncryptWithPassphrase(config, *client.passphrase)
+	stateBytes, err := vfido.EncryptWithPassphrase(config, client.passphrase())
 	checkErr(err, "Could not encode device state")
-	saveVaultToFile(stateBytes)
+	saveVaultToFile(VaultFile{VaultType: localVaultType, Data: stateBytes})
 	updateData()
 }
 
-func (client *Client) changePassphrase(newPassphrase string) {
-	client.passphrase = &newPassphrase
-	client.save()
+func (client *Client) passphrase() string {
+	passphrase := getPassphrase()
+	assert(passphrase != "", "Passphrase cannot be empty")
+	return passphrase
 }
 
-func (client *Client) tryPassphrase(passphrase string) bool {
-	data := readVaultFromFile()
-	if data == nil {
-		return true
-	}
-	_, err := vfido.DecryptWithPassphrase(data, passphrase)
-	return err == nil
-}

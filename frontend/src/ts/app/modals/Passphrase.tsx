@@ -3,18 +3,18 @@ import { VerticalInputGroup, Input } from "../../components/Input";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import {
     getPassphrase,
-    changePassphrase,
+    setPassphrase,
     validatePassphrases,
-} from "../../data/identities";
+} from "../../data/passphrase";
 import * as modal from "../ModalStack";
 
 export async function showUpdatePassphrase() {
     const oldPassphrase = await getPassphrase();
     modal.showModal(
         <EditPassphraseModal
-            oldPassphrase={oldPassphrase}
+            oldPassphrase={oldPassphrase!}
             passphraseUpdated={(passphrase: string) => {
-                changePassphrase(passphrase);
+                setPassphrase(passphrase);
             }}
         />
     );

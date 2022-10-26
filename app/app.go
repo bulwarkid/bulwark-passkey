@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 )
 
 var app *App
@@ -24,7 +25,34 @@ func (app *App) startup(ctx context.Context) {
 
 func (app *App) onDomReady(ctx context.Context) {
 	go func() {
-		app.client.initializeData()
-		go startFIDOServer(app.client)
+		// Wait 200ms for all the JS to load before making requests to it
+		// TODO: Get rid of this hack
+		// IF 200MS IS NOT ENOUGH THIS REQUIRES A REFACTOR, DON'T INCREASE
+		time.Sleep(200 * time.Millisecond)
+		app.initializeData()
 	}()
+}
+
+func (app *App) initializeData() {
+	vaultFile := readVaultFromFile()
+	if vaultFile == nil {
+		// Create new vault
+		app.createNewVault()
+	} else {
+		// Existing vault
+		eject := logIn(vaultFile.VaultType)
+		if !eject {
+			// 1. Logged in locally or remotely
+			app.client.loadData(vaultFile.VaultType, vaultFile.Data)
+		} else {
+			// 2. Eject and create new vault
+			app.createNewVault()
+		}
+	}
+	go startFIDOServer(app.client)
+}
+
+func (app *App) createNewVault() {
+	vaultType := createNewVault()
+	app.client.configureNewDevice(vaultType)
 }

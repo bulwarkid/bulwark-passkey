@@ -1,20 +1,18 @@
 import React from "react";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 
-let modalContainer: React.RefObject<ModalStack> | null = null;
+let modalStack: React.RefObject<ModalStack> | null = null;
 
-export function setModalContainer(
-    newModalContainer: React.RefObject<ModalStack>
-) {
-    modalContainer = newModalContainer;
+export function setModalContainer(newModalStack: React.RefObject<ModalStack>) {
+    modalStack = newModalStack;
 }
 
 export function showModal(modal: React.ReactElement) {
-    modalContainer?.current?.showModal(modal);
+    modalStack?.current?.showModal(modal);
 }
 
 export function hideModal() {
-    modalContainer?.current?.hideModal();
+    modalStack?.current?.hideModal();
 }
 
 type ModalState = {
@@ -45,11 +43,7 @@ export class ModalStack extends React.Component {
                 <ModalContainer ref={this.modalRefs_[i]} zIndex={i * 10 + 10} />
             );
         }
-        return (
-            <div>
-                {modals}
-            </div>
-        );
+        return <div>{modals}</div>;
     }
 
     showModal = (modal: React.ReactElement) => {
@@ -88,7 +82,8 @@ class ModalContainer extends React.Component<ModalContainerProps, ModalState> {
         const style = {
             zIndex: this.props.zIndex,
         };
-        let modalClassName = "w-screen h-screen absolute modal bg-gray-200 pointer-events-auto";
+        let modalClassName =
+            "w-screen h-screen absolute modal bg-gray-200 pointer-events-auto";
         if (this.state.activeModal && this.state.isModalActive) {
             modalClassName += " modal-active";
         } else {

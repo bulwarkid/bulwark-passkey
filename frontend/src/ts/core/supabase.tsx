@@ -4,6 +4,11 @@ import {
     User,
     Session,
 } from "@supabase/supabase-js";
+import { hideModal, showModal } from "../app/ModalStack";
+import { WaitForConfirmationModal } from "../app/signup/WaitForConfirmation";
+import { setPassphrase } from "../data/passphrase";
+import { LogDebug } from "../wailsjs/runtime/runtime";
+import { setRecurring } from "./util";
 
 const SUPABASE_URL = "https://jdikcjgzpiezpacsqlkf.supabase.co";
 const SUPABASE_PUBLIC_KEY =
@@ -13,42 +18,81 @@ const SUPABASE_PUBLIC_KEY =
 
 let supabase: SupabaseClient;
 
-export function setupSupabase() {
-    supabase = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
-}
-
 let user_: User | null = null;
 let session_: Session | null = null;
 
-export async function signIn(email: string, password: string) {
+export function setupSupabase() {
+    supabase = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN") {
+            user_ = session!.user;
+            session_ = session!;
+        }
+        if (event === "SIGNED_OUT") {
+            user_ = null;
+            session_ = null;
+        }
+    });
+}
+
+export async function signIn(email: string, passphrase: string) {
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password: passphrase,
     });
     if (error) {
         // TODO: Handle error
         return;
     }
-    const { user, session } = data;
-    if (!user || !session) {
-        // TODO: Handle error
-    }
-    user_ = user!;
-    session_ = session!;
-}
-
-export async function signUp(email: string, password: string) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
+    if (!data.user || !data.session) {
         // TODO: Handle error
         return;
     }
-    const { user, session } = data;
-    if (!user || !session) {
+    setPassphrase(passphrase);
+}
+
+export async function signUp(email: string, passphrase: string) {
+    let { data, error } = await supabase.auth.signUp({
+        email,
+        password: passphrase,
+    });
+    if (error || !data.user) {
         // TODO: Handle error
+        return;
     }
-    user_ = user!;
-    session_ = session!;
+    if (!data.session) {
+        // If we lack a session, we need to wait for email confirmation
+        console.assert(!data.user.email_confirmed_at);
+        data = await waitForEmailConfirmation(email, passphrase);
+    }
+    if (!data.user || !data.session) {
+        // TODO: Handle error
+        LogDebug("Null user or session: " + data);
+        return;
+    }
+    setPassphrase(passphrase);
+}
+
+async function waitForEmailConfirmation(
+    email: string,
+    passphrase: string
+): Promise<{ user: User | null; session: Session | null }> {
+    showModal(<WaitForConfirmationModal />);
+    return new Promise((resolve) => {
+        setRecurring(async () => {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password: passphrase,
+            });
+            if (error) {
+                return true;
+            } else {
+                hideModal();
+                resolve(data);
+                return false;
+            }
+        }, 1000);
+    });
 }
 
 export async function signOut() {
@@ -57,6 +101,5 @@ export async function signOut() {
         // TODO: handle error
         return;
     }
-    user_ = null;
-    session_ = null;
+    // TODO: Handle notifying backend that user is signed out
 }

@@ -1,7 +1,7 @@
 import React, { FormEvent } from "react";
 import { VerticalInputGroup, Input } from "../../components/Input";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
-import { validatePassphrases } from "../../data/identities";
+import { validatePassphrases } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 
 export async function requestNewPassphrase(): Promise<string> {

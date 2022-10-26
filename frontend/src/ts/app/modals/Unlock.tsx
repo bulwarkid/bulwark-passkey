@@ -8,17 +8,13 @@ async function tryPassphrase(passphrase: string): Promise<boolean> {
     return await callRPC("tryPassphrase", passphrase);
 }
 
-export async function requestExistingPassphrase(): Promise<[string, string]> {
-    return new Promise<[string, string]>((resolve) => {
+export async function unlockLocalVault() {
+    return new Promise<void>((resolve) => {
         showModal(
             <UnlockModal
-                onUnlock={(passphrase) => {
+                onUnlock={() => {
                     hideModal();
-                    resolve([passphrase, ""]);
-                }}
-                onClearVault={(newPasphrase) => {
-                    hideModal();
-                    resolve(["", newPasphrase]);
+                    resolve();
                 }}
             />
         );
@@ -27,7 +23,6 @@ export async function requestExistingPassphrase(): Promise<[string, string]> {
 
 type UnlockModalProps = {
     onUnlock: (passphrase: string) => void;
-    onClearVault: (newPassphrase: string) => void;
 };
 
 type UnlockModalState = {
@@ -75,14 +70,6 @@ export class UnlockModal extends React.Component<
                         Unlock
                     </div>
                 </div>
-                <div className="flex justify-center items-center">
-                    <div
-                        onClick={this.onDeleteVault_}
-                        className="daisy-btn daisy-btn-ghost daisy-btn-sm my-4 text-base-400"
-                    >
-                        Delete Existing Vault
-                    </div>
-                </div>
             </div>
         );
     }
@@ -101,19 +88,5 @@ export class UnlockModal extends React.Component<
         } else {
             this.props.onUnlock(passphrase);
         }
-    };
-
-    onDeleteVault_ = () => {
-        showModal(
-            <NewVaultModal
-                onSubmit={(passphrase: string) => {
-                    hideModal();
-                    this.props.onClearVault(passphrase);
-                }}
-                onCancel={() => {
-                    hideModal();
-                }}
-            />
-        );
     };
 }

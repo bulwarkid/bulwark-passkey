@@ -12,11 +12,11 @@ func nocommitf(format string, args ...interface{}) {
 }
 
 func debugf(format string, args ...interface{}) {
-	runtime.LogDebugf(app.ctx, format, args)
+	runtime.LogDebugf(app.ctx, format, args...)
 }
 
 func fatalf(format string, args ...interface{}) {
-	runtime.LogFatalf(app.ctx, format, args)
+	runtime.LogFatalf(app.ctx, format, args...)
 }
 
 type Logger struct {
@@ -47,7 +47,7 @@ func (logger *Logger) Error(message string) {
 	logger.printInternal("[ERROR] %s", message)
 }
 func (logger *Logger) Fatal(message string) {
-	errorMsg := fmt.Sprintf("[FATAL %s", message)
+	errorMsg := fmt.Sprintf("[FATAL] %s", message)
 	fmt.Println(errorMsg)
 	logger.log.Fatalf(errorMsg)
 }
