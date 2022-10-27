@@ -1,20 +1,24 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
 import { hideModal, showModal } from "../ModalStack";
-import { NewVaultModal } from "./NewVault";
+import { promptUser } from "./Confirm";
 
 async function tryPassphrase(passphrase: string): Promise<boolean> {
     return await callRPC("tryPassphrase", passphrase);
 }
 
-export async function unlockLocalVault() {
-    return new Promise<void>((resolve) => {
+export async function unlockLocalVault(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
         showModal(
             <UnlockModal
                 onUnlock={() => {
                     hideModal();
-                    resolve();
+                    resolve(false);
+                }}
+                onDeleteVault={() => {
+                    hideModal();
+                    resolve(true);
                 }}
             />
         );
@@ -22,7 +26,8 @@ export async function unlockLocalVault() {
 }
 
 type UnlockModalProps = {
-    onUnlock: (passphrase: string) => void;
+    onUnlock: () => void;
+    onDeleteVault: () => void;
 };
 
 type UnlockModalState = {
@@ -57,36 +62,49 @@ export class UnlockModal extends React.Component<
         return (
             <div className="w-screen h-screen flex flex-col">
                 <TitleBar title="Unlock Vault" />
-                <div className="grow flex flex-col items-center justify-center">
+                <form
+                    className="grow flex flex-col items-center justify-center"
+                    onSubmit={this.onSubmit_}
+                >
                     {errorMessageDiv}
                     <input
                         ref={this.inputRef_}
-                        onKeyUp={this.onKeyUp_}
                         type="password"
                         placeholder="Passphrase"
                         className="daisy-input daisy-input-bordered w-full max-w-xs mx-4"
                     />
-                    <div className="daisy-btn mt-2" onClick={this.onSubmit_}>
-                        Unlock
+                    <input
+                        type="submit"
+                        value="Unlock"
+                        className="daisy-btn mt-2"
+                    />
+                </form>
+                <div className="flex flex-col items-center">
+                    <div
+                        className="daisy-btn daisy-btn-ghost"
+                        onClick={this.onDeleteVault_}
+                    >
+                        Delete Vault
                     </div>
                 </div>
             </div>
         );
     }
 
-    onKeyUp_ = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            this.onSubmit_();
-        }
-    };
-
-    onSubmit_ = async () => {
+    onSubmit_ = async (event: FormEvent) => {
+        event.preventDefault();
         const passphrase = this.inputRef_.current!.value;
         const success = await tryPassphrase(passphrase);
         if (!success) {
             this.setState({ error: true });
         } else {
-            this.props.onUnlock(passphrase);
+            this.props.onUnlock();
+        }
+    };
+
+    onDeleteVault_ = async () => {
+        if (await promptUser("Delete local vault data?")) {
+            this.props.onDeleteVault();
         }
     };
 }

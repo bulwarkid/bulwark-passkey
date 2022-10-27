@@ -1,5 +1,4 @@
-import React from "react";
-import { TitleBar } from "../../components/TitleBar";
+import { promptUser } from "./Confirm";
 
 export enum ClientAction {
     U2FRegister = 1,
@@ -7,6 +6,13 @@ export enum ClientAction {
     FIDOMakeCredential,
     FIDOGetAssertion,
 }
+
+const actionStringToAction = new Map([
+    ["fido_get_assertion", ClientAction.FIDOGetAssertion],
+    ["fido_make_credential", ClientAction.FIDOMakeCredential],
+    ["u2f_authenticate", ClientAction.U2FAuthenticate],
+    ["u2f_register", ClientAction.U2FRegister],
+]);
 
 function prompt(
     action: ClientAction,
@@ -25,43 +31,17 @@ function prompt(
     }
 }
 
-type ApproveActionModalProps = {
-    action: ClientAction;
-    relyingParty?: string;
-    userName?: string;
-    onResponse: (approved: boolean) => void;
-};
-
-export class ApproveActionModal extends React.Component<ApproveActionModalProps> {
-    render() {
-        const { action, relyingParty, userName } = this.props;
-        return (
-            <div className="flex flex-col w-full h-full">
-                <TitleBar title="Approve Action" />
-                <div className="px-4 grow flex flex-col justify-center">
-                    <div className="p-4 bg-gray-400 rounded-lg font-bold">
-                        {prompt(action, relyingParty, userName)}
-                    </div>
-                    <div className="mt-4 flex">
-                        <div
-                            className="daisy-btn daisy-btn-success grow basis-0 mx-2"
-                            onClick={() => {
-                                this.props.onResponse(true);
-                            }}
-                        >
-                            Approve
-                        </div>
-                        <div
-                            className="daisy-btn daisy-btn-error grow basis-0 mx-2"
-                            onClick={() => {
-                                this.props.onResponse(false);
-                            }}
-                        >
-                            Deny
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+export async function approveClientAction(
+    requestData: [string, string | undefined, string | undefined]
+): Promise<boolean> {
+    const [actionString, relyingParty, userName] = requestData;
+    let action = actionStringToAction.get(actionString)!;
+    console.assert(
+        action !== undefined,
+        "Undefined client action: " + actionString
+    );
+    return await promptUser(
+        prompt(action, relyingParty, userName),
+        "Approve Action"
+    );
 }

@@ -35,20 +35,24 @@ export function setupSupabase() {
     });
 }
 
-export async function signIn(email: string, passphrase: string) {
+export async function signIn(
+    email: string,
+    passphrase: string
+): Promise<string | null> {
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password: passphrase,
     });
     if (error) {
         // TODO: Handle error
-        return;
+        return "Error logging in";
     }
     if (!data.user || !data.session) {
         // TODO: Handle error
-        return;
+        return "Error logging in";
     }
     setPassphrase(passphrase);
+    return null;
 }
 
 export async function signUp(email: string, passphrase: string) {

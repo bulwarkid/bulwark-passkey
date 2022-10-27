@@ -13,7 +13,7 @@ import (
 )
 
 type Client struct {
-	vaultType string
+	vaultType             string
 	vault                 *vfido.IdentityVault
 	certificateAuthority  *x509.Certificate
 	certPrivateKey        *ecdsa.PrivateKey
@@ -152,6 +152,7 @@ func (client *Client) loadData(vaultType string, data []byte) {
 	client.encryptionKey = config.EncryptionKey
 	client.vault = vfido.NewIdentityVault()
 	client.vault.Import(config.Sources)
+	client.save()
 }
 
 func (client *Client) save() {
@@ -166,7 +167,7 @@ func (client *Client) save() {
 	}
 	stateBytes, err := vfido.EncryptWithPassphrase(config, client.passphrase())
 	checkErr(err, "Could not encode device state")
-	saveVaultToFile(VaultFile{VaultType: localVaultType, Data: stateBytes})
+	saveVaultToFile(VaultFile{VaultType: client.vaultType, Data: stateBytes})
 	updateData()
 }
 
@@ -175,4 +176,3 @@ func (client *Client) passphrase() string {
 	assert(passphrase != "", "Passphrase cannot be empty")
 	return passphrase
 }
-

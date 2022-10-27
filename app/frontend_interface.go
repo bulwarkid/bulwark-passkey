@@ -21,7 +21,7 @@ func approveClientAction(action string, relyingParty string, userName string) bo
 }
 
 func logIn(vaultType string) bool {
-	response := callRPC(app.ctx, "unlockVault", vaultType)
+	response := callRPC(app.ctx, "logIn", vaultType)
 	return response.(bool)
 }
 
