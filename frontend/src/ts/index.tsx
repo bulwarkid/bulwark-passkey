@@ -21,4 +21,4 @@ setTimeout(() => {
     // scrolls down. Set scroll back to the top 100ms after startup for this
     // occurance.
     window.scroll(0, 0);
-}, 100);
+}, 500);

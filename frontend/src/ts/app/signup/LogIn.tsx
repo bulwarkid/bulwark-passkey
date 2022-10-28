@@ -1,6 +1,6 @@
 import React, { FormEvent } from "react";
 import { Input, VerticalInputGroup } from "../../components/Input";
-import { TitleBar } from "../../components/TitleBar";
+import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { hideModal, showModal } from "../ModalStack";
 import * as supabase from "../../core/supabase";
 import { promptUser } from "../modals/Confirm";
@@ -8,7 +8,9 @@ import { ACCOUNT_VAULT_TYPE, LOCAL_VAULT_TYPE } from "../../data/passphrase";
 import { unlockLocalVault } from "../modals/Unlock";
 import { LogError } from "../../wailsjs/runtime/runtime";
 
-export async function logIn(vaultType: string): Promise<boolean> {
+export async function logInToExistingVault(
+    vaultType: string
+): Promise<boolean> {
     if (vaultType == LOCAL_VAULT_TYPE) {
         return await unlockLocalVault();
     } else if (vaultType == ACCOUNT_VAULT_TYPE) {
@@ -38,9 +40,27 @@ export async function logIn(vaultType: string): Promise<boolean> {
     }
 }
 
+export async function logInToRemote(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+        showModal(
+            <LogInModal
+                onLoggedIn={() => {
+                    hideModal();
+                    resolve(true);
+                }}
+                onCancel={() => {
+                    hideModal();
+                    resolve(false);
+                }}
+            />
+        );
+    });
+}
+
 type LogInModalProps = {
     onLoggedIn: () => void;
-    onLogOut: () => void;
+    onLogOut?: () => void;
+    onCancel?: () => void;
 };
 
 type LogInModalState = {
@@ -63,9 +83,28 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                 </div>
             );
         }
+        let cancelButton;
+        if (this.props.onCancel) {
+            cancelButton = (
+                <TitleBarButton text="Cancel" onClick={this.props.onCancel} />
+            );
+        }
+        let logOutButton;
+        if (this.props.onLogOut) {
+            logOutButton = (
+                <div className="flex flex-col items-center">
+                    <div
+                        className="daisy-btn daisy-btn-ghost daisy-btn-sm mb-4"
+                        onClick={this.onLogOut_}
+                    >
+                        Log Out
+                    </div>
+                </div>
+            );
+        }
         return (
             <div className="w-screen h-screen flex flex-col">
-                <TitleBar title="Log In" />
+                <TitleBar title="Log In" leftButton={cancelButton} />
                 <div className="grow flex flex-col m-8 justify-center items-center">
                     <form className="self-stretch" onSubmit={this.onSubmit_}>
                         <div className="mb-4 text-2xl font-bold text-center">
@@ -93,14 +132,7 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                         </div>
                     </form>
                 </div>
-                <div className="flex flex-col items-center">
-                    <div
-                        className="daisy-btn daisy-btn-ghost daisy-btn-sm mb-4"
-                        onClick={this.onLogOut_}
-                    >
-                        Log Out
-                    </div>
-                </div>
+                {logOutButton}
             </div>
         );
     }
@@ -124,7 +156,7 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
 
     onLogOut_ = async () => {
         if (await promptUser("Log out and delete local data?")) {
-            this.props.onLogOut();
+            this.props.onLogOut!();
         }
     };
 }

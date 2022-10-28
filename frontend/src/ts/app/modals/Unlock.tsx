@@ -1,6 +1,7 @@
 import React, { FormEvent } from "react";
 import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
+import { setPassphrase } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 import { promptUser } from "./Confirm";
 
@@ -12,7 +13,8 @@ export async function unlockLocalVault(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
         showModal(
             <UnlockModal
-                onUnlock={() => {
+                onUnlock={(passphrase: string) => {
+                    setPassphrase(passphrase);
                     hideModal();
                     resolve(false);
                 }}
@@ -26,7 +28,7 @@ export async function unlockLocalVault(): Promise<boolean> {
 }
 
 type UnlockModalProps = {
-    onUnlock: () => void;
+    onUnlock: (passphrase: string) => void;
     onDeleteVault: () => void;
 };
 
@@ -79,9 +81,9 @@ export class UnlockModal extends React.Component<
                         className="daisy-btn mt-2"
                     />
                 </form>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center mb-4">
                     <div
-                        className="daisy-btn daisy-btn-ghost"
+                        className="daisy-btn daisy-btn-ghost daisy-btn-sm"
                         onClick={this.onDeleteVault_}
                     >
                         Delete Vault
@@ -98,7 +100,7 @@ export class UnlockModal extends React.Component<
         if (!success) {
             this.setState({ error: true });
         } else {
-            this.props.onUnlock();
+            this.props.onUnlock(passphrase);
         }
     };
 

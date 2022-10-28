@@ -53,6 +53,10 @@ func (app *App) initializeData() {
 }
 
 func (app *App) createNewVault() {
-	vaultType := createNewVault()
-	app.client.configureNewDevice(vaultType)
+	vaultType, loggedIn := createNewVault()
+	if loggedIn {
+		// Fetch remote vault
+	} else {
+		app.client.configureNewDevice(vaultType)
+	}
 }

@@ -25,9 +25,11 @@ func logIn(vaultType string) bool {
 	return response.(bool)
 }
 
-func createNewVault() string {
-	response := callRPC(app.ctx, "createNewVault")
-	return response.(string)
+func createNewVault() (string, bool) {
+	// 1st arg: vault type of new vault
+	// 2nd arg: if true, logged into remote vault instead of creating new one
+	response := callRPC(app.ctx, "createNewVault").([]interface{})
+	return response[0].(string), response[1].(bool)
 }
 
 func getPassphrase() string {

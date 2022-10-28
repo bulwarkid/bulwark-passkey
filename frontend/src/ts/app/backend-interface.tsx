@@ -3,13 +3,13 @@ import * as identities from "../data/identities";
 import { approveClientAction } from "./modals/ApproveAction";
 import { createNewVault } from "./signup/CreateAccount";
 import { getPassphrase } from "../data/passphrase";
-import { logIn } from "./signup/LogIn";
+import { logInToExistingVault } from "./signup/LogIn";
 
 registerHandler("approveClientAction", approveClientAction);
 
 registerHandler("update", identities.update);
 
-registerHandler("logIn", logIn);
+registerHandler("logIn", logInToExistingVault);
 
 registerHandler("createNewVault", createNewVault);
 

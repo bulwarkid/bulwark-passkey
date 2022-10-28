@@ -2,16 +2,26 @@ import React, { FormEvent } from "react";
 import { Input, InputLabel, VerticalInputGroup } from "../../components/Input";
 import { TitleBar } from "../../components/TitleBar";
 import { signUp } from "../../core/supabase";
-import { ACCOUNT_VAULT_TYPE, validatePassphrases } from "../../data/passphrase";
+import {
+    ACCOUNT_VAULT_TYPE,
+    LOCAL_VAULT_TYPE,
+    validatePassphrases,
+} from "../../data/passphrase";
+import { createLocalVault } from "../modals/NewVault";
 import { hideModal, showModal } from "../ModalStack";
+import { logInToRemote } from "./LogIn";
 
-export async function createNewVault(): Promise<string> {
+export async function createNewVault(): Promise<[string, boolean]> {
     return new Promise((resolve) => {
         showModal(
             <CreateAccount
                 onCreated={(type: string) => {
                     hideModal();
-                    resolve(type);
+                    resolve([type, false]);
+                }}
+                onLogIn={() => {
+                    hideModal();
+                    resolve(["", true]);
                 }}
             />
         );
@@ -20,6 +30,7 @@ export async function createNewVault(): Promise<string> {
 
 type CreateAccountProps = {
     onCreated: (type: string) => void;
+    onLogIn: () => void;
 };
 
 export class CreateAccount extends React.Component<CreateAccountProps> {
@@ -67,6 +78,20 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
                         </div>
                     </form>
                 </div>
+                <div className="flex flex-col items-center mb-4">
+                    <div
+                        className="daisy-btn daisy-btn-ghost daisy-btn-sm"
+                        onClick={this.onLogin_}
+                    >
+                        Log In
+                    </div>
+                    <div
+                        className="daisy-btn daisy-btn-ghost daisy-btn-sm"
+                        onClick={this.onUseLocal_}
+                    >
+                        Use Local-Only Vault
+                    </div>
+                </div>
             </div>
         );
     }
@@ -84,5 +109,17 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
         }
         await signUp(email, passphrase1!);
         this.props.onCreated(ACCOUNT_VAULT_TYPE);
+    };
+
+    onLogin_ = async () => {
+        if (await logInToRemote()) {
+            this.props.onLogIn();
+        }
+    };
+
+    onUseLocal_ = async () => {
+        if (await createLocalVault()) {
+            this.props.onCreated(LOCAL_VAULT_TYPE);
+        }
     };
 }

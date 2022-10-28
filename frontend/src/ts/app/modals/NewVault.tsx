@@ -1,16 +1,21 @@
 import React, { FormEvent } from "react";
 import { VerticalInputGroup, Input } from "../../components/Input";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
-import { validatePassphrases } from "../../data/passphrase";
+import { setPassphrase, validatePassphrases } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 
-export async function requestNewPassphrase(): Promise<string> {
+export async function createLocalVault(): Promise<boolean> {
     return new Promise((resolve) => {
         showModal(
             <NewVaultModal
                 onSubmit={(passphrase: string) => {
+                    setPassphrase(passphrase);
                     hideModal();
-                    resolve(passphrase);
+                    resolve(true);
+                }}
+                onCancel={() => {
+                    hideModal();
+                    resolve(false);
                 }}
             />
         );
@@ -58,7 +63,7 @@ export class NewVaultModal extends React.Component<
                 <TitleBar title="New Vault" leftButton={cancelButton} />
                 <form
                     onSubmit={this.onSubmit_}
-                    className="flex flex-col justify-center items-center grow"
+                    className="flex flex-col justify-center items-center grow mx-8"
                 >
                     {errorMessageDiv}
                     <VerticalInputGroup>
