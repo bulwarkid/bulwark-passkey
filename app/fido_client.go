@@ -169,6 +169,7 @@ func (client *Client) save() {
 	checkErr(err, "Could not encode device state")
 	saveVaultToFile(VaultFile{VaultType: client.vaultType, Data: stateBytes})
 	updateData()
+	storeRemoteVaultJSON(string(stateBytes))
 }
 
 func (client *Client) passphrase() string {

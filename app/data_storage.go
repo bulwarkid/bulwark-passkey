@@ -49,3 +49,11 @@ func readVaultFromFile() *VaultFile {
 	checkErr(err, "Could not deserialize vault file")
 	return &vaultFile
 }
+
+func deleteVaultFile() {
+	err := os.Remove(vaultFilename())
+	if os.IsNotExist(err) {
+		return
+	}
+	checkErr(err, "Could not delete vault file")
+}

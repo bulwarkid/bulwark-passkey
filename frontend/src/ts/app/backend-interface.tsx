@@ -16,3 +16,7 @@ registerHandler("createNewVault", createNewVault);
 registerHandler("getPassphrase", async () => {
     return getPassphrase() || "";
 });
+
+registerHandler("fetchRemoteVault", identities.fetchRemoteVault);
+
+registerHandler("storeRemoteVault", identities.storeRemoteVault);

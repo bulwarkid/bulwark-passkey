@@ -37,9 +37,13 @@ func getPassphrase() string {
 	return response.(string)
 }
 
-func getVaultData() []byte {
-	// TODO: Get vault data from backend
-	return nil
+func fetchRemoteVaultJSON() string {
+	response := callRPC(app.ctx, "fetchRemoteVault")
+	return response.(string)
+}
+
+func storeRemoteVaultJSON(vaultJSON string) {
+	callRPC(app.ctx, "storeRemoteVault", vaultJSON)
 }
 
 func loadFrontendHandlers() {

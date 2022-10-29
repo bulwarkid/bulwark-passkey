@@ -46,6 +46,7 @@ func (app *App) initializeData() {
 			app.client.loadData(vaultFile.VaultType, vaultFile.Data)
 		} else {
 			// 2. Eject and create new vault
+			deleteVaultFile()
 			app.createNewVault()
 		}
 	}
@@ -56,6 +57,8 @@ func (app *App) createNewVault() {
 	vaultType, loggedIn := createNewVault()
 	if loggedIn {
 		// Fetch remote vault
+		jsonData := fetchRemoteVaultJSON()
+		app.client.loadData(accountVaultType, []byte(jsonData))
 	} else {
 		app.client.configureNewDevice(vaultType)
 	}

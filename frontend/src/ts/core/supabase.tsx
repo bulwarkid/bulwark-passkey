@@ -16,7 +16,7 @@ const SUPABASE_PUBLIC_KEY =
     "6ImpkaWtjamd6cGllenBhY3NxbGtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjY2Mzc3" +
     "OTcsImV4cCI6MTk4MjIxMzc5N30.Va395MtPls6yqpKH0oRRsolMS6qij3RBT-oAy_wC_Ow";
 
-let supabase: SupabaseClient;
+export let supabase: SupabaseClient;
 
 let user_: User | null = null;
 let session_: Session | null = null;
