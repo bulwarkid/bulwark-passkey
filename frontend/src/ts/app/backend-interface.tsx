@@ -1,6 +1,6 @@
 import { registerHandler } from "../core/rpc";
 import * as identities from "../data/identities";
-import { approveClientAction } from "./modals/ApproveAction";
+import { approveClientAction } from "./ApproveAction";
 import { createNewVault } from "./signup/CreateAccount";
 import { getPassphrase } from "../data/passphrase";
 import { logInToExistingVault } from "./signup/LogIn";

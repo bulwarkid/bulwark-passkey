@@ -1,4 +1,4 @@
-import { promptUser } from "./Confirm";
+import { promptUser } from "./modals/Confirm";
 
 export enum ClientAction {
     U2FRegister = 1,
