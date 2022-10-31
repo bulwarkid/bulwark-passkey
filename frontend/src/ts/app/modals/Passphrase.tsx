@@ -1,29 +1,13 @@
 import React from "react";
-import { VerticalInputGroup, Input } from "../../components/Input";
+import { VerticalInputGroup, Input, InputLabel } from "../../components/Input";
 import { Modal } from "../../components/Modal";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
-import {
-    getPassphrase,
-    setPassphrase,
-    validatePassphrases,
-} from "../../data/passphrase";
-import * as modal from "../ModalStack";
-
-export async function showUpdatePassphrase() {
-    const oldPassphrase = getPassphrase();
-    modal.showModal(
-        <EditPassphraseModal
-            oldPassphrase={oldPassphrase!}
-            passphraseUpdated={(passphrase: string) => {
-                setPassphrase(passphrase);
-            }}
-        />
-    );
-}
+import { validatePassphrases } from "../../data/passphrase";
 
 type PassphraseModalProps = {
     oldPassphrase: string;
     passphraseUpdated?: (passphrase: string) => void;
+    onCancel: () => void;
 };
 
 type PassphraseModalState = {
@@ -31,7 +15,7 @@ type PassphraseModalState = {
     errorMessage?: string;
 };
 
-class EditPassphraseModal extends React.Component<
+export class EditPassphraseModal extends React.Component<
     PassphraseModalProps,
     PassphraseModalState
 > {
@@ -56,7 +40,10 @@ class EditPassphraseModal extends React.Component<
             <TitleBar
                 title="Passphrase"
                 leftButton={
-                    <TitleBarButton text="Cancel" onClick={this.onCancel_} />
+                    <TitleBarButton
+                        text="Cancel"
+                        onClick={this.props.onCancel}
+                    />
                 }
                 rightButton={
                     <TitleBarButton text="Save" onClick={this.onSubmit_} />
@@ -67,11 +54,7 @@ class EditPassphraseModal extends React.Component<
             <Modal title={title}>
                 {errorMessageDiv}
                 <div className="daisy-form-control">
-                    <label className="daisy-label">
-                        <span className="daisy-label-text">
-                            Current Passphrase
-                        </span>
-                    </label>
+                    <InputLabel>Current Passphrase</InputLabel>
                     <div className="daisy-input-group">
                         <input
                             type={
@@ -90,9 +73,7 @@ class EditPassphraseModal extends React.Component<
                     </div>
                 </div>
                 <div className="daisy-form-control">
-                    <label className="daisy-label">
-                        <span className="daisy-label-text">New Passphrase</span>
-                    </label>
+                    <InputLabel>New Passphrase</InputLabel>
                     <VerticalInputGroup>
                         <Input
                             inputRef={this.passphraseRef1_}
@@ -123,11 +104,6 @@ class EditPassphraseModal extends React.Component<
         this.setState({ errorMessage });
         if (!errorMessage && this.props.passphraseUpdated) {
             this.props.passphraseUpdated(this.passphraseRef1_.current!.value);
-            modal.hideModal();
         }
-    };
-
-    onCancel_ = () => {
-        modal.hideModal();
     };
 }

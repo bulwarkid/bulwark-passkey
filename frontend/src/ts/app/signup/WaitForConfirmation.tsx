@@ -19,7 +19,7 @@ export class WaitForConfirmationModal extends React.Component<WaitForConfirmatio
                     }
                 />
                 <div className="grow flex flex-col items-center justify-center p-4">
-                    <div className="p-4 bg-gray-400 rounded-lg font-bold text-lg">
+                    <div className="p-4 bg-gray-400 rounded-lg font-bold">
                         Please check your email for confirmation
                     </div>
                 </div>

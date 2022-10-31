@@ -59,7 +59,8 @@ export async function storeRemoteVault(jsonData: string) {
     }
     const { error } = await supabase
         .from("vaults")
-        .upsert({ data: jsonData, user_id: user.id });
+        .upsert({ data: jsonData, user_id: user.id }, { onConflict: "user_id" })
+        .select();
     if (error) {
         LogError(error.message);
         return;

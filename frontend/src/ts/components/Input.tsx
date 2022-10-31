@@ -14,6 +14,8 @@ export class Input extends React.Component<{
     inputRef?: React.RefObject<HTMLInputElement>;
     placeholder?: string;
     type?: string;
+    disabled?: boolean;
+    value?: string;
 }> {
     render() {
         return (
@@ -21,6 +23,8 @@ export class Input extends React.Component<{
                 ref={this.props.inputRef}
                 type={this.props.type}
                 placeholder={this.props.placeholder}
+                disabled={this.props.disabled}
+                value={this.props.value}
                 className="daisy-input daisy-input-bordered daisy-input-md"
             ></input>
         );

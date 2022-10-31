@@ -6,7 +6,7 @@ import {
 } from "@supabase/supabase-js";
 import { hideModal, showModal } from "../app/ModalStack";
 import { WaitForConfirmationModal } from "../app/signup/WaitForConfirmation";
-import { setPassphrase } from "../data/passphrase";
+import { changePassphrase, setPassphrase } from "../data/passphrase";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 import { setRecurring } from "./util";
 
@@ -128,4 +128,43 @@ export async function signOut() {
         return;
     }
     // TODO: Handle notifying backend that user is signed out
+}
+
+export async function getEmail(): Promise<string | undefined> {
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser();
+    if (error) {
+        LogDebug(error.message);
+        return undefined;
+    }
+    return user?.email;
+}
+
+export async function updateEmail(email: string): Promise<boolean> {
+    const { data, error } = await supabase.auth.updateUser({ email });
+    if (error) {
+        LogDebug(error.message);
+        return false;
+    }
+    return true;
+}
+
+export async function updateAccountPassphrase(
+    passphrase: string
+): Promise<boolean> {
+    const { data, error } = await supabase.auth.updateUser({
+        password: passphrase,
+    });
+    if (error) {
+        LogDebug(error.message);
+        return false;
+    }
+    changePassphrase(passphrase);
+    return true;
+}
+
+export function isLoggedIn(): boolean {
+    return session_ !== null;
 }
