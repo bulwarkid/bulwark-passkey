@@ -32,9 +32,10 @@ function prompt(
 }
 
 export async function approveClientAction(
-    requestData: [string, string | undefined, string | undefined]
+    actionString: string,
+    relyingParty?: string,
+    userName?: string
 ): Promise<boolean> {
-    const [actionString, relyingParty, userName] = requestData;
     let action = actionStringToAction.get(actionString)!;
     console.assert(
         action !== undefined,

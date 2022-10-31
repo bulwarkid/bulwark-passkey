@@ -5,7 +5,7 @@ export function registerHandler(
     handler: (...data: any) => Promise<any>
 ) {
     EventsOn(event + "-request", (...data: any) => {
-        handler(data).then((responseData) => {
+        handler(...data).then((responseData) => {
             EventsEmit(event + "-response", responseData);
         });
     });

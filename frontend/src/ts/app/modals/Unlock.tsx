@@ -1,4 +1,5 @@
 import React, { FormEvent } from "react";
+import { Modal } from "../../components/Modal";
 import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
 import { setPassphrase } from "../../data/passphrase";
@@ -60,10 +61,9 @@ export class UnlockModal extends React.Component<
                 </div>
             );
         }
-
+        const title = <TitleBar title="Unlock Vault" />;
         return (
-            <div className="w-screen h-screen flex flex-col">
-                <TitleBar title="Unlock Vault" />
+            <Modal title={title}>
                 <form
                     className="grow flex flex-col items-center justify-center"
                     onSubmit={this.onSubmit_}
@@ -89,7 +89,7 @@ export class UnlockModal extends React.Component<
                         Delete Vault
                     </div>
                 </div>
-            </div>
+            </Modal>
         );
     }
 

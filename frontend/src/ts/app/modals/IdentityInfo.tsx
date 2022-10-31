@@ -6,6 +6,7 @@ import { Identity } from "../../../proto/data";
 import { XIcon } from "../../icons/x";
 import { hideModal } from "../ModalStack";
 import * as identities from "../../data/identities";
+import { Modal } from "../../components/Modal";
 
 type IdentityInfoModalProps = {
     identity: Identity;
@@ -16,21 +17,22 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
         const id = this.props.identity;
         const publicKey = id.publicKey ? bytesToBase64(id.publicKey) : "";
         const hash = id.id ? bytesToBase64(id.id) : "";
+        const title = (
+            <TitleBar
+                title="Identity"
+                leftButton={
+                    <div
+                        className="daisy-btn daisy-btn-ghost daisy-btn-square daisy-btn-sm m-2"
+                        onClick={this.onCancel_}
+                    >
+                        <XIcon />
+                    </div>
+                }
+            />
+        );
         return (
-            <div className="flex flex-col">
-                <TitleBar
-                    title="Identity"
-                    leftButton={
-                        <div
-                            className="daisy-btn daisy-btn-ghost daisy-btn-square daisy-btn-sm m-2"
-                            onClick={this.onCancel_}
-                        >
-                            <XIcon />
-                        </div>
-                    }
-                />
-
-                <div className="m-4">
+            <Modal title={title}>
+                <div className="mb-4">
                     <FormDisplay>
                         <FormData label="ID" value={hash} />
                         <FormData label="Website" value={id.website?.name} />
@@ -46,12 +48,12 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
                     </FormDisplay>
                 </div>
                 <div
-                    className="daisy-btn daisy-btn-error mx-4"
+                    className="daisy-btn daisy-btn-error"
                     onClick={this.delete_}
                 >
                     Delete
                 </div>
-            </div>
+            </Modal>
         );
     }
 

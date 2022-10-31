@@ -1,5 +1,6 @@
 import React, { FormEvent } from "react";
 import { VerticalInputGroup, Input } from "../../components/Input";
+import { Modal } from "../../components/Modal";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { setPassphrase, validatePassphrases } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
@@ -58,9 +59,9 @@ export class NewVaultModal extends React.Component<
                 <TitleBarButton text="Cancel" onClick={this.props.onCancel} />
             );
         }
+        const title = <TitleBar title="New Vault" leftButton={cancelButton} />;
         return (
-            <div className="w-screen h-screen flex flex-col">
-                <TitleBar title="New Vault" leftButton={cancelButton} />
+            <Modal title={title}>
                 <form
                     onSubmit={this.onSubmit_}
                     className="flex flex-col justify-center items-center grow mx-8"
@@ -84,7 +85,7 @@ export class NewVaultModal extends React.Component<
                         className="daisy-btn mt-2"
                     />
                 </form>
-            </div>
+            </Modal>
         );
     }
 

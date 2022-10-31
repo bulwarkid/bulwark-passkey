@@ -1,5 +1,6 @@
 import React from "react";
 import { VerticalInputGroup, Input } from "../../components/Input";
+import { Modal } from "../../components/Modal";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import {
     getPassphrase,
@@ -51,68 +52,61 @@ class EditPassphraseModal extends React.Component<
                 </div>
             );
         }
+        const title = (
+            <TitleBar
+                title="Passphrase"
+                leftButton={
+                    <TitleBarButton text="Cancel" onClick={this.onCancel_} />
+                }
+                rightButton={
+                    <TitleBarButton text="Save" onClick={this.onSubmit_} />
+                }
+            />
+        );
         return (
-            <div>
-                <TitleBar
-                    title="Passphrase"
-                    leftButton={
-                        <TitleBarButton
-                            text="Cancel"
-                            onClick={this.onCancel_}
-                        />
-                    }
-                    rightButton={
-                        <TitleBarButton text="Save" onClick={this.onSubmit_} />
-                    }
-                />
-                <div className="mt-8 w-full px-4 flex flex-col">
-                    {errorMessageDiv}
-                    <div className="daisy-form-control">
-                        <label className="daisy-label">
-                            <span className="daisy-label-text">
-                                Current Passphrase
-                            </span>
-                        </label>
-                        <div className="daisy-input-group">
-                            <input
-                                type={
-                                    this.state.showPassphrase
-                                        ? "text"
-                                        : "password"
-                                }
-                                className="daisy-input daisy-input-bordered daisy-input-md w-full"
-                                value={this.props.oldPassphrase}
-                                disabled
-                            ></input>
-                            <div
-                                className="daisy-btn"
-                                onClick={this.toggleShowPassphrase_}
-                            >
-                                {this.state.showPassphrase ? "Hide" : "Show"}
-                            </div>
+            <Modal title={title}>
+                {errorMessageDiv}
+                <div className="daisy-form-control">
+                    <label className="daisy-label">
+                        <span className="daisy-label-text">
+                            Current Passphrase
+                        </span>
+                    </label>
+                    <div className="daisy-input-group">
+                        <input
+                            type={
+                                this.state.showPassphrase ? "text" : "password"
+                            }
+                            className="daisy-input daisy-input-bordered daisy-input-md w-full"
+                            value={this.props.oldPassphrase}
+                            disabled
+                        ></input>
+                        <div
+                            className="daisy-btn"
+                            onClick={this.toggleShowPassphrase_}
+                        >
+                            {this.state.showPassphrase ? "Hide" : "Show"}
                         </div>
                     </div>
-                    <div className="daisy-form-control">
-                        <label className="daisy-label">
-                            <span className="daisy-label-text">
-                                New Passphrase
-                            </span>
-                        </label>
-                        <VerticalInputGroup>
-                            <Input
-                                inputRef={this.passphraseRef1_}
-                                type="password"
-                                placeholder="New Passphrase"
-                            />
-                            <Input
-                                inputRef={this.passphraseRef2_}
-                                type="password"
-                                placeholder="Confirm Passphrase"
-                            />
-                        </VerticalInputGroup>
-                    </div>
                 </div>
-            </div>
+                <div className="daisy-form-control">
+                    <label className="daisy-label">
+                        <span className="daisy-label-text">New Passphrase</span>
+                    </label>
+                    <VerticalInputGroup>
+                        <Input
+                            inputRef={this.passphraseRef1_}
+                            type="password"
+                            placeholder="New Passphrase"
+                        />
+                        <Input
+                            inputRef={this.passphraseRef2_}
+                            type="password"
+                            placeholder="Confirm Passphrase"
+                        />
+                    </VerticalInputGroup>
+                </div>
+            </Modal>
         );
     }
 
