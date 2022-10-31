@@ -10,7 +10,7 @@ import {
 import * as modal from "../ModalStack";
 
 export async function showUpdatePassphrase() {
-    const oldPassphrase = await getPassphrase();
+    const oldPassphrase = getPassphrase();
     modal.showModal(
         <EditPassphraseModal
             oldPassphrase={oldPassphrase!}
