@@ -40,8 +40,11 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
     render() {
         return (
             <div className="w-screen h-screen flex flex-col">
-                <TitleBar title="Create Account" />
+                <TitleBar title="Sign Up" />
                 <div className="flex flex-col justify-center items-center grow">
+                    <div className="mb-4 text-2xl font-bold text-center">
+                        Sign Up
+                    </div>
                     <form
                         className="px-4 flex flex-col w-full"
                         onSubmit={this.onSubmit_}
@@ -107,8 +110,9 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
             // TODO: Validate email locally
             return;
         }
-        await signUp(email, passphrase1!);
-        this.props.onCreated(ACCOUNT_VAULT_TYPE);
+        if (await signUp(email, passphrase1!)) {
+            this.props.onCreated(ACCOUNT_VAULT_TYPE);
+        }
     };
 
     onLogin_ = async () => {

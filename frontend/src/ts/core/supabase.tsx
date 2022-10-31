@@ -55,35 +55,57 @@ export async function signIn(
     return null;
 }
 
-export async function signUp(email: string, passphrase: string) {
+export async function signUp(
+    email: string,
+    passphrase: string
+): Promise<boolean> {
     let { data, error } = await supabase.auth.signUp({
         email,
         password: passphrase,
     });
     if (error || !data.user) {
         // TODO: Handle error
-        return;
+        return false;
     }
     if (!data.session) {
         // If we lack a session, we need to wait for email confirmation
         console.assert(!data.user.email_confirmed_at);
         data = await waitForEmailConfirmation(email, passphrase);
+        if (!data.session) {
+            return false;
+        }
     }
     if (!data.user || !data.session) {
         // TODO: Handle error
         LogDebug("Null user or session: " + data);
-        return;
+        return false;
     }
     setPassphrase(passphrase);
+    return true;
 }
 
 async function waitForEmailConfirmation(
     email: string,
     passphrase: string
-): Promise<{ user: User | null; session: Session | null }> {
-    showModal(<WaitForConfirmationModal />);
+): Promise<
+    | { user: User | null; session: Session | null }
+    | { user: null; session: null }
+> {
+    let cancel = false;
+    showModal(
+        <WaitForConfirmationModal
+            onCancel={() => {
+                hideModal();
+                cancel = true;
+            }}
+        />
+    );
     return new Promise((resolve) => {
         setRecurring(async () => {
+            if (cancel) {
+                resolve({ user: null, session: null });
+                return false;
+            }
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password: passphrase,

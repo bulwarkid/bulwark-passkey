@@ -1,3 +1,4 @@
+import { format } from "util";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 
 // TODO: Replace this base64 mess with something more efficient/better
@@ -44,4 +45,5 @@ declare global {
 
 console.NOCOMMIT = (...data: any[]) => {
     console.log(...data);
+    LogDebug(JSON.stringify(data));
 };
