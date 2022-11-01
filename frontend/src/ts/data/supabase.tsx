@@ -6,9 +6,10 @@ import {
 } from "@supabase/supabase-js";
 import { hideModal, showModal } from "../app/ModalStack";
 import { WaitForConfirmationModal } from "../app/signup/WaitForConfirmation";
-import { changePassphrase, setPassphrase } from "../data/passphrase";
+import { changePassphrase, setPassphrase } from "./passphrase";
 import { LogDebug } from "../wailsjs/runtime/runtime";
-import { setRecurring } from "./util";
+import { setRecurring } from "../core/util";
+import { listenToRemoteUpdates, unlistenToRemoteUpdates } from "./identities";
 
 const SUPABASE_URL = "https://jdikcjgzpiezpacsqlkf.supabase.co";
 const SUPABASE_PUBLIC_KEY =
@@ -27,10 +28,12 @@ export function setupSupabase() {
         if (event === "SIGNED_IN") {
             user_ = session!.user;
             session_ = session!;
+            listenToRemoteUpdates();
         }
         if (event === "SIGNED_OUT") {
             user_ = null;
             session_ = null;
+            unlistenToRemoteUpdates();
         }
     });
 }
@@ -128,6 +131,10 @@ export async function signOut() {
         return;
     }
     // TODO: Handle notifying backend that user is signed out
+}
+
+export function supabaseUserId(): string {
+    return user_!.id;
 }
 
 export async function getEmail(): Promise<string | undefined> {

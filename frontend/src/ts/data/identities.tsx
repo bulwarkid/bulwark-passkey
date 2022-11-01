@@ -2,8 +2,9 @@ import { callRPC } from "../core/rpc";
 import { base64ToBytes, bytesToBase64, setImmediate } from "../core/util";
 import { Identity } from "../../proto/data";
 import { LogDebug } from "../wailsjs/runtime/runtime";
-import { supabase } from "../core/supabase";
+import { supabase, supabaseUserId } from "./supabase";
 import { LogError } from "../wailsjs/runtime/runtime";
+import { RealtimeChannel } from "@supabase/realtime-js";
 
 let identities: Identity[] = [];
 
@@ -23,6 +24,31 @@ export function listenForUpdate(
 
 export function unlistenForUpdate(index: number) {
     updateCallbacks.delete(index);
+}
+
+let remoteSubscription_: RealtimeChannel | null = null;
+
+export function listenToRemoteUpdates() {
+    const userId = supabaseUserId();
+    remoteSubscription_ = supabase
+        .channel(`public:vaults:user_id=eq.${userId}`)
+        .on(
+            "postgres_changes",
+            {
+                event: "UPDATE",
+                schema: "public",
+                table: "vaults",
+                filter: `user_id=eq.${userId}`,
+            },
+            (payload) => {
+                callRPC("remoteVaultUpdated", payload.new.data);
+            }
+        )
+        .subscribe();
+}
+
+export function unlistenToRemoteUpdates() {
+    remoteSubscription_?.unsubscribe();
 }
 
 export async function update() {

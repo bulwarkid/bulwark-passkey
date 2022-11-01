@@ -1,5 +1,5 @@
 import React from "react";
-import { EditPassphraseModal } from "./modals/Passphrase";
+import { EditPassphraseModal } from "./modals/EditPassphrase";
 import { TitleBar } from "../components/TitleBar";
 import { FormDisplay, FormLink } from "../components/FormDisplay";
 import { hideModal, showModal } from "./ModalStack";
@@ -9,7 +9,7 @@ import {
     isLoggedIn,
     updateAccountPassphrase,
     updateEmail,
-} from "../core/supabase";
+} from "../data/supabase";
 import {
     changePassphrase,
     getPassphrase,

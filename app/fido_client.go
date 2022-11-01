@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/json"
 	"math/big"
 	"time"
 
@@ -155,7 +157,20 @@ func (client *Client) loadData(vaultType string, data []byte) {
 	client.save()
 }
 
-func (client *Client) save() {
+func (client *Client) updateData(data []byte) {
+	config := client.toDeviceConfig()
+	newConfig, err := vfido.DecryptWithPassphrase(data, client.passphrase())
+	checkErr(err, "Could not decrypt new device state")
+	configBytes, err := json.Marshal(config)
+	checkErr(err, "Could not encode in JSON")
+	newConfigBytes, err := json.Marshal(newConfig)
+	checkErr(err, "Could not encode in JSON")
+	if !bytes.Equal(configBytes, newConfigBytes) {
+		client.loadData(accountVaultType, data)
+	}
+}
+
+func (client *Client) toDeviceConfig() *vfido.FIDODeviceConfig {
 	privateKey, err := x509.MarshalECPrivateKey(client.certPrivateKey)
 	checkErr(err, "Could not encode private key")
 	config := vfido.FIDODeviceConfig{
@@ -165,8 +180,13 @@ func (client *Client) save() {
 		EncryptionKey:          client.encryptionKey,
 		Sources:                client.vault.Export(),
 	}
-	stateBytes, err := vfido.EncryptWithPassphrase(config, client.passphrase())
-	checkErr(err, "Could not encode device state")
+	return &config
+}
+
+func (client *Client) save() {
+	config := client.toDeviceConfig()
+	stateBytes, err := vfido.EncryptWithPassphrase(*config, client.passphrase())
+	checkErr(err, "Could not encrypt device state")
 	saveVaultToFile(VaultFile{VaultType: client.vaultType, Data: stateBytes})
 	updateData()
 	storeRemoteVaultJSON(string(stateBytes))

@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { App, setAppRef } from "./app/App";
 import "./app/backend-interface";
-import { setupSupabase } from "./core/supabase";
+import { setupSupabase } from "./data/supabase";
 import "./core/debug";
 
 const root = ReactDOM.createRoot(

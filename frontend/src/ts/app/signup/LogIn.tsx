@@ -2,7 +2,7 @@ import React, { FormEvent } from "react";
 import { Input, VerticalInputGroup } from "../../components/Input";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { hideModal, showModal } from "../ModalStack";
-import * as supabase from "../../core/supabase";
+import * as supabase from "../../data/supabase";
 import { promptUser } from "../modals/Confirm";
 import { ACCOUNT_VAULT_TYPE, LOCAL_VAULT_TYPE } from "../../data/passphrase";
 import { unlockLocalVault } from "../modals/Unlock";

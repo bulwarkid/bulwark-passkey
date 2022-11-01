@@ -51,6 +51,7 @@ func loadFrontendHandlers() {
 	registerHandler(app.ctx, "deleteIdentity", handleDeleteIdentity)
 	registerHandler(app.ctx, "passphraseChanged", handlePassphraseChanged)
 	registerHandler(app.ctx, "tryPassphrase", handleTryPassphrase)
+	registerHandler(app.ctx, "remoteVaultUpdated", handleRemoteVaultUpdated)
 }
 
 func demoIdentities() [][]byte {
@@ -139,4 +140,10 @@ func handleTryPassphrase(args ...interface{}) interface{} {
 	}
 	_, err := vfido.DecryptWithPassphrase(data.Data, passphrase)
 	return err == nil
+}
+
+func handleRemoteVaultUpdated(args ...interface{}) interface{} {
+	vaultData := args[0].(string)
+	app.client.updateData([]byte(vaultData))
+	return nil
 }

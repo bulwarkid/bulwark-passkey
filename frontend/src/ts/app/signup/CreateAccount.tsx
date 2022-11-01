@@ -1,7 +1,7 @@
 import React, { FormEvent } from "react";
 import { Input, InputLabel, VerticalInputGroup } from "../../components/Input";
 import { TitleBar } from "../../components/TitleBar";
-import { signUp } from "../../core/supabase";
+import { signUp } from "../../data/supabase";
 import {
     ACCOUNT_VAULT_TYPE,
     LOCAL_VAULT_TYPE,
