@@ -9,10 +9,11 @@ import { unlockLocalVault } from "../modals/Unlock";
 import { LogError } from "../../wailsjs/runtime/runtime";
 
 export async function logInToExistingVault(
-    vaultType: string
+    vaultType: string,
+    vaultData: string
 ): Promise<boolean> {
     if (vaultType == LOCAL_VAULT_TYPE) {
-        return await unlockLocalVault();
+        return await unlockLocalVault(vaultData);
     } else if (vaultType == ACCOUNT_VAULT_TYPE) {
         return new Promise<boolean>((resolve) => {
             showModal(

@@ -20,8 +20,8 @@ func approveClientAction(action string, relyingParty string, userName string) bo
 	return response.(bool)
 }
 
-func logIn(vaultType string) bool {
-	response := callRPC(app.ctx, "logIn", vaultType)
+func logIn(vaultType string, vaultData string) bool {
+	response := callRPC(app.ctx, "logIn", vaultType, vaultData)
 	return response.(bool)
 }
 
@@ -37,13 +37,13 @@ func getPassphrase() string {
 	return response.(string)
 }
 
-func fetchRemoteVaultJSON() string {
-	response := callRPC(app.ctx, "fetchRemoteVault")
-	return response.(string)
+func fetchRemoteVaultJSON() (string, string) {
+	response := callRPC(app.ctx, "fetchRemoteVault").([]interface{})
+	return response[0].(string), response[1].(string)
 }
 
-func storeRemoteVaultJSON(vaultJSON string) {
-	callRPC(app.ctx, "storeRemoteVault", vaultJSON)
+func storeRemoteVaultJSON(vaultJSON string, lastUpdated string) {
+	callRPC(app.ctx, "storeRemoteVault", vaultJSON, lastUpdated)
 }
 
 func loadFrontendHandlers() {
@@ -128,22 +128,20 @@ func handleDeleteIdentity(data ...interface{}) interface{} {
 }
 
 func handlePassphraseChanged(data ...interface{}) interface{} {
-	app.client.save()
+	app.client.passphraseChanged()
 	return nil
 }
 
 func handleTryPassphrase(args ...interface{}) interface{} {
 	passphrase := args[0].(string)
-	data := readVaultFromFile()
-	if data == nil {
-		return true
-	}
-	_, err := vfido.DecryptWithPassphrase(data.Data, passphrase)
+	data := args[1].(string)
+	_, err := vfido.DecryptWithPassphrase([]byte(data), passphrase)
 	return err == nil
 }
 
 func handleRemoteVaultUpdated(args ...interface{}) interface{} {
 	vaultData := args[0].(string)
-	app.client.updateData([]byte(vaultData))
+	lastUpdated := args[1].(string)
+	app.client.updateData([]byte(vaultData), lastUpdated)
 	return nil
 }

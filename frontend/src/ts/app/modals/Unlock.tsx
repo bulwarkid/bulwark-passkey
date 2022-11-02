@@ -6,14 +6,18 @@ import { setPassphrase } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 import { promptUser } from "./Confirm";
 
-async function tryPassphrase(passphrase: string): Promise<boolean> {
-    return await callRPC("tryPassphrase", passphrase);
+async function tryPassphrase(
+    passphrase: string,
+    vaultData: string
+): Promise<boolean> {
+    return await callRPC("tryPassphrase", passphrase, vaultData);
 }
 
-export async function unlockLocalVault(): Promise<boolean> {
+export async function unlockLocalVault(vaultData: string): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
         showModal(
             <UnlockModal
+                vaultData={vaultData}
                 onUnlock={(passphrase: string) => {
                     setPassphrase(passphrase);
                     hideModal();
@@ -29,6 +33,7 @@ export async function unlockLocalVault(): Promise<boolean> {
 }
 
 type UnlockModalProps = {
+    vaultData: string;
     onUnlock: (passphrase: string) => void;
     onDeleteVault: () => void;
 };
@@ -96,7 +101,7 @@ export class UnlockModal extends React.Component<
     onSubmit_ = async (event: FormEvent) => {
         event.preventDefault();
         const passphrase = this.inputRef_.current!.value;
-        const success = await tryPassphrase(passphrase);
+        const success = await tryPassphrase(passphrase, this.props.vaultData);
         if (!success) {
             this.setState({ error: true });
         } else {

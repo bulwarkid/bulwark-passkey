@@ -10,8 +10,9 @@ var localVaultType string = "local"
 var accountVaultType string = "account"
 
 type VaultFile struct {
-	VaultType string `json:"type"`
-	Data      []byte `json:"data"`
+	VaultType   string `json:"type"`
+	Data        []byte `json:"data"`
+	LastUpdated string `json:"last_updated"`
 }
 
 func configDir() string {

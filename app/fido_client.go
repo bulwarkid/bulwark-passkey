@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
-	"encoding/json"
 	"math/big"
 	"time"
 
@@ -16,6 +14,7 @@ import (
 
 type Client struct {
 	vaultType             string
+	lastUpdated           time.Time
 	vault                 *vfido.IdentityVault
 	certificateAuthority  *x509.Certificate
 	certPrivateKey        *ecdsa.PrivateKey
@@ -31,6 +30,7 @@ func newClient() *Client {
 
 func (client *Client) NewCredentialSource(relyingParty vfido.PublicKeyCredentialRpEntity, user vfido.PublicKeyCrendentialUserEntity) *vfido.CredentialSource {
 	id := client.vault.NewIdentity(relyingParty, user)
+	client.lastUpdated = now()
 	client.save()
 	return id
 }
@@ -44,6 +44,7 @@ func (client *Client) GetAssertionSource(relyingPartyID string, allowList []vfid
 	// TODO: Allow user to choose credential source
 	credentialSource := sources[0]
 	credentialSource.SignatureCounter++
+	client.lastUpdated = now()
 	client.save()
 	return credentialSource
 }
@@ -61,6 +62,7 @@ func (client *Client) NewPrivateKey() *ecdsa.PrivateKey {
 func (client *Client) NewAuthenticationCounterId() uint32 {
 	num := client.authenticationCounter
 	client.authenticationCounter++
+	client.lastUpdated = now()
 	return num
 }
 
@@ -72,8 +74,8 @@ func (client *Client) CreateAttestationCertificiate(privateKey *ecdsa.PrivateKey
 			Organization: []string{"Self-Signed Virtual FIDO"},
 			Country:      []string{"US"},
 		},
-		NotBefore:   time.Now(),
-		NotAfter:    time.Now().AddDate(10, 0, 0),
+		NotBefore:   now(),
+		NotAfter:    now().AddDate(10, 0, 0),
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
 		KeyUsage:    x509.KeyUsageDigitalSignature,
 	}
@@ -117,8 +119,8 @@ func (client *Client) configureNewDevice(vaultType string) {
 			Organization: []string{"Bulwark Passkey"},
 			Country:      []string{"US"},
 		},
-		NotBefore:             time.Now(),
-		NotAfter:              time.Now().AddDate(10, 0, 0),
+		NotBefore:             now(),
+		NotAfter:              now().AddDate(10, 0, 0),
 		IsCA:                  true,
 		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
 		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
@@ -132,6 +134,7 @@ func (client *Client) configureNewDevice(vaultType string) {
 	checkErr(err, "Could not parse cert authority")
 	encryptionKey := randomBytes(32)
 	client.vaultType = vaultType
+	client.lastUpdated = now()
 	client.authenticationCounter = 0
 	client.certificateAuthority = certificateAuthority
 	client.certPrivateKey = privateKey
@@ -140,7 +143,10 @@ func (client *Client) configureNewDevice(vaultType string) {
 	client.save()
 }
 
-func (client *Client) loadData(vaultType string, data []byte) {
+func (client *Client) loadData(vaultType string, data []byte, lastUpdated string) {
+	lastUpdatedTime := now()
+	err := (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
+	checkErr(err, "Could not parse time")
 	config, err := vfido.DecryptWithPassphrase(data, client.passphrase())
 	checkErr(err, "Could not decrypt vault file")
 	cert, err := x509.ParseCertificate(config.AttestationCertificate)
@@ -148,6 +154,7 @@ func (client *Client) loadData(vaultType string, data []byte) {
 	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
 	checkErr(err, "Could not parse private key")
 	client.vaultType = vaultType
+	client.lastUpdated = lastUpdatedTime
 	client.authenticationCounter = config.AuthenticationCounter
 	client.certificateAuthority = cert
 	client.certPrivateKey = privateKey
@@ -157,17 +164,25 @@ func (client *Client) loadData(vaultType string, data []byte) {
 	client.save()
 }
 
-func (client *Client) updateData(data []byte) {
-	config := client.toDeviceConfig()
-	newConfig, err := vfido.DecryptWithPassphrase(data, client.passphrase())
-	checkErr(err, "Could not decrypt new device state")
-	configBytes, err := json.Marshal(config)
-	checkErr(err, "Could not encode in JSON")
-	newConfigBytes, err := json.Marshal(newConfig)
-	checkErr(err, "Could not encode in JSON")
-	if !bytes.Equal(configBytes, newConfigBytes) {
-		client.loadData(accountVaultType, data)
+func (client *Client) updateData(data []byte, lastUpdated string) {
+	newLastUpdated := parseTimestamp(lastUpdated)
+	if !client.lastUpdated.Before(*newLastUpdated) {
+		return
 	}
+	_, err := vfido.DecryptWithPassphrase(data, client.passphrase())
+	if err != nil {
+		// Passphrase might have changed, get user to log in again
+		eject := logIn(accountVaultType, string(data))
+		if eject {
+			deleteVaultFile()
+			app.createNewVault()
+		} else {
+			_, err = vfido.DecryptWithPassphrase(data, client.passphrase())
+			checkErr(err, "Could not decrypt new vault")
+		}
+	}
+	client.loadData(accountVaultType, data, lastUpdated)
+
 }
 
 func (client *Client) toDeviceConfig() *vfido.FIDODeviceConfig {
@@ -187,13 +202,18 @@ func (client *Client) save() {
 	config := client.toDeviceConfig()
 	stateBytes, err := vfido.EncryptWithPassphrase(*config, client.passphrase())
 	checkErr(err, "Could not encrypt device state")
-	saveVaultToFile(VaultFile{VaultType: client.vaultType, Data: stateBytes})
+	saveVaultToFile(VaultFile{VaultType: client.vaultType, Data: stateBytes, LastUpdated: toTimestamp(client.lastUpdated)})
 	updateData()
-	storeRemoteVaultJSON(string(stateBytes))
+	storeRemoteVaultJSON(string(stateBytes), toTimestamp(client.lastUpdated))
 }
 
 func (client *Client) passphrase() string {
 	passphrase := getPassphrase()
 	assert(passphrase != "", "Passphrase cannot be empty")
 	return passphrase
+}
+
+func (client *Client) passphraseChanged() {
+	client.lastUpdated = now()
+	client.save()
 }

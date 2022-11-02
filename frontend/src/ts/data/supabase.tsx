@@ -26,8 +26,10 @@ export function setupSupabase() {
     supabase = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
     supabase.auth.onAuthStateChange((event, session) => {
         if (event === "SIGNED_IN") {
+            // SIGNED_IN can trigger many times as the token is refreshed
             user_ = session!.user;
             session_ = session!;
+            unlistenToRemoteUpdates();
             listenToRemoteUpdates();
         }
         if (event === "SIGNED_OUT") {

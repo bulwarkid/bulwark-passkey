@@ -41,7 +41,11 @@ export function listenToRemoteUpdates() {
                 filter: `user_id=eq.${userId}`,
             },
             (payload) => {
-                callRPC("remoteVaultUpdated", payload.new.data);
+                callRPC(
+                    "remoteVaultUpdated",
+                    payload.new.data,
+                    payload.new.updated_at
+                );
             }
         )
         .subscribe();
@@ -76,7 +80,7 @@ export async function deleteIdentity(id: Uint8Array) {
     return await callRPC("deleteIdentity", bytesToBase64(id));
 }
 
-export async function storeRemoteVault(jsonData: string) {
+export async function storeRemoteVault(jsonData: string, lastUpdated: string) {
     const userResponse = await supabase.auth.getUser();
     const user = userResponse.data.user;
     if (!user) {
@@ -85,7 +89,10 @@ export async function storeRemoteVault(jsonData: string) {
     }
     const { error } = await supabase
         .from("vaults")
-        .upsert({ data: jsonData, user_id: user.id }, { onConflict: "user_id" })
+        .upsert(
+            { data: jsonData, user_id: user.id, updated_at: lastUpdated },
+            { onConflict: "user_id" }
+        )
         .select();
     if (error) {
         LogError(error.message);
@@ -93,14 +100,14 @@ export async function storeRemoteVault(jsonData: string) {
     }
 }
 
-export async function fetchRemoteVault(): Promise<string> {
+export async function fetchRemoteVault(): Promise<[string, string]> {
     const { data, error, status, statusText } = await supabase
         .from("vaults")
-        .select("data");
+        .select("data, updated_at");
     if (error || data.length === 0) {
         // TODO: Handle error
         LogDebug(error ? error.message : "No data returned from remote fetch");
-        return "";
+        return ["", ""];
     }
-    return data[0].data;
+    return [data[0].data, data[0].updated_at];
 }
