@@ -16,77 +16,7 @@ import {
     setPassphrase,
 } from "../data/passphrase";
 import { XIcon } from "../icons/x";
-
-class AccountSettings extends React.Component {
-    render() {
-        return (
-            <div className="w-screen h-screen">
-                <TitleBar
-                    title="Account Settings"
-                    leftButton={
-                        <div
-                            className="daisy-btn daisy-btn-ghost daisy-btn-square daisy-btn-sm m-2"
-                            onClick={this.onCancel_}
-                        >
-                            <XIcon />
-                        </div>
-                    }
-                />
-                <div className="p-4">
-                    <FormDisplay>
-                        <FormLink text="Email" onClick={this.updateEmail_} />
-                        <FormLink
-                            text="Passphrase"
-                            onClick={this.updatePassphrase_}
-                        />
-                    </FormDisplay>
-                </div>
-            </div>
-        );
-    }
-
-    onCancel_ = () => {
-        hideModal();
-    };
-
-    updateEmail_ = async () => {
-        const email = await getEmail();
-        if (email) {
-            showModal(
-                <EditEmailModal
-                    currentEmail={email}
-                    emailUpdated={async (newEmail: string) => {
-                        if (await updateEmail(newEmail)) {
-                            hideModal();
-                        }
-                    }}
-                    onCancel={() => {
-                        hideModal();
-                    }}
-                />
-            );
-        }
-    };
-
-    updatePassphrase_ = () => {
-        const passphrase = getPassphrase();
-        if (passphrase) {
-            showModal(
-                <EditPassphraseModal
-                    oldPassphrase={passphrase}
-                    passphraseUpdated={async (newPassphrase: string) => {
-                        if (await updateAccountPassphrase(newPassphrase)) {
-                            hideModal();
-                        }
-                    }}
-                    onCancel={() => {
-                        hideModal();
-                    }}
-                />
-            );
-        }
-    };
-}
+import { AboutModal } from "./modals/About";
 
 export class Settings extends React.Component {
     render() {
@@ -109,7 +39,7 @@ export class Settings extends React.Component {
                 />
             );
         }
-        settings.push(<FormLink text="About" onClick={() => {}} />);
+        settings.push(<FormLink text="About" onClick={this.showAbout_} />);
         return (
             <div className="w-full">
                 <TitleBar title="Settings" />
@@ -136,8 +66,14 @@ export class Settings extends React.Component {
         );
     };
 
-    showAccountSettings_ = () => {
-        showModal(<AccountSettings />);
+    showAbout_ = () => {
+        showModal(
+            <AboutModal
+                onCancel={() => {
+                    hideModal();
+                }}
+            />
+        );
     };
 
     updateEmail_ = async () => {
