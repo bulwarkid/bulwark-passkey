@@ -1,7 +1,6 @@
 import React from "react";
 import { EditPassphraseModal } from "./modals/EditPassphrase";
 import { TitleBar } from "../components/TitleBar";
-import { FormDisplay, FormLink } from "../components/FormDisplay";
 import { hideModal, showModal } from "./ModalStack";
 import { EditEmailModal } from "./modals/EditEmail";
 import {
@@ -10,47 +9,50 @@ import {
     updateAccountPassphrase,
     updateEmail,
 } from "../data/supabase";
-import {
-    changePassphrase,
-    getPassphrase,
-    setPassphrase,
-} from "../data/passphrase";
-import { XIcon } from "../icons/x";
+import { changePassphrase, getPassphrase } from "../data/passphrase";
 import { AboutModal } from "./modals/About";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
 
 export class Settings extends React.Component {
     render() {
         let settings = [];
         if (isLoggedIn()) {
             settings.push(
-                <FormLink text="Account Email" onClick={this.updateEmail_} />
+                <SettingsItem
+                    text="Account Email"
+                    onClick={this.updateEmail_}
+                />
             );
             settings.push(
-                <FormLink
+                <SettingsItem
                     text="Account Passphrase"
-                    onClick={this.updatePassphrase_}
+                    onClick={this.updateAccountPassphrase_}
                 />
             );
         } else {
             settings.push(
-                <FormLink
+                <SettingsItem
                     text="Passphrase"
-                    onClick={this.showUpdatePassphrase_}
+                    onClick={this.updateLocalPassphrase_}
                 />
             );
         }
-        settings.push(<FormLink text="About" onClick={this.showAbout_} />);
+        settings.push(<SettingsItem text="About" onClick={this.showAbout_} />);
         return (
             <div className="w-full">
                 <TitleBar title="Settings" />
                 <div className="p-4">
-                    <FormDisplay>{settings}</FormDisplay>
+                    <div className="overflow-hidden bg-white shadow rounded-md">
+                        <ul role="list" className="divide-y divide-gray-200">
+                            {settings}
+                        </ul>
+                    </div>
                 </div>
             </div>
         );
     }
 
-    showUpdatePassphrase_ = () => {
+    updateLocalPassphrase_ = () => {
         const oldPassphrase = getPassphrase();
         showModal(
             <EditPassphraseModal
@@ -95,7 +97,7 @@ export class Settings extends React.Component {
         }
     };
 
-    updatePassphrase_ = () => {
+    updateAccountPassphrase_ = () => {
         const passphrase = getPassphrase();
         if (passphrase) {
             showModal(
@@ -113,4 +115,38 @@ export class Settings extends React.Component {
             );
         }
     };
+}
+
+type SettingsItemProps = {
+    text: string;
+    onClick: () => void;
+};
+
+class SettingsItem extends React.Component<SettingsItemProps> {
+    render() {
+        return (
+            <li>
+                <a
+                    onClick={this.props.onClick}
+                    className="block hover:bg-gray-50"
+                >
+                    <div className="flex items-center px-4 py-4">
+                        <div className="min-w-0 flex-1">
+                            <div className="truncate">
+                                <div className="flex text-sm">
+                                    {this.props.text}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="ml-5 flex-shrink-0">
+                            <ChevronRightIcon
+                                className="h-5 w-5 text-gray-400"
+                                aria-hidden="true"
+                            />
+                        </div>
+                    </div>
+                </a>
+            </li>
+        );
+    }
 }

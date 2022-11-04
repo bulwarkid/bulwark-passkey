@@ -4,8 +4,11 @@
     "private": true,
     "main": "electron/index.js",
     "dependencies": {
+        "@headlessui/react": "^1.7.4",
+        "@heroicons/react": "^2.0.13",
         "@protobuf-ts/plugin": "^2.8.1",
         "@supabase/supabase-js": "^2.0.4",
+        "@tailwindcss/forms": "^0.5.3",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",

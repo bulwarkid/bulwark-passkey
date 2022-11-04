@@ -3,6 +3,7 @@ import { LockIcon } from "../icons/lock";
 import { SettingsIcon } from "../icons/settings";
 import { IdentityList } from "./IdentityList";
 import { ModalStack, setModalContainer } from "./ModalStack";
+import { Popups, setPopups } from "./Popups";
 import { Settings } from "./Settings";
 import { TabBar } from "./TabBar";
 
@@ -36,11 +37,13 @@ type AppState = {
 
 export class App extends React.Component<{}, AppState> {
     private modalRef_ = React.createRef<ModalStack>();
+    private popupsRef_ = React.createRef<Popups>();
     private tabs_: Tab[];
     constructor(props: {}) {
         super(props);
         this.tabs_ = defaultTabs;
         setModalContainer(this.modalRef_);
+        setPopups(this.popupsRef_);
         this.state = {
             activeTab: this.tabs_[0].id,
             activeModal: null,
@@ -70,6 +73,7 @@ export class App extends React.Component<{}, AppState> {
                     </div>
                 </div>
                 <ModalStack ref={this.modalRef_} />
+                <Popups ref={this.popupsRef_} />
             </div>
         );
     }

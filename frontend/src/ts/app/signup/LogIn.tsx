@@ -156,7 +156,7 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
     };
 
     onLogOut_ = async () => {
-        if (await promptUser("Log out and delete local data?")) {
+        if (await promptUser("Log out and delete local cache?", "Log Out")) {
             this.props.onLogOut!();
         }
     };
