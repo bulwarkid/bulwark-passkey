@@ -1,4 +1,3 @@
-import { format } from "util";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 
 // TODO: Replace this base64 mess with something more efficient/better

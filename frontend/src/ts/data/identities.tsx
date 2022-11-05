@@ -101,7 +101,7 @@ export async function storeRemoteVault(jsonData: string, lastUpdated: string) {
 }
 
 export async function fetchRemoteVault(): Promise<[string, string]> {
-    const { data, error, status, statusText } = await supabase
+    const { data, error } = await supabase
         .from("vaults")
         .select("data, updated_at");
     if (error || data.length === 0) {

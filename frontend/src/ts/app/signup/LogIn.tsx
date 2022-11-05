@@ -12,9 +12,9 @@ export async function logInToExistingVault(
     vaultType: string,
     vaultData: string
 ): Promise<boolean> {
-    if (vaultType == LOCAL_VAULT_TYPE) {
+    if (vaultType === LOCAL_VAULT_TYPE) {
         return await unlockLocalVault(vaultData);
-    } else if (vaultType == ACCOUNT_VAULT_TYPE) {
+    } else if (vaultType === ACCOUNT_VAULT_TYPE) {
         return new Promise<boolean>((resolve) => {
             showModal(
                 <LogInModal
@@ -104,7 +104,7 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
             );
         }
         return (
-            <div className="w-screen h-screen flex flex-col">
+            <div className="w-screen h-screen flex flex-col bg-gray-200">
                 <TitleBar title="Log In" leftButton={cancelButton} />
                 <div className="grow flex flex-col m-8 justify-center items-center">
                     <form className="self-stretch" onSubmit={this.onSubmit_}>

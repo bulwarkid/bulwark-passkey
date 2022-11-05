@@ -1,4 +1,22 @@
 import React from "react";
+import { XIcon } from "../icons/x";
+
+type TitleBarCloseButtonProps = {
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+};
+
+export class TitleBarCloseButton extends React.Component<TitleBarCloseButtonProps> {
+    render() {
+        return (
+            <div
+                className="daisy-btn daisy-btn-sm daisy-btn-ghost"
+                onClick={this.props.onClick}
+            >
+                <XIcon />
+            </div>
+        );
+    }
+}
 
 type TitleBarButtonProps = {
     text: string;

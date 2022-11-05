@@ -1,5 +1,3 @@
-import { fetchRemoteVault, storeRemoteVault } from "../data/identities";
-
 export const DEBUG = true;
 
 (() => {

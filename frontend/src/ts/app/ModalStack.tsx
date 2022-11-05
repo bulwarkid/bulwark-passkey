@@ -82,16 +82,26 @@ class ModalContainer extends React.Component<ModalContainerProps, ModalState> {
         const style = {
             zIndex: this.props.zIndex,
         };
+        let backdrop;
         let modalClassName =
-            "w-screen h-screen absolute modal bg-gray-200 pointer-events-auto";
+            "w-screen h-screen absolute modal pointer-events-auto";
         if (this.state.activeModal && this.state.isModalActive) {
             modalClassName += " modal-active";
+            backdrop = (
+                <div
+                    className="w-screen h-screen absolute top-0 bg-gray-500 bg-opacity-75"
+                    style={{ zIndex: this.props.zIndex - 1 }}
+                />
+            );
         } else {
             modalClassName += " modal-inactive";
         }
         return (
-            <div style={style} className={modalClassName}>
-                {this.state.activeModal}
+            <div>
+                {backdrop}
+                <div style={style} className={modalClassName}>
+                    {this.state.activeModal}
+                </div>
             </div>
         );
     }

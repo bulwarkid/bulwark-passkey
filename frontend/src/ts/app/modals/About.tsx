@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "../../components/Modal";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
-import { Center } from "../../components/Util";
 
 type AboutModalProps = {
     onCancel: () => void;

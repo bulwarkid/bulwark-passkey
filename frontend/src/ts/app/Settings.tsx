@@ -133,7 +133,7 @@ class SettingsItem extends React.Component<SettingsItemProps> {
                     <div className="flex items-center px-4 py-4">
                         <div className="min-w-0 flex-1">
                             <div className="truncate">
-                                <div className="flex text-sm">
+                                <div className="flex text-md">
                                     {this.props.text}
                                 </div>
                             </div>
