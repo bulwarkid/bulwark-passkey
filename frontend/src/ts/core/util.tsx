@@ -36,6 +36,18 @@ export function setRecurring(callback: () => Promise<boolean>, time: number) {
     setTimeout(recurrence, time);
 }
 
+export function classNames(
+    className: string,
+    optionals?: { [key: string]: boolean }
+) {
+    for (const name in optionals) {
+        if (optionals[name]) {
+            className = className + " " + name;
+        }
+    }
+    return className;
+}
+
 declare global {
     interface Console {
         NOCOMMIT(...data: any[]): void;

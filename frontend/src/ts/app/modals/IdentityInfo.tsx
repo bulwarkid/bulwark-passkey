@@ -1,12 +1,13 @@
 import React from "react";
 import { FormDisplay, FormData } from "../../components/FormDisplay";
 import { TitleBar } from "../../components/TitleBar";
-import { bytesToBase64 } from "../../core/util";
+import { bytesToBase64, classNames } from "../../core/util";
 import { Identity } from "../../../proto/data";
 import { XIcon } from "../../icons/x";
 import { hideModal } from "../ModalStack";
 import * as identities from "../../data/identities";
-import { Modal } from "../../components/Modal";
+import { CardModal, CardModalTitle, Modal } from "../../components/Modal";
+import { CalendarDaysIcon } from "@heroicons/react/20/solid";
 
 type IdentityInfoModalProps = {
     identity: Identity;
@@ -17,43 +18,59 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
         const id = this.props.identity;
         const publicKey = id.publicKey ? bytesToBase64(id.publicKey) : "";
         const hash = id.id ? bytesToBase64(id.id) : "";
-        const title = (
-            <TitleBar
-                title="Identity"
-                leftButton={
-                    <div
-                        className="daisy-btn daisy-btn-ghost daisy-btn-square daisy-btn-sm m-2"
+        let content = (
+            <div className="flex flex-col w-full justify-center items-center">
+                <dl className="w-full">
+                    <DescriptionListItem label="ID" value={hash} dark={true} />
+                    <DescriptionListItem
+                        label="Website"
+                        value={id.website?.name}
+                    />
+                    <DescriptionListItem
+                        label="User Name"
+                        value={id.user?.displayName}
+                        dark={true}
+                    />
+                    <DescriptionListItem label="Public Key" value={publicKey} />
+                    <DescriptionListItem
+                        label="Signature Counter"
+                        value={id.signatureCounter?.toString()}
+                        dark={true}
+                    />
+                </dl>
+            </div>
+        );
+        let title = (
+            <CardModalTitle
+                title="Info"
+                button={
+                    <button
+                        type="button"
+                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         onClick={this.onCancel_}
                     >
-                        <XIcon />
-                    </div>
+                        Close
+                    </button>
                 }
             />
         );
-        return (
-            <Modal title={title}>
-                <div className="mb-4">
-                    <FormDisplay>
-                        <FormData label="ID" value={hash} />
-                        <FormData label="Website" value={id.website?.name} />
-                        <FormData
-                            label="User Name"
-                            value={id.user?.displayName}
-                        />
-                        <FormData label="Public Key" value={publicKey} />
-                        <FormData
-                            label="Signature Counter"
-                            value={id.signatureCounter?.toString()}
-                        />
-                    </FormDisplay>
-                </div>
-                <div
-                    className="daisy-btn daisy-btn-error"
+        let buttons = (
+            <div className="flex w-full justify-end px-4 py-4 sm:px-6">
+                <button
+                    type="button"
+                    className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     onClick={this.delete_}
                 >
                     Delete
-                </div>
-            </Modal>
+                </button>
+            </div>
+        );
+        return (
+            <CardModal>
+                {title}
+                {content}
+                {buttons}
+            </CardModal>
         );
     }
 
@@ -69,4 +86,28 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
     onCancel_ = () => {
         hideModal();
     };
+}
+
+class DescriptionListItem extends React.Component<{
+    label?: string;
+    value?: string;
+    dark?: boolean;
+}> {
+    render() {
+        return (
+            <div
+                className={classNames("px-4 py-3 grid grid-cols-3 gap-4", {
+                    "bg-gray-50": !!this.props.dark,
+                    "bg-white": !this.props.dark,
+                })}
+            >
+                <dt className="text-sm font-medium text-gray-500">
+                    {this.props.label}
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900 col-span-2 mt-0 text-ellipsis overflow-hidden">
+                    {this.props.value}
+                </dd>
+            </div>
+        );
+    }
 }

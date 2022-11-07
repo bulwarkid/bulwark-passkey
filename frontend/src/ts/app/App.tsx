@@ -1,6 +1,5 @@
+import { Cog6ToothIcon, LockClosedIcon } from "@heroicons/react/20/solid";
 import React from "react";
-import { LockIcon } from "../icons/lock";
-import { SettingsIcon } from "../icons/settings";
 import { IdentityList } from "./IdentityList";
 import { ModalStack, setModalContainer } from "./ModalStack";
 import { Popups, setPopups } from "./Popups";
@@ -16,7 +15,7 @@ export function setAppRef(newApp: React.RefObject<App>) {
 export type Tab = {
     id: TabID;
     name: string;
-    icon: React.ComponentClass<{ color?: string }>;
+    icon: React.ComponentClass<any> | React.FunctionComponentFactory<any>;
 };
 
 export enum TabID {
@@ -25,8 +24,8 @@ export enum TabID {
 }
 
 const defaultTabs = [
-    { id: TabID.IDENTITIES, name: "Identities", icon: LockIcon },
-    { id: TabID.SETTINGS, name: "Settings", icon: SettingsIcon },
+    { id: TabID.IDENTITIES, name: "Identities", icon: LockClosedIcon },
+    { id: TabID.SETTINGS, name: "Settings", icon: Cog6ToothIcon },
 ];
 
 type AppState = {

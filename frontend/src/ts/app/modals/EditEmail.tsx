@@ -1,12 +1,6 @@
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
 import React from "react";
-import { Input, InputLabel, VerticalInputGroup } from "../../components/Input";
-import { CardModal, Modal } from "../../components/Modal";
-import {
-    TitleBar,
-    TitleBarButton,
-    TitleBarCloseButton,
-} from "../../components/TitleBar";
+import { CardModal, CardModalTitle } from "../../components/Modal";
 
 type EditEmailModalProps = {
     currentEmail: string;
@@ -38,7 +32,7 @@ export class EditEmailModal extends React.Component<
             );
         }
         let buttons = (
-            <div className="flex w-full justify-center">
+            <div className="flex w-full justify-center px-4 py-4 sm:px-6">
                 <button
                     type="button"
                     className="mr-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -59,63 +53,68 @@ export class EditEmailModal extends React.Component<
                 </button>
             </div>
         );
-        return (
-            <CardModal title="Change Email" buttons={buttons}>
-                <div className="flex flex-col w-full h-full justify-center items-center">
-                    <div className="w-full">
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Current Email
-                        </label>
-                        <div className="mt-1">
+        let content = (
+            <div className="flex flex-col w-full h-full justify-center items-center px-4 py-5 sm:p-6">
+                <div className="w-full">
+                    <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        Current Email
+                    </label>
+                    <div className="mt-1">
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            defaultValue={this.props.currentEmail}
+                            disabled
+                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm"
+                            placeholder={this.props.currentEmail}
+                        />
+                    </div>
+                </div>
+                {errorMessage}
+                <fieldset className="mt-4 w-full">
+                    <legend className="block text-sm font-medium text-gray-700">
+                        New Email
+                    </legend>
+                    <div className="mt-1 -space-y-px rounded-md shadow-sm bg-white">
+                        <div>
+                            <label htmlFor="new-email" className="sr-only">
+                                New Email
+                            </label>
                             <input
-                                type="email"
-                                name="email"
-                                id="email"
-                                defaultValue={this.props.currentEmail}
-                                disabled
-                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm"
-                                placeholder={this.props.currentEmail}
+                                type="text"
+                                name="new-email"
+                                id="new-email"
+                                autoComplete="new-email"
+                                className="relative block w-full rounded-none rounded-t-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                placeholder="New Email"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="new-email" className="sr-only">
+                                Confirm Email
+                            </label>
+                            <input
+                                type="text"
+                                name="new-email"
+                                id="new-email"
+                                autoComplete="new-email"
+                                className="relative block w-full rounded-none rounded-b-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                placeholder="Confirm Email"
                             />
                         </div>
                     </div>
-                    {errorMessage}
-                    <fieldset className="mt-4 w-full">
-                        <legend className="block text-sm font-medium text-gray-700">
-                            New Email
-                        </legend>
-                        <div className="mt-1 -space-y-px rounded-md shadow-sm bg-white">
-                            <div>
-                                <label htmlFor="new-email" className="sr-only">
-                                    New Email
-                                </label>
-                                <input
-                                    type="text"
-                                    name="new-email"
-                                    id="new-email"
-                                    autoComplete="new-email"
-                                    className="relative block w-full rounded-none rounded-t-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    placeholder="New Email"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="new-email" className="sr-only">
-                                    Confirm Email
-                                </label>
-                                <input
-                                    type="text"
-                                    name="new-email"
-                                    id="new-email"
-                                    autoComplete="new-email"
-                                    className="relative block w-full rounded-none rounded-b-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    placeholder="Confirm Email"
-                                />
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
+                </fieldset>
+            </div>
+        );
+        return (
+            <CardModal>
+                <CardModalTitle title="Change Email" />
+                {content}
+                {buttons}
             </CardModal>
         );
     }

@@ -5,18 +5,17 @@ export class LockIcon extends Icon {
         return (
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
                 fill="none"
-                stroke={this.props.color}
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                className="feather feather-lock"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
             >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                />
             </svg>
         );
     }
