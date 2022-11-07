@@ -35,11 +35,27 @@ type CreateAccountProps = {
     onLogIn: () => void;
 };
 
-export class CreateAccount extends React.Component<CreateAccountProps> {
+type CreateAccountState = {
+    errorMessage?: string;
+};
+
+export class CreateAccount extends React.Component<
+    CreateAccountProps,
+    CreateAccountState
+> {
     private emailRef_ = React.createRef<HTMLInputElement>();
     private passwordRef1_ = React.createRef<HTMLInputElement>();
     private passwordRef2_ = React.createRef<HTMLInputElement>();
+    state: CreateAccountState = {};
     render() {
+        let errorMessage;
+        if (this.state.errorMessage) {
+            errorMessage = (
+                <div className="text-red-500 font-bold text-center mb-4">
+                    {this.state.errorMessage}
+                </div>
+            );
+        }
         const bottomButtons = (
             <div className="flex flex-col items-center mb-4 space-y-1">
                 <Button
@@ -67,6 +83,7 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
                     </label>
                     <div className="mt-1">
                         <input
+                            ref={this.emailRef_}
                             type="email"
                             name="email"
                             id="email"
@@ -145,6 +162,7 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
                             Sign up for Bulwark Passkey
                         </h2>
                     </div>
+                    {errorMessage}
                     {infoForm}
                 </div>
             </div>
@@ -160,12 +178,16 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
     onSubmit_ = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const email = this.emailRef_.current?.value;
+        if (!email) {
+            this.setState({ errorMessage: "No email provided." });
+            return;
+        }
         const passphrase1 = this.passwordRef1_.current?.value;
         const passphrase2 = this.passwordRef2_.current?.value;
         const errorMessage = validatePassphrases(passphrase1, passphrase2);
-        if (errorMessage || !email) {
-            // TODO: Handle error message
+        if (errorMessage) {
             // TODO: Validate email locally
+            this.setState({ errorMessage });
             return;
         }
         if (await signUp(email, passphrase1!)) {

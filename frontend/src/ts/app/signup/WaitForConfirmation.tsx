@@ -1,4 +1,6 @@
 import React from "react";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
+import { CardModal, CardModalTitle } from "../../components/Modal";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 
 type WaitForConfirmationModalProps = {
@@ -7,23 +9,30 @@ type WaitForConfirmationModalProps = {
 
 export class WaitForConfirmationModal extends React.Component<WaitForConfirmationModalProps> {
     render() {
-        return (
-            <div className="w-screen h-screen flex flex-col">
-                <TitleBar
-                    title="Wait for Confirmation"
-                    leftButton={
-                        <TitleBarButton
-                            onClick={this.props.onCancel}
-                            text="Cancel"
-                        />
-                    }
-                />
-                <div className="grow flex flex-col items-center justify-center p-4">
-                    <div className="p-4 bg-gray-400 rounded-lg font-bold">
-                        Please check your email for confirmation
-                    </div>
-                </div>
+        const title = (
+            <CardModalTitle
+                title="Waiting for Confirmation..."
+                button={
+                    <Button
+                        text="Cancel"
+                        onClick={this.props.onCancel}
+                        size={ButtonSize.SM}
+                        color={ButtonColor.CLEAR}
+                    />
+                }
+            />
+        );
+        const content = (
+            <div className="grow p-4 text-center">
+                Please check your email for confirmation. This window will
+                automatically close when confirmation is received.
             </div>
+        );
+        return (
+            <CardModal>
+                {title}
+                {content}
+            </CardModal>
         );
     }
 }
