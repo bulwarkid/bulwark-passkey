@@ -25,6 +25,7 @@ export class Modal extends React.Component<ModalProps> {
 type CardModalTitleProps = {
     title: string;
     button?: React.ReactNode;
+    thin?: boolean;
 };
 
 export class CardModalTitle extends React.Component<CardModalTitleProps> {
@@ -36,7 +37,7 @@ export class CardModalTitle extends React.Component<CardModalTitleProps> {
         );
         if (this.props.button) {
             return (
-                <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap px-4 py-5 sm:px-6">
+                <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between sm:flex-nowrap px-4 py-3 sm:px-6">
                     <div className="ml-4 mt-2">{title}</div>
                     <div className="ml-4 mt-2 flex-shrink-0">
                         {this.props.button}

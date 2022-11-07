@@ -7,6 +7,8 @@ import { promptUser } from "../modals/Confirm";
 import { ACCOUNT_VAULT_TYPE, LOCAL_VAULT_TYPE } from "../../data/passphrase";
 import { unlockLocalVault } from "./Unlock";
 import { LogError } from "../../wailsjs/runtime/runtime";
+import { LockClosedIcon } from "@heroicons/react/20/solid";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 
 export async function logInToExistingVault(
     vaultType: string,
@@ -84,54 +86,93 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                 </div>
             );
         }
-        let cancelButton;
-        if (this.props.onCancel) {
-            cancelButton = (
-                <TitleBarButton text="Cancel" onClick={this.props.onCancel} />
-            );
-        }
         let logOutButton;
         if (this.props.onLogOut) {
             logOutButton = (
-                <div className="flex flex-col items-center">
-                    <div
-                        className="daisy-btn daisy-btn-ghost daisy-btn-sm mb-4"
+                <div className="flex flex-col items-center mb-4">
+                    <Button
+                        text="Log Out"
                         onClick={this.onLogOut_}
-                    >
-                        Log Out
-                    </div>
+                        color={ButtonColor.CLEAR}
+                        size={ButtonSize.SM}
+                    />
                 </div>
             );
         }
         return (
-            <div className="w-screen h-screen flex flex-col bg-gray-200">
-                <TitleBar title="Log In" leftButton={cancelButton} />
-                <div className="grow flex flex-col m-8 justify-center items-center">
-                    <form className="self-stretch" onSubmit={this.onSubmit_}>
-                        <div className="mb-4 text-2xl font-bold text-center">
-                            Log In
+            <div className="flex flex-col bg-gray-200 min-h-full">
+                <div className="grow flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                    <div className="w-full max-w-md space-y-8">
+                        <div>
+                            <img
+                                className="mx-auto h-24 w-auto"
+                                src="/img/logo.png"
+                                alt="Bulwark Passkey"
+                            />
+                            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+                                Log in to your account
+                            </h2>
                         </div>
                         {errorMessage}
-                        <VerticalInputGroup>
-                            <Input
-                                inputRef={this.emailRef_}
-                                type="email"
-                                placeholder="Email"
-                            />
-                            <Input
-                                inputRef={this.passphraseRef_}
-                                type="password"
-                                placeholder="Master Passphrase"
-                            />
-                        </VerticalInputGroup>
-                        <div className="flex flex-col items-center mt-4">
-                            <input
-                                type="submit"
-                                value="Log In"
-                                className="daisy-btn daisy-btn-wide"
-                            />
-                        </div>
-                    </form>
+                        <form
+                            className="mt-8 space-y-6"
+                            onSubmit={this.onSubmit_}
+                        >
+                            <div className="-space-y-px rounded-md shadow-sm">
+                                <div>
+                                    <label
+                                        htmlFor="email-address"
+                                        className="sr-only"
+                                    >
+                                        Email address
+                                    </label>
+                                    <input
+                                        ref={this.emailRef_}
+                                        id="email-address"
+                                        name="email"
+                                        type="email"
+                                        autoComplete="email"
+                                        required
+                                        className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                        placeholder="Email address"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="password"
+                                        className="sr-only"
+                                    >
+                                        Master Passphrase
+                                    </label>
+                                    <input
+                                        ref={this.passphraseRef_}
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        autoComplete="current-password"
+                                        required
+                                        className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                        placeholder="Master Passphrase"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <button
+                                    type="submit"
+                                    className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                >
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <LockClosedIcon
+                                            className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                            aria-hidden="true"
+                                        />
+                                    </span>
+                                    Log In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 {logOutButton}
             </div>
@@ -160,4 +201,8 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
             this.props.onLogOut!();
         }
     };
+}
+
+export default function Example() {
+    return <></>;
 }
