@@ -12,10 +12,11 @@ export enum ButtonColor {
     PRIMARY = 1,
     CLEAR,
     SECONDARY,
+    GHOST,
 }
 
 type ButtonProps = {
-    text: string;
+    text?: string;
     size: ButtonSize;
     color: ButtonColor;
     onClick?: () => void;
@@ -68,8 +69,16 @@ export class Button extends React.Component<ButtonProps> {
                 classes.push("text-indigo-700");
                 classes.push("border-transparent");
                 break;
+            case ButtonColor.GHOST:
+                classes.push("bg-transparent hover:bg-gray-200");
+                classes.push("text-gray-700");
+                classes.push("border-transparent");
+                break;
         }
-        classes.push("inline-flex items-center border font-medium shadow-sm");
+        if (this.props.color !== ButtonColor.GHOST) {
+            classes.push("shadow-sm");
+        }
+        classes.push("inline-flex items-center border font-medium");
         classes.push(
             "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         );

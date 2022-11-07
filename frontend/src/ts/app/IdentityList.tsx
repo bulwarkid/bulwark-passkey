@@ -4,6 +4,12 @@ import * as identities from "../data/identities";
 import { InfoIcon } from "../icons/info";
 import { showModal } from "./ModalStack";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
+import {
+    EllipsisHorizontalCircleIcon,
+    EllipsisHorizontalIcon,
+    EllipsisVerticalIcon,
+} from "@heroicons/react/20/solid";
+import { Button, ButtonColor, ButtonSize } from "../components/Buttons";
 
 type ListItemProps = {
     identity: Identity;
@@ -12,22 +18,24 @@ type ListItemProps = {
 class ListItem extends React.Component<ListItemProps> {
     render() {
         return (
-            <div className="border-gray-500 bg-gray-300 border-b border-solid flex justify-between items-center py-1 drop-shadow-0.5 ">
-                <div className="flex flex-col items-start ml-8">
-                    <div className="text-md font-bold">
-                        {this.props.identity.website?.name}
+            <li className="overflow-hidden rounded-md bg-white px-4 py-2 shadow">
+                <div className="flex justify-between items-center">
+                    <div className="flex flex-col items-start pl-2">
+                        <div className="text-md">
+                            {this.props.identity.website?.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                            {this.props.identity.user?.displayName}
+                        </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                        {this.props.identity.user?.displayName}
-                    </div>
+                    <Button
+                        icon={<EllipsisHorizontalIcon className="h-5 w-5" />}
+                        onClick={this.onClick_}
+                        color={ButtonColor.GHOST}
+                        size={ButtonSize.SM}
+                    />
                 </div>
-                <div
-                    className="mr-4 daisy-btn daisy-btn-square daisy-btn-ghost"
-                    onClick={this.onClick_}
-                >
-                    <InfoIcon />
-                </div>
-            </div>
+            </li>
         );
     }
 
@@ -55,9 +63,9 @@ export class IdentityList extends React.Component<{}, ListState> {
             items.push(<ListItem identity={identity} />);
         }
         return (
-            <div className="flex flex-col my-4 border-t border-gray-500 border-solid">
+            <ul role="list" className="space-y-2 mx-2 mt-4">
                 {items}
-            </div>
+            </ul>
         );
     }
 
