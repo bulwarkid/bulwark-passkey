@@ -7,7 +7,7 @@ import {
     LOCAL_VAULT_TYPE,
     validatePassphrases,
 } from "../../data/passphrase";
-import { createLocalVault } from "../modals/NewVault";
+import { createLocalVault } from "./NewVault";
 import { hideModal, showModal } from "../ModalStack";
 import { logInToRemote } from "./LogIn";
 

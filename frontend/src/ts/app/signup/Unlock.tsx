@@ -4,7 +4,7 @@ import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
 import { setPassphrase } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
-import { promptUser } from "./Confirm";
+import { promptUser } from "../modals/Confirm";
 
 async function tryPassphrase(
     passphrase: string,

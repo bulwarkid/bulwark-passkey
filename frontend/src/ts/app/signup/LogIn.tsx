@@ -5,7 +5,7 @@ import { hideModal, showModal } from "../ModalStack";
 import * as supabase from "../../data/supabase";
 import { promptUser } from "../modals/Confirm";
 import { ACCOUNT_VAULT_TYPE, LOCAL_VAULT_TYPE } from "../../data/passphrase";
-import { unlockLocalVault } from "../modals/Unlock";
+import { unlockLocalVault } from "./Unlock";
 import { LogError } from "../../wailsjs/runtime/runtime";
 
 export async function logInToExistingVault(
