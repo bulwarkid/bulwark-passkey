@@ -13,6 +13,7 @@ export enum ButtonColor {
     CLEAR,
     SECONDARY,
     GHOST,
+    ERROR,
 }
 
 type ButtonProps = {
@@ -57,23 +58,28 @@ export class Button extends React.Component<ButtonProps> {
             case ButtonColor.PRIMARY:
                 classes.push("bg-indigo-600 hover:bg-indigo-700");
                 classes.push("text-white");
-                classes.push("border-transparent");
                 break;
             case ButtonColor.CLEAR:
                 classes.push("bg-white hover:bg-gray-50");
                 classes.push("text-gray-700");
-                classes.push("border-gray-300");
                 break;
             case ButtonColor.SECONDARY:
                 classes.push("bg-indigo-100 hover:bg-indigo-200");
                 classes.push("text-indigo-700");
-                classes.push("border-transparent");
                 break;
             case ButtonColor.GHOST:
                 classes.push("bg-transparent hover:bg-gray-200");
                 classes.push("text-gray-700");
-                classes.push("border-transparent");
                 break;
+            case ButtonColor.ERROR:
+                classes.push("bg-red-500 hover:bg-red-600");
+                classes.push("text-white");
+                break;
+        }
+        if (this.props.color === ButtonColor.CLEAR) {
+            classes.push("border-gray-300");
+        } else {
+            classes.push("border-transparent");
         }
         if (this.props.color !== ButtonColor.GHOST) {
             classes.push("shadow-sm");

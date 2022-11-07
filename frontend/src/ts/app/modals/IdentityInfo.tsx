@@ -56,7 +56,11 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
         );
         let buttons = (
             <div className="flex w-full justify-end px-4 py-4 sm:px-6">
-                <Button text="Delete" onClick={this.delete_} />
+                <Button
+                    text="Delete"
+                    onClick={this.delete_}
+                    color={ButtonColor.ERROR}
+                />
             </div>
         );
         return (
