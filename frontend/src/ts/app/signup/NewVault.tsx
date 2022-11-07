@@ -1,4 +1,6 @@
+import { LockClosedIcon } from "@heroicons/react/20/solid";
 import React, { FormEvent } from "react";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 import { VerticalInputGroup, Input } from "../../components/Input";
 import { Modal } from "../../components/Modal";
 import { TitleBar, TitleBarButton } from "../../components/TitleBar";
@@ -53,39 +55,95 @@ export class NewVaultModal extends React.Component<
                 </div>
             );
         }
+
+        const infoForm = (
+            <form className="space-y-2" onSubmit={this.onSubmit_}>
+                {errorMessageDiv}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        Passphrase
+                    </label>
+                    <div className="-space-y-px rounded-md shadow-sm mt-1">
+                        <div>
+                            <label htmlFor="new-passphrase" className="sr-only">
+                                Master Passphrase
+                            </label>
+                            <input
+                                ref={this.inputRef1_}
+                                id="new-passphrase"
+                                name="new-passphrase"
+                                type="password"
+                                autoComplete="password"
+                                required
+                                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                placeholder="Master Passphrase"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="confirm-passphrase"
+                                className="sr-only"
+                            >
+                                Confirm Passphrase
+                            </label>
+                            <input
+                                ref={this.inputRef2_}
+                                id="confirm-passphrase"
+                                name="confirm-passphrase"
+                                type="password"
+                                autoComplete="password"
+                                required
+                                className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                placeholder="Confirm Passphrase"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button
+                        type="submit"
+                        className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <LockClosedIcon
+                                className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                aria-hidden="true"
+                            />
+                        </span>
+                        Create Local Vault
+                    </button>
+                </div>
+            </form>
+        );
+        const createVault = (
+            <div className="grow flex items-center justify-center py-6 px-4">
+                <div className="w-full space-y-4">
+                    <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-gray-900">
+                        Create New Local Vault
+                    </h2>
+                    {infoForm}
+                </div>
+            </div>
+        );
         let cancelButton;
         if (this.props.onCancel) {
             cancelButton = (
-                <TitleBarButton text="Cancel" onClick={this.props.onCancel} />
+                <div className="flex flex-col items-center mb-4">
+                    <Button
+                        text="Cancel"
+                        onClick={this.props.onCancel}
+                        size={ButtonSize.SM}
+                        color={ButtonColor.CLEAR}
+                    />
+                </div>
             );
         }
-        const title = <TitleBar title="New Vault" leftButton={cancelButton} />;
         return (
-            <Modal title={title}>
-                <form
-                    onSubmit={this.onSubmit_}
-                    className="flex flex-col justify-center items-center grow mx-8"
-                >
-                    {errorMessageDiv}
-                    <VerticalInputGroup>
-                        <Input
-                            inputRef={this.inputRef1_}
-                            type="password"
-                            placeholder="New Passphrase"
-                        />
-                        <Input
-                            inputRef={this.inputRef2_}
-                            type="password"
-                            placeholder="Confirm Passprhase"
-                        />
-                    </VerticalInputGroup>
-                    <input
-                        type="submit"
-                        value="Create New Vault"
-                        className="daisy-btn mt-2"
-                    />
-                </form>
-            </Modal>
+            <div className="min-h-full flex flex-col justify-center bg-gray-200">
+                {createVault}
+                {cancelButton}
+            </div>
         );
     }
 
