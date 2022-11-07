@@ -1,5 +1,6 @@
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
 import React from "react";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 import { CardModal, CardModalTitle } from "../../components/Modal";
 
 type EditEmailModalProps = {
@@ -33,28 +34,20 @@ export class EditEmailModal extends React.Component<
         }
         let buttons = (
             <div className="flex w-full justify-center px-4 py-4 sm:px-6">
-                <button
-                    type="button"
-                    className="mr-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={this.props.onCancel}
-                >
-                    Cancel
-                </button>
-                <button
-                    type="button"
-                    className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                <Button
+                    text="Confirm Email"
                     onClick={this.onSubmit_}
-                >
-                    <EnvelopeIcon
-                        className="-ml-1 mr-3 h-5 w-5"
-                        aria-hidden="true"
-                    />
-                    Confirm Email
-                </button>
+                    icon={
+                        <EnvelopeIcon
+                            className="-ml-1 mr-3 h-5 w-5"
+                            aria-hidden="true"
+                        />
+                    }
+                />
             </div>
         );
         let content = (
-            <div className="flex flex-col w-full h-full justify-center items-center px-4 py-5 sm:p-6">
+            <div className="flex flex-col w-full justify-center items-center px-4 py-5 sm:p-6">
                 <div className="w-full">
                     <label
                         htmlFor="email"
@@ -110,9 +103,22 @@ export class EditEmailModal extends React.Component<
                 </fieldset>
             </div>
         );
+        let title = (
+            <CardModalTitle
+                title="Change Email"
+                button={
+                    <Button
+                        text="Cancel"
+                        onClick={this.props.onCancel}
+                        size={ButtonSize.SM}
+                        color={ButtonColor.CLEAR}
+                    />
+                }
+            />
+        );
         return (
             <CardModal>
-                <CardModalTitle title="Change Email" />
+                {title}
                 {content}
                 {buttons}
             </CardModal>

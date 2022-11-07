@@ -8,6 +8,7 @@ import { hideModal } from "../ModalStack";
 import * as identities from "../../data/identities";
 import { CardModal, CardModalTitle, Modal } from "../../components/Modal";
 import { CalendarDaysIcon } from "@heroicons/react/20/solid";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 
 type IdentityInfoModalProps = {
     identity: Identity;
@@ -44,25 +45,18 @@ export class IdentityInfoModal extends React.Component<IdentityInfoModalProps> {
             <CardModalTitle
                 title="Info"
                 button={
-                    <button
-                        type="button"
-                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    <Button
+                        text="Close"
                         onClick={this.onCancel_}
-                    >
-                        Close
-                    </button>
+                        size={ButtonSize.SM}
+                        color={ButtonColor.CLEAR}
+                    />
                 }
             />
         );
         let buttons = (
             <div className="flex w-full justify-end px-4 py-4 sm:px-6">
-                <button
-                    type="button"
-                    className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={this.delete_}
-                >
-                    Delete
-                </button>
+                <Button text="Delete" onClick={this.delete_} />
             </div>
         );
         return (
