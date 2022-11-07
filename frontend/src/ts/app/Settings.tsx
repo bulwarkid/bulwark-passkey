@@ -40,7 +40,6 @@ export class Settings extends React.Component {
         settings.push(<SettingsItem text="About" onClick={this.showAbout_} />);
         return (
             <div className="w-full">
-                <TitleBar title="Settings" />
                 <div className="p-4">
                     <div className="overflow-hidden bg-white shadow rounded-md">
                         <ul role="list" className="divide-y divide-gray-200">

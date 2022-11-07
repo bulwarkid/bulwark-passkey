@@ -23,7 +23,7 @@ func main() {
 	err = wails.Run(&options.App{
 		Title:              "Bulwark Passkey",
 		Width:              400,
-		Height:             650,
+		Height:             600,
 		DisableResize:      true,
 		Assets:             assets,
 		BackgroundColour:   &options.RGBA{R: 27, G: 38, B: 54, A: 1},
