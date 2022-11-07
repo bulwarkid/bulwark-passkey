@@ -5,6 +5,8 @@ import { callRPC } from "../../core/rpc";
 import { setPassphrase } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 import { promptUser } from "../modals/Confirm";
+import { LockClosedIcon } from "@heroicons/react/20/solid";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 
 async function tryPassphrase(
     passphrase: string,
@@ -66,35 +68,101 @@ export class UnlockModal extends React.Component<
                 </div>
             );
         }
-        const title = <TitleBar title="Unlock Vault" />;
-        return (
-            <Modal title={title}>
-                <form
-                    className="grow flex flex-col items-center justify-center"
-                    onSubmit={this.onSubmit_}
-                >
-                    {errorMessageDiv}
-                    <input
-                        ref={this.inputRef_}
-                        type="password"
-                        placeholder="Passphrase"
-                        className="daisy-input daisy-input-bordered w-full max-w-xs mx-4"
-                    />
-                    <input
-                        type="submit"
-                        value="Unlock"
-                        className="daisy-btn mt-2"
-                    />
-                </form>
-                <div className="flex flex-col items-center mb-4">
-                    <div
-                        className="daisy-btn daisy-btn-ghost daisy-btn-sm"
-                        onClick={this.onDeleteVault_}
+        // const title = <TitleBar title="Unlock Vault" />;
+        // return (
+        //     <Modal title={title}>
+        //         <form
+        //             className="grow flex flex-col items-center justify-center"
+        //             onSubmit={this.onSubmit_}
+        //         >
+        //             {errorMessageDiv}
+        //             <input
+        //                 ref={this.inputRef_}
+        //                 type="password"
+        //                 placeholder="Passphrase"
+        //                 className="daisy-input daisy-input-bordered w-full max-w-xs mx-4"
+        //             />
+        //             <input
+        //                 type="submit"
+        //                 value="Unlock"
+        //                 className="daisy-btn mt-2"
+        //             />
+        //         </form>
+        //         <div className="flex flex-col items-center mb-4">
+        //             <div
+        //                 className="daisy-btn daisy-btn-ghost daisy-btn-sm"
+        //                 onClick={this.onDeleteVault_}
+        //             >
+        //                 Delete Vault
+        //             </div>
+        //         </div>
+        //     </Modal>
+        // );
+
+        const infoForm = (
+            <form className="space-y-2" onSubmit={this.onSubmit_}>
+                {errorMessageDiv}
+
+                <div>
+                    <label
+                        htmlFor="passphrase"
+                        className="block text-sm font-medium text-gray-700"
                     >
-                        Delete Vault
+                        Master Passphrase
+                    </label>
+                    <div className="mt-1">
+                        <input
+                            ref={this.inputRef_}
+                            type="password"
+                            name="passphrase"
+                            id="passphrase"
+                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            placeholder="Master Passphrase"
+                        />
                     </div>
                 </div>
-            </Modal>
+
+                <div>
+                    <button
+                        type="submit"
+                        className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <LockClosedIcon
+                                className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                aria-hidden="true"
+                            />
+                        </span>
+                        Unlock Vault
+                    </button>
+                </div>
+            </form>
+        );
+        const unlock = (
+            <div className="grow flex items-center justify-center py-6 px-4">
+                <div className="w-full space-y-4">
+                    <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-gray-900">
+                        Unlock Local Vault
+                    </h2>
+                    {infoForm}
+                </div>
+            </div>
+        );
+        const deleteVault = (
+            <div className="flex flex-col items-center mb-4">
+                <Button
+                    text="Delete Local Vault"
+                    onClick={this.onDeleteVault_}
+                    size={ButtonSize.SM}
+                    color={ButtonColor.CLEAR}
+                />
+            </div>
+        );
+        return (
+            <div className="min-h-full flex flex-col justify-center bg-gray-200">
+                {unlock}
+                {deleteVault}
+            </div>
         );
     }
 
@@ -110,7 +178,7 @@ export class UnlockModal extends React.Component<
     };
 
     onDeleteVault_ = async () => {
-        if (await promptUser("Delete local vault data?")) {
+        if (await promptUser("Delete local vault data forever?")) {
             this.props.onDeleteVault();
         }
     };
