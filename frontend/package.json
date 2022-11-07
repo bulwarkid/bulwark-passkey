@@ -1,5 +1,5 @@
 {
-    "name": "bulwarkid-fido",
+    "name": "bulwark-passkey",
     "version": "0.1.0",
     "private": true,
     "main": "electron/index.js",
