@@ -10,6 +10,8 @@ import {
 import { createLocalVault } from "./NewVault";
 import { hideModal, showModal } from "../ModalStack";
 import { logInToRemote } from "./LogIn";
+import { LockClosedIcon } from "@heroicons/react/20/solid";
+import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 
 export async function createNewVault(): Promise<[string, boolean]> {
     return new Promise((resolve) => {
@@ -38,63 +40,119 @@ export class CreateAccount extends React.Component<CreateAccountProps> {
     private passwordRef1_ = React.createRef<HTMLInputElement>();
     private passwordRef2_ = React.createRef<HTMLInputElement>();
     render() {
-        return (
-            <div className="w-screen h-screen flex flex-col">
-                <TitleBar title="Sign Up" />
-                <div className="flex flex-col justify-center items-center grow">
-                    <div className="mb-4 text-2xl font-bold text-center">
-                        Sign Up
-                    </div>
-                    <form
-                        className="px-4 flex flex-col w-full"
-                        onSubmit={this.onSubmit_}
+        const bottomButtons = (
+            <div className="flex flex-col items-center mb-4 space-y-1">
+                <Button
+                    text="Log in"
+                    onClick={this.onLogin_}
+                    size={ButtonSize.SM}
+                    color={ButtonColor.CLEAR}
+                />
+                <Button
+                    text="Use Local-Only Vault"
+                    onClick={this.onUseLocal_}
+                    size={ButtonSize.SM}
+                    color={ButtonColor.CLEAR}
+                />
+            </div>
+        );
+        const infoForm = (
+            <form className="space-y-2" onSubmit={this.onSubmit_}>
+                <div>
+                    <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
                     >
-                        <div className="mb-2 daisy-form-control">
-                            <InputLabel>Email</InputLabel>
-                            <Input
-                                inputRef={this.emailRef_}
-                                type="email"
-                                placeholder="Email"
+                        Email
+                    </label>
+                    <div className="mt-1">
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        Passphrase
+                    </label>
+                    <div className="-space-y-px rounded-md shadow-sm mt-1">
+                        <div>
+                            <label htmlFor="new-passphrase" className="sr-only">
+                                Master Passphrase
+                            </label>
+                            <input
+                                ref={this.passwordRef1_}
+                                id="new-passphrase"
+                                name="new-passphrase"
+                                type="password"
+                                autoComplete="password"
+                                required
+                                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                placeholder="Master Passphrase"
                             />
                         </div>
-                        <div className="mb-2 daisy-form-control">
-                            <InputLabel>Master Passphrase</InputLabel>
-                            <VerticalInputGroup>
-                                <Input
-                                    inputRef={this.passwordRef1_}
-                                    type="password"
-                                    placeholder="Passphrase"
-                                />
-                                <Input
-                                    inputRef={this.passwordRef2_}
-                                    type="password"
-                                    placeholder="Confirm Passphrase"
-                                />
-                            </VerticalInputGroup>
-                        </div>
-                        <div className="flex flex-col items-center">
+                        <div>
+                            <label
+                                htmlFor="confirm-passphrase"
+                                className="sr-only"
+                            >
+                                Confirm Passphrase
+                            </label>
                             <input
-                                type="submit"
-                                value="Create Account"
-                                className="daisy-btn"
-                            ></input>
+                                ref={this.passwordRef2_}
+                                id="confirm-passphrase"
+                                name="confirm-passphrase"
+                                type="password"
+                                autoComplete="password"
+                                required
+                                className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                placeholder="Confirm Passphrase"
+                            />
                         </div>
-                    </form>
-                </div>
-                <div className="flex flex-col items-center mb-4">
-                    <div
-                        className="daisy-btn daisy-btn-ghost daisy-btn-sm"
-                        onClick={this.onLogin_}
-                    >
-                        Log In
-                    </div>
-                    <div
-                        className="daisy-btn daisy-btn-ghost daisy-btn-sm"
-                        onClick={this.onUseLocal_}
-                    >
-                        Use Local-Only Vault
                     </div>
                 </div>
+
+                <div>
+                    <button
+                        type="submit"
+                        className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <LockClosedIcon
+                                className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                aria-hidden="true"
+                            />
+                        </span>
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+        );
+        const signUp = (
+            <div className="grow flex min-h-full items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
+                <div className="w-full max-w-md space-y-4">
+                    <div>
+                        <img
+                            className="mx-auto h-24 w-auto"
+                            src="/img/logo.png"
+                            alt="Bulwark Passkey"
+                        />
+                        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-gray-900">
+                            Sign up for Bulwark Passkey
+                        </h2>
+                    </div>
+                    {infoForm}
+                </div>
+            </div>
+        );
+        return (
+            <div className="flex flex-col bg-gray-200 min-h-full">
+                {signUp}
+                {bottomButtons}
             </div>
         );
     }

@@ -99,6 +99,18 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                 </div>
             );
         }
+        if (this.props.onCancel) {
+            logOutButton = (
+                <div className="flex flex-col items-center mb-4">
+                    <Button
+                        text="Cancel"
+                        onClick={this.props.onCancel}
+                        color={ButtonColor.CLEAR}
+                        size={ButtonSize.SM}
+                    />
+                </div>
+            );
+        }
         return (
             <div className="flex flex-col bg-gray-200 min-h-full">
                 <div className="grow flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -201,8 +213,4 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
             this.props.onLogOut!();
         }
     };
-}
-
-export default function Example() {
-    return <></>;
 }
