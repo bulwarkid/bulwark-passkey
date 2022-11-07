@@ -89,7 +89,7 @@ class ModalContainer extends React.Component<ModalContainerProps, ModalState> {
             modalClassName += " modal-active";
             backdrop = (
                 <div
-                    className="w-screen h-screen absolute top-0 bg-gray-500 bg-opacity-75"
+                    className="w-screen h-screen absolute top-0 bg-gray-300 bg-opacity-75 backdrop-blur-sm"
                     style={{ zIndex: this.props.zIndex - 1 }}
                 />
             );

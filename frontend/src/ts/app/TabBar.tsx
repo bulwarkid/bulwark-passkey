@@ -34,7 +34,7 @@ export class TabBar extends React.Component<TabBarProps> {
             );
         });
         return (
-            <div className="bg-slate-400 border-t-2 border-slate-700 py-1">
+            <div className="rounded-t-lg bg-white shadow-top overflow-hidden py-2">
                 <div className="h-14 flex justify-evenly items-center">
                     {tabComponents}
                 </div>
