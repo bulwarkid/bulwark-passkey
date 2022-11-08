@@ -58,6 +58,13 @@ export class IdentityList extends React.Component<{}, ListState> {
         identities.update();
     }
     render() {
+        if (this.state.identities.length == 0) {
+            return (
+                <div className="w-full h-full flex flex-col justify-center items-center text-lg text-gray-500">
+                    No identities in vault.
+                </div>
+            );
+        }
         const items = [];
         for (const identity of this.state.identities) {
             items.push(<ListItem identity={identity} />);
