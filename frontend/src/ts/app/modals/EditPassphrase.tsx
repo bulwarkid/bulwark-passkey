@@ -97,10 +97,10 @@ export class EditPassphraseModal extends React.Component<
                     </div>
                 </div>
                 {errorMessageDiv}
-                <fieldset className="mt-4 w-full">
-                    <legend className="block text-sm font-medium text-gray-700">
+                <div className="mt-4 w-full">
+                    <div className="block text-sm font-medium text-gray-700">
                         New Passphrase
-                    </legend>
+                    </div>
                     <div className="mt-1 -space-y-px rounded-md shadow-sm bg-white">
                         <div>
                             <label htmlFor="new-passphrase" className="sr-only">
@@ -134,7 +134,7 @@ export class EditPassphraseModal extends React.Component<
                             />
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         );
         let buttons = (

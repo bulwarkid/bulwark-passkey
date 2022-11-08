@@ -33,7 +33,7 @@ export class EditEmailModal extends React.Component<
             );
         }
         let buttons = (
-            <div className="flex w-full justify-center px-4 py-4 sm:px-6">
+            <div className="flex w-full justify-center px-4 py-4">
                 <Button
                     text="Confirm Email"
                     onClick={this.onSubmit_}
@@ -47,7 +47,7 @@ export class EditEmailModal extends React.Component<
             </div>
         );
         let content = (
-            <div className="flex flex-col w-full justify-center items-center px-4 py-5 sm:p-6">
+            <div className="flex flex-col w-full justify-center items-center px-4 py-5">
                 <div className="w-full">
                     <label
                         htmlFor="email"
@@ -62,16 +62,16 @@ export class EditEmailModal extends React.Component<
                             id="email"
                             defaultValue={this.props.currentEmail}
                             disabled
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm"
+                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
                             placeholder={this.props.currentEmail}
                         />
                     </div>
                 </div>
                 {errorMessage}
-                <fieldset className="mt-4 w-full">
-                    <legend className="block text-sm font-medium text-gray-700">
+                <div className="mt-4 w-full flex flex-col max-h-full min-h-0">
+                    <div className="block text-sm font-medium text-gray-700 p-0 m-0">
                         New Email
-                    </legend>
+                    </div>
                     <div className="mt-1 -space-y-px rounded-md shadow-sm bg-white">
                         <div>
                             <label htmlFor="new-email" className="sr-only">
@@ -82,7 +82,7 @@ export class EditEmailModal extends React.Component<
                                 name="new-email"
                                 id="new-email"
                                 autoComplete="new-email"
-                                className="relative block w-full rounded-none rounded-t-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                className="relative block w-full rounded-none rounded-t-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="New Email"
                             />
                         </div>
@@ -95,12 +95,12 @@ export class EditEmailModal extends React.Component<
                                 name="new-email"
                                 id="new-email"
                                 autoComplete="new-email"
-                                className="relative block w-full rounded-none rounded-b-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                className="relative block w-full rounded-none rounded-b-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="Confirm Email"
                             />
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         );
         let title = (

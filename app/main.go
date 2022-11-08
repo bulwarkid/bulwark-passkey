@@ -30,7 +30,7 @@ func main() {
 		OnStartup:          app.startup,
 		OnDomReady:         app.onDomReady,
 		LogLevel:           logger.DEBUG,
-		LogLevelProduction: logger.DEBUG,
+		LogLevelProduction: logger.WARNING,
 		Logger:             consoleLogger,
 	})
 

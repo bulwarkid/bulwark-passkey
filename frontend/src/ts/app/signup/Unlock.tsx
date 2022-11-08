@@ -68,36 +68,6 @@ export class UnlockModal extends React.Component<
                 </div>
             );
         }
-        // const title = <TitleBar title="Unlock Vault" />;
-        // return (
-        //     <Modal title={title}>
-        //         <form
-        //             className="grow flex flex-col items-center justify-center"
-        //             onSubmit={this.onSubmit_}
-        //         >
-        //             {errorMessageDiv}
-        //             <input
-        //                 ref={this.inputRef_}
-        //                 type="password"
-        //                 placeholder="Passphrase"
-        //                 className="daisy-input daisy-input-bordered w-full max-w-xs mx-4"
-        //             />
-        //             <input
-        //                 type="submit"
-        //                 value="Unlock"
-        //                 className="daisy-btn mt-2"
-        //             />
-        //         </form>
-        //         <div className="flex flex-col items-center mb-4">
-        //             <div
-        //                 className="daisy-btn daisy-btn-ghost daisy-btn-sm"
-        //                 onClick={this.onDeleteVault_}
-        //             >
-        //                 Delete Vault
-        //             </div>
-        //         </div>
-        //     </Modal>
-        // );
 
         const infoForm = (
             <form className="space-y-2" onSubmit={this.onSubmit_}>
