@@ -3,10 +3,25 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const faqs = [
     {
-        question: "What's the best thing about Switzerland?",
-        answer: "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+        question: "How does it work?",
+        answer: "Bulwark Passkey uses USB/IP to emulate a USB device that implements the FIDO2 and U2F protocols. These protocols enable support for both Two Factor Authentication and WebAuthN, independent of your browser or type of client.",
     },
-    // More questions...
+    {
+        question: "How is the data stored?",
+        answer: "Credentials are encrypted with a master passphrase before being stored on disk or synced up to Bulwark servers. This means that an attacker can only decrypt and use your credentials if they also gain access to the master passphrase.",
+    },
+    {
+        question: "Is this method secure?",
+        answer: "While credentials are not stored as securely as an external hardware device where credentials cannot be physically removed from the device, emulating such devices in software can completely eliminate phishing attacks and the need to copy codes or passwords. A side effect of software emulation is that your credentials can be synced across devices for great ease-of-use, much like a password manager.",
+    },
+    {
+        question: "What platforms are supported?",
+        answer: "Right now, only Windows and Linux are supported as those are the platforms that have USB/IP support. We will be adding Mac support Soon (tm) and are looking to add support for iOS and Android in the future.",
+    },
+    {
+        question: "Can I see the source code?",
+        answer: "Sure! Bulwark Passkey is built on top of an open source core called Virtual FIDO (https://github.com/bulwarkid/virtual-fido), which contains the USB emulation and FIDO protocol code, as well as the credential encryption and formatting. Right now the frontend UI contains proprietary UI code, including code bought from TailwindUI, so cannot be open sourced as easily. However, you are still able to view the safety critical parts of the code, as well as easily decrypt and transfer your credentials out of the system.",
+    },
 ];
 
 function classNames(...classes: any) {
