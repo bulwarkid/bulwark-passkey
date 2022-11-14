@@ -1,5 +1,8 @@
 name: Build and Deploy Marketing
-on: [push]
+on:
+    push:
+        paths:
+            - "marketing-next/**"
 permissions:
     contents: write
 jobs:
