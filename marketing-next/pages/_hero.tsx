@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function HeroSection() {
     return (
         <div className="relative mx-auto mt-16 max-w-7xl px-4 sm:mt-24">
@@ -22,9 +24,10 @@ export default function HeroSection() {
                     </div>
                 </div>
                 <div className="relative mt-12 sm:mx-auto sm:max-w-lg rounded-md lg:col-span-6 lg:mx-0 lg:mt-0 flex justify-center lg:max-w-none lg:items-center">
-                    <img
+                    <Image
+                        alt=""
                         className="rounded-xl shadow-lg border-4 border-gray-300"
-                        src="/img/app_screenshot.png"
+                        src="img/app_screenshot.png"
                         height={100}
                         width={400}
                     />
