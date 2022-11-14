@@ -7,7 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "export": "next build && next export && touch ./out/.nojekyll"
+        "export": "next export"
     },
     "dependencies": {
         "@headlessui/react": "^1.7.4",
