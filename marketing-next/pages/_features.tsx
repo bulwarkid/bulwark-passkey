@@ -9,44 +9,45 @@ const features = [
     {
         name: "Unphishable Two Factor Authentication",
         description:
-            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+            "Bulwark Passkey uses the U2F/FIDO protocols, which allow for secure cryptographic authentication without the need for passwords or one-time codes. Just click “Approve” without the need to copy anything!",
         icon: LockClosedIcon,
     },
     {
         name: "Sync Across Your Devices",
         description:
-            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+            "Bulwark Passkey is a pure software implementation, so credentials are securely synced between your devices using a master passphrase. Windows and Linux are supported, with Mac support coming soon.",
         icon: ComputerDesktopIcon,
     },
     {
         name: "Log into websites with WebAuthN",
         description:
-            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+            "Bulwark Passkey supports the new FIDO2 protocol, which allows you to log into supporting websites without the need for any passwords.",
         icon: GlobeAltIcon,
     },
     {
-        name: "Open Source Core",
+        name: "Open Source Core - Export and Transfer your Data",
         description:
-            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
+            "Bulwark Passkey is built on top of Virtual FIDO, an open source USB emulation of a U2F/FIDO device with a standard credential encryption/storage format. You can easily export your credentials out of Bulwark Passkey as long as you have your master passphrase.",
         icon: MagnifyingGlassIcon,
     },
 ];
 
 export default function Features() {
     return (
-        <div className="bg-white py-12">
+        <div className="bg-white py-12" id="features">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="lg:text-center">
                     <h2 className="text-lg font-semibold text-indigo-600">
-                        Authentication
+                        Passkeys
                     </h2>
                     <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-                        Multi Factor Authentication without Codes
+                        Multifactor Authentication without Codes
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Lorem ipsum dolor sit amet consect adipisicing elit.
-                        Possimus magnam voluptatum cupiditate veritatis in
-                        accusamus quisquam.
+                        Bulwark Passkey is a purely software-based
+                        implementation of a U2F and FIDO device, which supports
+                        two factor authentication as well as WebAuthN (otherwise
+                        known as passkeys).
                     </p>
                 </div>
 

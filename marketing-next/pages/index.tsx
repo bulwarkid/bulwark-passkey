@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import ContactInfo from "./_contact";
 import CallToAction from "./_cta";
 import FAQ from "./_faq";
 import Features from "./_features";
@@ -79,6 +80,8 @@ export default function Home() {
                 <CallToAction />
                 <div className="mt-12" />
                 <Newsletter />
+                <div className="mt-12" />
+                <ContactInfo />
                 <div className="mt-12" />
                 <Footer />
             </div>
