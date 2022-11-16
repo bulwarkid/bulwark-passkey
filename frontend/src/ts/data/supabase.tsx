@@ -10,6 +10,7 @@ import { changePassphrase, setPassphrase } from "./passphrase";
 import { LogDebug } from "../wailsjs/runtime/runtime";
 import { setRecurring } from "../core/util";
 import { listenToRemoteUpdates, unlistenToRemoteUpdates } from "./identities";
+import { LogError } from "../wailsjs/runtime/runtime";
 
 const SUPABASE_URL = "https://jdikcjgzpiezpacsqlkf.supabase.co";
 const SUPABASE_PUBLIC_KEY =
@@ -49,12 +50,12 @@ export async function signIn(
         password: passphrase,
     });
     if (error) {
-        // TODO: Handle error
-        return "Error logging in";
+        LogError(error.message);
+        return "Error logging in: " + error.message;
     }
     if (!data.user || !data.session) {
-        // TODO: Handle error
-        return "Error logging in";
+        LogError("No session returned on sign in");
+        return "Error logging in: No session returned";
     }
     setPassphrase(passphrase);
     return null;
@@ -63,30 +64,33 @@ export async function signIn(
 export async function signUp(
     email: string,
     passphrase: string
-): Promise<boolean> {
+): Promise<string | undefined> {
     let { data, error } = await supabase.auth.signUp({
         email,
         password: passphrase,
     });
-    if (error || !data.user) {
-        // TODO: Handle error
-        return false;
+    if (error) {
+        LogError(error.message);
+        return error.message;
+    }
+    if (!data.user) {
+        LogError("No user returned on signup");
+        return "No user returned";
     }
     if (!data.session) {
         // If we lack a session, we need to wait for email confirmation
         console.assert(!data.user.email_confirmed_at);
         data = await waitForEmailConfirmation(email, passphrase);
         if (!data.session) {
-            return false;
+            LogError("No session returned from email confirmation");
+            return "No session returned from email confirmation";
         }
     }
     if (!data.user || !data.session) {
-        // TODO: Handle error
-        LogDebug("Null user or session: " + data);
-        return false;
+        LogError("Null user or session: " + data);
+        return "Null user or session returned";
     }
     setPassphrase(passphrase);
-    return true;
 }
 
 async function waitForEmailConfirmation(
@@ -124,15 +128,6 @@ async function waitForEmailConfirmation(
             }
         }, 1000);
     });
-}
-
-export async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-        // TODO: handle error
-        return;
-    }
-    // TODO: Handle notifying backend that user is signed out
 }
 
 export function supabaseUserId(): string {

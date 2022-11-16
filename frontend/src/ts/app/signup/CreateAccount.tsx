@@ -184,15 +184,18 @@ export class CreateAccount extends React.Component<
         }
         const passphrase1 = this.passwordRef1_.current?.value;
         const passphrase2 = this.passwordRef2_.current?.value;
-        const errorMessage = validatePassphrases(passphrase1, passphrase2);
+        let errorMessage = validatePassphrases(passphrase1, passphrase2);
         if (errorMessage) {
             // TODO: Validate email locally
             this.setState({ errorMessage });
             return;
         }
-        if (await signUp(email, passphrase1!)) {
-            this.props.onCreated(ACCOUNT_VAULT_TYPE);
+        errorMessage = await signUp(email, passphrase1!);
+        if (errorMessage) {
+            this.setState({ errorMessage });
+            return;
         }
+        this.props.onCreated(ACCOUNT_VAULT_TYPE);
     };
 
     onLogin_ = async () => {
