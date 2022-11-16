@@ -101,12 +101,19 @@ export async function storeRemoteVault(jsonData: string, lastUpdated: string) {
 }
 
 export async function fetchRemoteVault(): Promise<[string, string]> {
-    const { data, error } = await supabase
+    const { data, error, status } = await supabase
         .from("vaults")
         .select("data, updated_at");
-    if (error || data.length === 0) {
-        // TODO: Handle error
-        LogDebug(error ? error.message : "No data returned from remote fetch");
+    if (error || status != 200) {
+        // Request error
+        LogDebug(
+            "Vault remote fetch error: " + status + " - " + error?.message
+        );
+        return ["Error", "Error"];
+    }
+    if (data.length === 0) {
+        // No rows matching this user
+        LogDebug("No data returned from remote servers for user");
         return ["", ""];
     }
     return [data[0].data, data[0].updated_at];

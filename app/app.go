@@ -61,7 +61,12 @@ func (app *App) createNewVault() {
 	if loggedIn {
 		// Fetch remote vault
 		jsonData, lastUpdated := fetchRemoteVaultJSON()
-		app.client.loadData(accountVaultType, []byte(jsonData), lastUpdated)
+		if jsonData == "" {
+			// Fetch returned no vault on remote servers
+			app.client.configureNewDevice(accountVaultType)
+		} else {
+			app.client.loadData(accountVaultType, []byte(jsonData), lastUpdated)
+		}
 	} else {
 		app.client.configureNewDevice(vaultType)
 	}
@@ -69,7 +74,8 @@ func (app *App) createNewVault() {
 
 func (app *App) updateRemoteVault() {
 	jsonData, lastUpdated := fetchRemoteVaultJSON()
-	if jsonData != "" && lastUpdated != "" {
+	if jsonData != "" && lastUpdated != "" && jsonData != "Error" {
+		// TODO: Have better error interface for vault updates (error, network error, no data, vault data)
 		app.client.updateData([]byte(jsonData), lastUpdated)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
@@ -22,6 +23,7 @@ func startFIDOServer(client *Client) {
 func attachUSBIPServer() {
 	time.Sleep(250 * time.Millisecond)
 	if runtime.GOOS == "windows" {
+		installUSBIPWindows()
 		attachUSBIPWindows()
 	} else if runtime.GOOS == "linux" {
 		attachUSBIPLinux()
@@ -31,9 +33,8 @@ func attachUSBIPServer() {
 	}
 }
 
-func attachUSBIPLinux() {
-	commandList := []string{"sudo", "usbip", "attach", "-r", "127.0.0.1", "-b", "2-2"}
-
+func runCommand(commandList []string) {
+	debugf(strings.Join(commandList, " "))
 	prog := exec.Command(commandList[0], commandList[1:]...)
 	prog.Stdin = os.Stdin
 	prog.Stdout = os.Stdout
@@ -44,15 +45,15 @@ func attachUSBIPLinux() {
 	}
 }
 
-func attachUSBIPWindows() {
-	commandList := []string{"./usbip/usbip.exe", "attach", "-r", "127.0.0.1", "-b", "2-2"}
+func attachUSBIPLinux() {
+	commandList := []string{"sudo", "usbip", "attach", "-r", "127.0.0.1", "-b", "2-2"}
+	runCommand(commandList)
+}
 
-	prog := exec.Command(commandList[0], commandList[1:]...)
-	prog.Stdin = os.Stdin
-	prog.Stdout = os.Stdout
-	prog.Stderr = os.Stderr
-	err := prog.Run()
-	if err != nil {
-		fmt.Printf("Error: %s\n", err)
-	}
+func installUSBIPWindows() {
+	runCommand([]string{"./usbip/usbip.exe", "install", "-u"})
+}
+
+func attachUSBIPWindows() {
+	runCommand([]string{"./usbip/usbip.exe", "attach", "-r", "127.0.0.1", "-b", "2-2"})
 }
