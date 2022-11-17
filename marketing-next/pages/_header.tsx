@@ -10,6 +10,8 @@ export default function Header() {
                     className="h-8 w-auto sm:h-10"
                     src="img/logo.svg"
                     alt=""
+                    width={10}
+                    height={10}
                 />
                 <span className="text-lg font-medium tracking-tight text-gray-900">
                     Bulwark Passkey

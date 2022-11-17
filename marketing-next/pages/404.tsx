@@ -16,6 +16,8 @@ export default function Page404() {
                                 className="h-12 w-auto"
                                 src="img/logo.svg"
                                 alt=""
+                                width={12}
+                                height={12}
                             />
                         </Link>
                     </div>
