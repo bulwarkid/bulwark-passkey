@@ -4,10 +4,9 @@ const nextConfig = {
     swcMinify: true,
     images: {
         unoptimized: true,
-        loader: "akamai",
-        path: "",
+        //loader: "akamai",
+        //path: "",
     },
-    basePath: "/bulwark-passkey-website",
     assetPrefix: "./",
 };
 

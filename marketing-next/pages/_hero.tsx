@@ -8,7 +8,7 @@ export default function HeroSection() {
             <div className="lg:grid lg:grid-cols-12 lg:gap-8">
                 <div className="lg:col-span-6 flex flex-col justify-center mx-12">
                     <p className="text-lg font-semibold text-indigo-600">
-                        Now in Beta!
+                        Now in Alpha!
                     </p>
                     <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
                         <span className="block xl:inline">Bulwark Passkey</span>
@@ -18,8 +18,8 @@ export default function HeroSection() {
                         Authentication and WebAuthN.
                     </p>
                     <div className="mt-5 max-w-md sm:flex md:mt-8">
-                    <div className="rounded-md shadow">
-                        <DownloadLink/>
+                        <div className="rounded-md shadow">
+                            <DownloadLink />
                         </div>
                     </div>
                 </div>

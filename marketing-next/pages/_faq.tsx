@@ -4,23 +4,71 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 const faqs = [
     {
         question: "How does it work?",
-        answer: "Bulwark Passkey uses USB/IP to emulate a USB device that implements the FIDO2 and U2F protocols. These protocols enable support for both Two Factor Authentication and WebAuthN, independent of your browser or type of client.",
+        answer: (
+            <>
+                Bulwark Passkey uses USB/IP to emulate a USB device that
+                implements the FIDO2 and U2F protocols. These protocols enable
+                support for both Two Factor Authentication and WebAuthN,
+                independent of your browser or OS support.
+            </>
+        ),
     },
     {
         question: "How is the data stored?",
-        answer: "Credentials are encrypted with a master passphrase before being stored on disk or synced up to Bulwark servers. This means that an attacker can only decrypt and use your credentials if they also gain access to the master passphrase.",
+        answer: (
+            <>
+                Credentials are encrypted with a master passphrase before being
+                stored on disk or synced up to Bulwark servers. Data can also be
+                stored only in a local file, and never synced up to Bulwark
+                servers.
+            </>
+        ),
     },
     {
         question: "Is this method secure?",
-        answer: "While credentials are not stored as securely as an external hardware device where credentials cannot be physically removed from the device, emulating such devices in software can completely eliminate phishing attacks and the need to copy codes or passwords. A side effect of software emulation is that your credentials can be synced across devices for great ease-of-use, much like a password manager.",
+        answer: (
+            <>
+                Credentials are encrypted at-rest with a master passphrase on
+                the local filesystem and backed up and synced to Bulwark
+                servers. While credentials stored in software are not as secure
+                as credentials stored in a hardware device where they cannot be
+                physically exported, this software based method completely
+                eliminates phishing attacks and removes the need for copying
+                passwords/codes. In addition, being stored in software means
+                that the same credentials can be synced between devices for much
+                better ease-of-use, much like a password manager.
+            </>
+        ),
     },
     {
         question: "What platforms are supported?",
-        answer: "Right now, only Windows and Linux are supported as those are the platforms that have USB/IP support. We will be adding Mac support Soon (tm) and are looking to add support for iOS and Android in the future.",
+        answer: (
+            <>
+                Right now, only Windows is supported, with Linux support coming
+                very soon. We will be adding Mac support {"Soon™️"}, as Mac
+                currently does not support USB/IP, and are looking to add
+                support for iOS and Android in the future.
+            </>
+        ),
     },
     {
         question: "Can I see the source code?",
-        answer: "Sure! Bulwark Passkey is built on top of an open source core called Virtual FIDO (https://github.com/bulwarkid/virtual-fido), which contains the USB emulation and FIDO protocol code, as well as the credential encryption and formatting. Right now the frontend UI contains proprietary UI code, including code bought from TailwindUI, so cannot be open sourced as easily. However, you are still able to view the safety critical parts of the code, as well as easily decrypt and transfer your credentials out of the system.",
+        answer: (
+            <>
+                Sure! Bulwark Passkey is built on top of an open source core
+                called{" "}
+                <a
+                    className="underline"
+                    href="https://github.com/bulwarkid/virtual-fido"
+                >
+                    Virtual FIDO
+                </a>
+                , which contains the USB emulation and FIDO protocol code, as
+                well as the credential encryption and formatting. You can view
+                the safety critical parts of the code, as well as easily decrypt
+                and transfer your credentials out of the system.
+            </>
+        ),
     },
 ];
 

@@ -24,8 +24,8 @@ const features = [
             <>
                 Bulwark Passkey is a pure software implementation, so
                 credentials are securely synced between your devices using a
-                master passphrase. Windows and Linux are supported, with Mac
-                support coming soon.
+                master passphrase. Windows is currently supported, with Mac and
+                Linux support coming soon.
             </>
         ),
         icon: ComputerDesktopIcon,
