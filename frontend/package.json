@@ -18,7 +18,7 @@
         "@types/react-dom": "^18.0.6",
         "@wailsapp/runtime": "^1.1.1",
         "daisyui": "^2.31.0",
-        "google-protobuf": "^3.21.1",
+        "google-protobuf": "^3.21.2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-scripts": "5.0.1",
@@ -27,7 +27,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "proto": "protoc --ts_out src/proto --proto_path ../proto/src ../proto/src/*.proto",
+        "proto": "protoc --experimental_allow_proto3_optional --ts_out src/proto --proto_path ../proto/src ../proto/src/*.proto",
         "build": "npm run proto && react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
