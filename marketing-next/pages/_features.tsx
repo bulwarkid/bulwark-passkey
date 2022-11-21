@@ -71,7 +71,7 @@ export default function Features() {
                         Passkeys
                     </h2>
                     <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-                        Multifactor Authentication without Codes
+                        Software-Based Passkeys
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
                         Bulwark Passkey is a software-based implementation of a

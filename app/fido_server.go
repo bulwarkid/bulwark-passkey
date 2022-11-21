@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -41,7 +40,7 @@ func runCommand(commandList []string) {
 	prog.Stderr = os.Stderr
 	err := prog.Run()
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		fatalf("Error: %s\n", err)
 	}
 }
 
