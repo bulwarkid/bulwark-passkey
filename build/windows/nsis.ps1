@@ -1,5 +1,5 @@
 Push-Location .\app
-wails build -nsis -s -skipbindings -debug
+wails build -nsis -s -skipbindings
 if (-not $?) {
     throw "App build failure"
 }
