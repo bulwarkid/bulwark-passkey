@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { WindowsLogoIcon } from "@fluentui/react-icons-mdl2-branded";
+import DownloadLink from "./_download_link";
 
 export default function HeroSection() {
     return (
@@ -16,13 +18,8 @@ export default function HeroSection() {
                         Authentication and WebAuthN.
                     </p>
                     <div className="mt-5 max-w-md sm:flex md:mt-8">
-                        <div className="rounded-md shadow">
-                            <a
-                                href="#"
-                                className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
-                            >
-                                Download
-                            </a>
+                    <div className="rounded-md shadow">
+                        <DownloadLink/>
                         </div>
                     </div>
                 </div>

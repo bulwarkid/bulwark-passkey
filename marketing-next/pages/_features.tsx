@@ -8,26 +8,56 @@ import {
 const features = [
     {
         name: "Unphishable Two Factor Authentication",
-        description:
-            "Bulwark Passkey uses the U2F/FIDO protocols, which allow for secure cryptographic authentication without the need for passwords or one-time codes. Just click “Approve” without the need to copy anything!",
+        description: (
+            <>
+                Bulwark Passkey uses the U2F/FIDO protocols, which allow for
+                secure cryptographic authentication without the need for
+                passwords or one-time codes. Just click “Approve” without the
+                need to copy anything!
+            </>
+        ),
         icon: LockClosedIcon,
     },
     {
         name: "Sync Across Your Devices",
-        description:
-            "Bulwark Passkey is a pure software implementation, so credentials are securely synced between your devices using a master passphrase. Windows and Linux are supported, with Mac support coming soon.",
+        description: (
+            <>
+                Bulwark Passkey is a pure software implementation, so
+                credentials are securely synced between your devices using a
+                master passphrase. Windows and Linux are supported, with Mac
+                support coming soon.
+            </>
+        ),
         icon: ComputerDesktopIcon,
     },
     {
         name: "Log into websites with WebAuthN",
-        description:
-            "Bulwark Passkey supports the new FIDO2 protocol, which allows you to log into supporting websites without the need for any passwords.",
+        description: (
+            <>
+                Bulwark Passkey supports the new FIDO2 protocol, which allows
+                you to log into supporting websites without the need for any
+                passwords.
+            </>
+        ),
         icon: GlobeAltIcon,
     },
     {
         name: "Open Source Core - Export and Transfer your Data",
-        description:
-            "Bulwark Passkey is built on top of Virtual FIDO, an open source USB emulation of a U2F/FIDO device with a standard credential encryption/storage format. You can easily export your credentials out of Bulwark Passkey as long as you have your master passphrase.",
+        description: (
+            <>
+                Bulwark Passkey is built on top of{" "}
+                <a
+                    className="underline"
+                    href="https://github.com/bulwarkid/virtual-fido"
+                >
+                    Virtual FIDO
+                </a>
+                , an open source USB emulation of a U2F/FIDO device with a
+                standard credential encryption/storage format. You can easily
+                export your credentials out of Bulwark Passkey as long as you
+                have your master passphrase.
+            </>
+        ),
         icon: MagnifyingGlassIcon,
     },
 ];
@@ -44,10 +74,10 @@ export default function Features() {
                         Multifactor Authentication without Codes
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Bulwark Passkey is a purely software-based
-                        implementation of a U2F and FIDO device, which supports
-                        two factor authentication as well as WebAuthN (otherwise
-                        known as passkeys).
+                        Bulwark Passkey is a software-based implementation of a
+                        FIDO device (similar to a Yubikey), which supports two
+                        factor authentication as well as WebAuthN, otherwise
+                        known as passkeys.
                     </p>
                 </div>
 
