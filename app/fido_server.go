@@ -44,8 +44,7 @@ func runCommand(commandList []string) {
 }
 
 func attachUSBIPLinux() {
-	runCommand([]string{"pkexec", "modprobe", "vhci-hcd"})
-	runCommand([]string{"pkexec", "usbip", "attach", "-r", "127.0.0.1", "-b", "2-2"})
+	runCommand([]string{"pkexec", "bash", "-c", "modprobe vhci-hcd && usbip attach -r 127.0.0.1 -b 2-2"})
 }
 
 func attachUSBIPWindows() {
