@@ -59,7 +59,7 @@ export default function Home() {
         </div>
     );
     return (
-        <div className="relative">
+        <div className="relative overflow-x-hidden">
             <Head>
                 <title>Bulwark Passkey</title>
                 <meta

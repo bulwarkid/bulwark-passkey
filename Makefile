@@ -11,6 +11,11 @@ else
 		OUTPUT_NAME = Bulwark\ Passkey.app
 		RUN_COMMAND = Bulwark\ Passkey.app/Contents/MacOS/Bulwark\ Passkey
 		RM = rm -r
+	else ifeq ($(UNAME), Linux)
+		OS_NAME = Linux
+		OUTPUT_NAME = bulwark_passkey
+		RUN_COMMAND = bulwark_passkey
+		RM = rm -r
 	endif
 endif
 
@@ -21,6 +26,9 @@ run-Windows:
 
 run-Darwin:
 	bash -x ./build/mac/run.sh
+
+run-Linux:
+	bash -x ./build/linux/run.sh
 
 nsis:
 	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\windows\nsis.ps1"
@@ -35,6 +43,9 @@ output-Darwin:
 output-Windows:
 	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\windows\build.ps1"
 
+output-Linux:
+	bash -x ./build/linux/build.sh
+
 clean: clean-$(OS_NAME)
 
 clean-Darwin:
@@ -42,3 +53,6 @@ clean-Darwin:
 
 clean-Windows:
 	PowerShell.exe -ExecutionPolicy Unrestricted -command ".\build\windows\clean.ps1"
+
+clean-Linux:
+	bash -x ./build/linux/clean.sh

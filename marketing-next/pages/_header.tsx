@@ -30,12 +30,6 @@ export default function Header() {
                         as="nav"
                         className="hidden space-x-10 md:flex"
                     >
-                        <Link
-                            href="/"
-                            className="text-base font-medium text-gray-500 hover:text-gray-900"
-                        >
-                            About
-                        </Link>
                         <a
                             href="#features"
                             className="text-base font-medium text-gray-500 hover:text-gray-900"
@@ -56,7 +50,7 @@ export default function Header() {
                         </a>
                     </Popover.Group>
                     <div className="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
-                        <DownloadLink/>
+                        <DownloadLink />
                     </div>
                 </div>
             </div>
