@@ -22,7 +22,6 @@ func startFIDOServer(client *Client) {
 func attachUSBIPServer() {
 	time.Sleep(250 * time.Millisecond)
 	if runtime.GOOS == "windows" {
-		installUSBIPWindows()
 		attachUSBIPWindows()
 	} else if runtime.GOOS == "linux" {
 		attachUSBIPLinux()
@@ -45,14 +44,11 @@ func runCommand(commandList []string) {
 }
 
 func attachUSBIPLinux() {
-	commandList := []string{"sudo", "usbip", "attach", "-r", "127.0.0.1", "-b", "2-2"}
-	runCommand(commandList)
-}
-
-func installUSBIPWindows() {
-	runCommand([]string{"./usbip/usbip.exe", "install", "-u"})
+	runCommand([]string{"pkexec", "modprobe", "vhci-hcd"})
+	runCommand([]string{"pkexec", "usbip", "attach", "-r", "127.0.0.1", "-b", "2-2"})
 }
 
 func attachUSBIPWindows() {
+	runCommand([]string{"./usbip/usbip.exe", "install", "-u"})
 	runCommand([]string{"./usbip/usbip.exe", "attach", "-r", "127.0.0.1", "-b", "2-2"})
 }
