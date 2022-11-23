@@ -14,6 +14,7 @@ import (
 
 type Client struct {
 	vaultType             string
+	email string
 	lastUpdated           time.Time
 	vault                 *vfido.IdentityVault
 	certificateAuthority  *x509.Certificate
@@ -143,7 +144,7 @@ func (client *Client) configureNewDevice(vaultType string) {
 	client.save()
 }
 
-func (client *Client) loadData(vaultType string, data []byte, lastUpdated string) {
+func (client *Client) loadData(vaultType string, data []byte, lastUpdated string, email string) {
 	lastUpdatedTime := now()
 	err := (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
 	checkErr(err, "Could not parse time")
@@ -154,6 +155,7 @@ func (client *Client) loadData(vaultType string, data []byte, lastUpdated string
 	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
 	checkErr(err, "Could not parse private key")
 	client.vaultType = vaultType
+	client.email = email
 	client.lastUpdated = lastUpdatedTime
 	client.authenticationCounter = config.AuthenticationCounter
 	client.certificateAuthority = cert
@@ -172,7 +174,7 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 	_, err := vfido.DecryptWithPassphrase(data, client.passphrase())
 	if err != nil {
 		// Passphrase might have changed, get user to log in again
-		eject := logIn(accountVaultType, string(data))
+		eject := logIn(accountVaultType, string(data), client.email)
 		if eject {
 			deleteVaultFile()
 			app.createNewVault()
@@ -181,7 +183,7 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 			checkErr(err, "Could not decrypt new vault")
 		}
 	}
-	client.loadData(accountVaultType, data, lastUpdated)
+	client.loadData(accountVaultType, data, lastUpdated, client.email)
 
 }
 
@@ -202,8 +204,8 @@ func (client *Client) save() {
 	config := client.toDeviceConfig()
 	stateBytes, err := vfido.EncryptWithPassphrase(*config, client.passphrase())
 	checkErr(err, "Could not encrypt device state")
-	saveVaultToFile(VaultFile{VaultType: client.vaultType, Data: stateBytes, LastUpdated: toTimestamp(client.lastUpdated)})
-	updateData()
+	saveVaultToFile(VaultFile{VaultType: client.vaultType, Email: client.email, Data: stateBytes, LastUpdated: toTimestamp(client.lastUpdated)})
+	updateFrontend()
 	storeRemoteVaultJSON(string(stateBytes), toTimestamp(client.lastUpdated))
 }
 

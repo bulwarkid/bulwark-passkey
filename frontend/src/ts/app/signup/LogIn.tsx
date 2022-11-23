@@ -1,6 +1,4 @@
 import React, { FormEvent } from "react";
-import { Input, VerticalInputGroup } from "../../components/Input";
-import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { hideModal, showModal } from "../ModalStack";
 import * as supabase from "../../data/supabase";
 import { promptUser } from "../modals/Confirm";
@@ -12,7 +10,8 @@ import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 
 export async function logInToExistingVault(
     vaultType: string,
-    vaultData: string
+    vaultData: string,
+    email: string
 ): Promise<boolean> {
     if (vaultType === LOCAL_VAULT_TYPE) {
         return await unlockLocalVault(vaultData);
@@ -20,6 +19,7 @@ export async function logInToExistingVault(
         return new Promise<boolean>((resolve) => {
             showModal(
                 <LogInModal
+                    email={email}
                     onLoggedIn={() => {
                         hideModal();
                         resolve(false);
@@ -61,6 +61,7 @@ export async function logInToRemote(): Promise<boolean> {
 }
 
 type LogInModalProps = {
+    email?: string;
     onLoggedIn: () => void;
     onLogOut?: () => void;
     onCancel?: () => void;
@@ -111,6 +112,42 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                 </div>
             );
         }
+        const emailInput = (
+            <div>
+                <label htmlFor="email-address" className="sr-only">
+                    Email address
+                </label>
+                <input
+                    ref={this.emailRef_}
+                    id="email-address"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-600"
+                    placeholder="Email address"
+                    disabled={!!this.props.email}
+                    value={this.props.email}
+                />
+            </div>
+        );
+        const passphraseInput = (
+            <div>
+                <label htmlFor="password" className="sr-only">
+                    Master Passphrase
+                </label>
+                <input
+                    ref={this.passphraseRef_}
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Master Passphrase"
+                />
+            </div>
+        );
         return (
             <div className="flex flex-col bg-gray-200 min-h-full">
                 <div className="grow flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -131,44 +168,9 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                             onSubmit={this.onSubmit_}
                         >
                             <div className="-space-y-px rounded-md shadow-sm">
-                                <div>
-                                    <label
-                                        htmlFor="email-address"
-                                        className="sr-only"
-                                    >
-                                        Email address
-                                    </label>
-                                    <input
-                                        ref={this.emailRef_}
-                                        id="email-address"
-                                        name="email"
-                                        type="email"
-                                        autoComplete="email"
-                                        required
-                                        className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                        placeholder="Email address"
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        htmlFor="password"
-                                        className="sr-only"
-                                    >
-                                        Master Passphrase
-                                    </label>
-                                    <input
-                                        ref={this.passphraseRef_}
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        autoComplete="current-password"
-                                        required
-                                        className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                        placeholder="Master Passphrase"
-                                    />
-                                </div>
+                                {emailInput}
+                                {passphraseInput}
                             </div>
-
                             <div>
                                 <button
                                     type="submit"

@@ -13,6 +13,7 @@ type VaultFile struct {
 	VaultType   string `json:"type"`
 	Data        []byte `json:"data"`
 	LastUpdated string `json:"last_updated"`
+	Email 		string `json:"email"`
 }
 
 func configDir() string {

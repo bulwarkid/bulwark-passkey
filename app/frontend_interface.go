@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func updateData() {
+func updateFrontend() {
 	callRPC(app.ctx, "update")
 }
 
@@ -20,8 +20,8 @@ func approveClientAction(action string, relyingParty string, userName string) bo
 	return response.(bool)
 }
 
-func logIn(vaultType string, vaultData string) bool {
-	response := callRPC(app.ctx, "logIn", vaultType, vaultData)
+func logIn(vaultType string, vaultData string, email string) bool {
+	response := callRPC(app.ctx, "logIn", vaultType, vaultData, email)
 	return response.(bool)
 }
 
@@ -44,6 +44,11 @@ func fetchRemoteVaultJSON() (string, string) {
 
 func storeRemoteVaultJSON(vaultJSON string, lastUpdated string) {
 	callRPC(app.ctx, "storeRemoteVault", vaultJSON, lastUpdated)
+}
+
+func getUserEmail() string {
+	response := callRPC(app.ctx, "getUserEmail")
+	return response.(string)
 }
 
 func loadFrontendHandlers() {

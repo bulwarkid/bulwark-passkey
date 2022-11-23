@@ -40,10 +40,10 @@ func (app *App) initializeData() {
 		app.createNewVault()
 	} else {
 		// Existing vault
-		eject := logIn(vaultFile.VaultType, string(vaultFile.Data))
+		eject := logIn(vaultFile.VaultType, string(vaultFile.Data), vaultFile.Email)
 		if !eject {
 			// 1. Logged in locally or remotely
-			app.client.loadData(vaultFile.VaultType, vaultFile.Data, vaultFile.LastUpdated)
+			app.client.loadData(vaultFile.VaultType, vaultFile.Data, vaultFile.LastUpdated, vaultFile.Email)
 			if vaultFile.VaultType == accountVaultType {
 				go app.updateRemoteVault()
 			}
@@ -65,7 +65,7 @@ func (app *App) createNewVault() {
 			// Fetch returned no vault on remote servers
 			app.client.configureNewDevice(accountVaultType)
 		} else {
-			app.client.loadData(accountVaultType, []byte(jsonData), lastUpdated)
+			app.client.loadData(accountVaultType, []byte(jsonData), lastUpdated, getUserEmail())
 		}
 	} else {
 		app.client.configureNewDevice(vaultType)
