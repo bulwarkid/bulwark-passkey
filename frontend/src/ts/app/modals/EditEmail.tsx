@@ -1,6 +1,7 @@
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
 import React from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
+import { Input } from "../../components/Input";
 import { CardModal, CardModalTitle } from "../../components/Modal";
 
 type EditEmailModalProps = {
@@ -49,23 +50,12 @@ export class EditEmailModal extends React.Component<
         let content = (
             <div className="flex flex-col w-full justify-center items-center px-4 py-5">
                 <div className="w-full">
-                    <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Current Email
-                    </label>
-                    <div className="mt-1">
-                        <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            defaultValue={this.props.currentEmail}
-                            disabled
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
-                            placeholder={this.props.currentEmail}
-                        />
-                    </div>
+                    <Input
+                        label="Current Email"
+                        type="email"
+                        defaultValue={this.props.currentEmail}
+                        disabled
+                    />
                 </div>
                 {errorMessage}
                 <div className="mt-4 w-full flex flex-col max-h-full min-h-0">

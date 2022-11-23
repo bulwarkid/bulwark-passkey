@@ -1,11 +1,8 @@
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/20/solid";
 import React from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
-import { VerticalInputGroup, Input, InputLabel } from "../../components/Input";
 import { CardModal, CardModalTitle, Modal } from "../../components/Modal";
-import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { validatePassphrases } from "../../data/passphrase";
-import { LockIcon } from "../../icons/lock";
 
 type PassphraseModalProps = {
     oldPassphrase: string;

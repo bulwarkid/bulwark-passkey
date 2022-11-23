@@ -1,9 +1,6 @@
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import React, { FormEvent } from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
-import { VerticalInputGroup, Input } from "../../components/Input";
-import { Modal } from "../../components/Modal";
-import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 import { setPassphrase, validatePassphrases } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 

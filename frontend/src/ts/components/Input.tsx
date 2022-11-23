@@ -1,44 +1,36 @@
 import React from "react";
+import { htmlId } from "../core/util";
 
-export class InputLabel extends React.Component<{ children: React.ReactNode }> {
-    render() {
-        return (
-            <label className="daisy-label">
-                <span className="daisy-label-text">{this.props.children}</span>
-            </label>
-        );
-    }
-}
-
-export class Input extends React.Component<{
+type InputProps = {
     inputRef?: React.RefObject<HTMLInputElement>;
-    placeholder?: string;
-    type?: string;
-    disabled?: boolean;
-    value?: string;
-}> {
+    label?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>;
+
+export class Input extends React.Component<InputProps> {
     render() {
-        return (
+        const id = htmlId();
+        const input = (
             <input
                 ref={this.props.inputRef}
-                type={this.props.type}
-                placeholder={this.props.placeholder}
-                disabled={this.props.disabled}
-                value={this.props.value}
-                className="daisy-input daisy-input-bordered daisy-input-md"
-            ></input>
+                id={id}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-600"
+                {...this.props}
+            />
         );
-    }
-}
-
-export class VerticalInputGroup extends React.Component<{
-    children: React.ReactNode;
-}> {
-    render() {
-        return (
-            <div className="daisy-input-group daisy-input-group-vertical">
-                {this.props.children}
-            </div>
-        );
+        if (this.props.label) {
+            return (
+                <div>
+                    <label
+                        htmlFor={id}
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        {this.props.label}
+                    </label>
+                    <div className="mt-1">{input}</div>
+                </div>
+            );
+        } else {
+            return input;
+        }
     }
 }

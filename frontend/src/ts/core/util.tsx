@@ -58,3 +58,10 @@ console.NOCOMMIT = (...data: any[]) => {
     console.log(...data);
     LogDebug(JSON.stringify(data));
 };
+
+let htmlIdCounter = 0;
+
+export function htmlId(): string {
+    htmlIdCounter++;
+    return `htmlId-${htmlIdCounter}`;
+}
