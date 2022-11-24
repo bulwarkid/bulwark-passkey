@@ -1,0 +1,7 @@
+Package: bulwark-passkey 
+Version: 1.0 
+Section: base 
+Priority: optional 
+Architecture: all 
+Maintainer: hello@bulwark.id
+Description: Run Bulwark Passkey

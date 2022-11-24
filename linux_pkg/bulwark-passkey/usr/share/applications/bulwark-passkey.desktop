@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Bulwark Passkey
+Comment=Virtual FIDO Device
+Exec=bulwark_passkey
+Terminal=false
+X-MultipleArgs=false
+Type=Application
