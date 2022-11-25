@@ -1,4 +1,5 @@
 import { WindowsLogoIcon } from "@fluentui/react-icons-mdl2-branded";
+import Image from "next/image";
 
 export const sources = {
     windows: {
@@ -8,7 +9,13 @@ export const sources = {
     linux: {
         link: "https://jdikcjgzpiezpacsqlkf.supabase.co/storage/v1/object/public/bulwark-passkey-app/bulwark-passkey.deb",
         logo: (
-            <img className="mr-2" src="img/linux.svg" width={20} height={20} />
+            <Image
+                className="mr-2"
+                src="img/linux.svg"
+                alt="Linux Logo"
+                width={20}
+                height={20}
+            />
         ),
     },
 };

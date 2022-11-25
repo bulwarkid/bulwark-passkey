@@ -31,9 +31,10 @@ function DownloadDropdown() {
                             href={sources["linux"].link}
                             className="block flex px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                         >
-                            <img
+                            <Image
                                 className="mr-2"
                                 src="img/linux-dark.svg"
+                                alt="Linux Logo"
                                 width={20}
                                 height={20}
                             />
