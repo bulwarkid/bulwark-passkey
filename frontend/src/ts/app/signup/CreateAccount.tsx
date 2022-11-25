@@ -10,6 +10,7 @@ import { hideModal, showModal } from "../ModalStack";
 import { logInToRemote } from "./LogIn";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
+import { Input } from "../../components/Input";
 
 export async function createNewVault(): Promise<[string, boolean]> {
     return new Promise((resolve) => {
@@ -72,24 +73,13 @@ export class CreateAccount extends React.Component<
         );
         const infoForm = (
             <form className="space-y-2" onSubmit={this.onSubmit_}>
-                <div>
-                    <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Email
-                    </label>
-                    <div className="mt-1">
-                        <input
-                            ref={this.emailRef_}
-                            type="email"
-                            name="email"
-                            id="email"
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            placeholder="you@example.com"
-                        />
-                    </div>
-                </div>
+                <Input
+                    label="email"
+                    inputRef={this.emailRef_}
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                />
                 <div>
                     <label className="block text-sm font-medium text-gray-700">
                         Passphrase
