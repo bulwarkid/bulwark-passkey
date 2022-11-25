@@ -17,9 +17,12 @@ export default function HeroSection() {
                         A simple, software-based FIDO device for Two Factor
                         Authentication and WebAuthN.
                     </p>
-                    <div className="mt-5 max-w-md sm:flex md:mt-8">
+                    <div className="mt-5 max-w-md sm:flex md:mt-8 space-x-2">
                         <div className="rounded-md shadow">
-                            <DownloadLink />
+                            <DownloadLink source="windows" />
+                        </div>
+                        <div className="rounded-md shadow">
+                            <DownloadLink source="linux" />
                         </div>
                     </div>
                 </div>
