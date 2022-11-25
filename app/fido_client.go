@@ -14,7 +14,7 @@ import (
 
 type Client struct {
 	vaultType             string
-	email string
+	email                 string
 	lastUpdated           time.Time
 	vault                 *vfido.IdentityVault
 	certificateAuthority  *x509.Certificate

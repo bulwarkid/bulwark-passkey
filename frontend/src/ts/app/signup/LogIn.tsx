@@ -124,7 +124,7 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                 className="appearance-none rounded-none rounded-t-md"
                 placeholder="Email address"
                 disabled={!!this.props.email}
-                value={this.props.email}
+                defaultValue={this.props.email}
             />
         );
         const passphraseInput = (
