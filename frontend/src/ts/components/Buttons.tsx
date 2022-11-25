@@ -17,17 +17,21 @@ export enum ButtonColor {
 }
 
 type ButtonProps = {
+    className?: string;
     text?: string;
     size: ButtonSize;
     color: ButtonColor;
     onClick?: () => void;
     icon?: React.ReactNode;
+    buttonRef?: React.RefObject<HTMLButtonElement>;
+    type?: "button" | "submit" | "reset";
 };
 
 export class Button extends React.Component<ButtonProps> {
     static defaultProps = {
         size: ButtonSize.MD,
         color: ButtonColor.PRIMARY,
+        type: "button",
     };
     render() {
         let classes = [];
@@ -88,9 +92,13 @@ export class Button extends React.Component<ButtonProps> {
         classes.push(
             "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         );
+        if (this.props.className) {
+            classes.push(this.props.className);
+        }
         return (
             <button
-                type="button"
+                ref={this.props.buttonRef}
+                type={this.props.type}
                 className={classes.join(" ")}
                 onClick={this.props.onClick}
             >

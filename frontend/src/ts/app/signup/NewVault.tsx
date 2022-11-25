@@ -1,6 +1,7 @@
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import React, { FormEvent } from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
+import { Input } from "../../components/Input";
 import { setPassphrase, validatePassphrases } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";
 
@@ -61,55 +62,41 @@ export class NewVaultModal extends React.Component<
                         Passphrase
                     </label>
                     <div className="-space-y-px rounded-md shadow-sm mt-1">
-                        <div>
-                            <label htmlFor="new-passphrase" className="sr-only">
-                                Master Passphrase
-                            </label>
-                            <input
-                                ref={this.inputRef1_}
-                                id="new-passphrase"
-                                name="new-passphrase"
-                                type="password"
-                                autoComplete="password"
-                                required
-                                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                placeholder="Master Passphrase"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="confirm-passphrase"
-                                className="sr-only"
-                            >
-                                Confirm Passphrase
-                            </label>
-                            <input
-                                ref={this.inputRef2_}
-                                id="confirm-passphrase"
-                                name="confirm-passphrase"
-                                type="password"
-                                autoComplete="password"
-                                required
-                                className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                placeholder="Confirm Passphrase"
-                            />
-                        </div>
+                        <Input
+                            label="Master Passphrase"
+                            srLabel={true}
+                            type="password"
+                            autoComplete="password"
+                            required
+                            placeholder="Master Passphrase"
+                            className="appearance-none rounded-none rounded-t-md"
+                        />
+                        <Input
+                            label="Confirm Passphrase"
+                            srLabel={true}
+                            type="password"
+                            autoComplete="password"
+                            required
+                            placeholder="Confirm Passphrase"
+                            className="appearance-none rounded-none rounded-b-md"
+                        />
                     </div>
                 </div>
 
                 <div>
-                    <button
+                    <Button
                         type="submit"
-                        className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <LockClosedIcon
-                                className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                                aria-hidden="true"
-                            />
-                        </span>
-                        Create Local Vault
-                    </button>
+                        text="Create Local Vault"
+                        className="group relative w-full justify-center"
+                        icon={
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <LockClosedIcon
+                                    className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                    aria-hidden="true"
+                                />
+                            </span>
+                        }
+                    />
                 </div>
             </form>
         );

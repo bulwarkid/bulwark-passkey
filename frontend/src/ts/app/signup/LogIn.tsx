@@ -7,6 +7,7 @@ import { unlockLocalVault } from "./Unlock";
 import { LogError } from "../../wailsjs/runtime/runtime";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
+import { Input } from "../../components/Input";
 
 export async function logInToExistingVault(
     vaultType: string,
@@ -113,40 +114,30 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
             );
         }
         const emailInput = (
-            <div>
-                <label htmlFor="email-address" className="sr-only">
-                    Email address
-                </label>
-                <input
-                    ref={this.emailRef_}
-                    id="email-address"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-600"
-                    placeholder="Email address"
-                    disabled={!!this.props.email}
-                    value={this.props.email}
-                />
-            </div>
+            <Input
+                label="Email Address"
+                srLabel={true}
+                inputRef={this.emailRef_}
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none rounded-t-md"
+                placeholder="Email address"
+                disabled={!!this.props.email}
+                value={this.props.email}
+            />
         );
         const passphraseInput = (
-            <div>
-                <label htmlFor="password" className="sr-only">
-                    Master Passphrase
-                </label>
-                <input
-                    ref={this.passphraseRef_}
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Master Passphrase"
-                />
-            </div>
+            <Input
+                inputRef={this.passphraseRef_}
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none rounded-b-md"
+                placeholder="Master Passphrase"
+                label="Master Passphrase"
+                srLabel={true}
+            />
         );
         return (
             <div className="flex flex-col bg-gray-200 min-h-full">
@@ -172,18 +163,19 @@ class LogInModal extends React.Component<LogInModalProps, LogInModalState> {
                                 {passphraseInput}
                             </div>
                             <div>
-                                <button
+                                <Button
+                                    className="group relative w-full justify-center"
+                                    text="Log In"
                                     type="submit"
-                                    className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                >
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <LockClosedIcon
-                                            className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
-                                            aria-hidden="true"
-                                        />
-                                    </span>
-                                    Log In
-                                </button>
+                                    icon={
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <LockClosedIcon
+                                                className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                                aria-hidden="true"
+                                            />
+                                        </span>
+                                    }
+                                />
                             </div>
                         </form>
                     </div>
