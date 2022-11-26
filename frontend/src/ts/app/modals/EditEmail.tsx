@@ -3,10 +3,11 @@ import React from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 import { Input } from "../../components/Input";
 import { CardModal, CardModalTitle } from "../../components/Modal";
+import { updateEmail } from "../../data/supabase";
 
 type EditEmailModalProps = {
     currentEmail: string;
-    emailUpdated: (email: string) => void;
+    emailUpdated: () => void;
     onCancel: () => void;
 };
 
@@ -57,8 +58,8 @@ export class EditEmailModal extends React.Component<
                         disabled
                     />
                 </div>
-                {errorMessage}
                 <div className="mt-4 w-full flex flex-col max-h-full min-h-0">
+                    {errorMessage}
                     <div className="block text-sm font-medium text-gray-700 p-0 m-0">
                         New Email
                     </div>
@@ -68,6 +69,7 @@ export class EditEmailModal extends React.Component<
                                 New Email
                             </label>
                             <input
+                                ref={this.emailRef1_}
                                 type="text"
                                 name="new-email"
                                 id="new-email"
@@ -81,6 +83,7 @@ export class EditEmailModal extends React.Component<
                                 Confirm Email
                             </label>
                             <input
+                                ref={this.emailRef2_}
                                 type="text"
                                 name="new-email"
                                 id="new-email"
@@ -115,7 +118,7 @@ export class EditEmailModal extends React.Component<
         );
     }
 
-    onSubmit_ = () => {
+    onSubmit_ = async () => {
         const email1 = this.emailRef1_.current?.value;
         const email2 = this.emailRef2_.current?.value;
         // TODO: Do more sophisticated email verfication
@@ -127,6 +130,11 @@ export class EditEmailModal extends React.Component<
             this.setState({ errorMessage: "Invalid email format" });
             return;
         }
-        this.props.emailUpdated(email1!);
+        const errorMessage = await updateEmail(email1!);
+        if (errorMessage) {
+            this.setState({ errorMessage });
+        } else {
+            this.props.emailUpdated();
+        }
     };
 }

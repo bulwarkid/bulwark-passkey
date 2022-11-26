@@ -146,13 +146,13 @@ export async function getEmail(): Promise<string | undefined> {
     return user?.email;
 }
 
-export async function updateEmail(email: string): Promise<boolean> {
+export async function updateEmail(email: string): Promise<string | null> {
     const { data, error } = await supabase.auth.updateUser({ email });
     if (error) {
         LogDebug(error.message);
-        return false;
+        return error.message;
     }
-    return true;
+    return null;
 }
 
 export async function updateAccountPassphrase(

@@ -21,7 +21,7 @@ export const sources = {
 };
 
 export default function DownloadLink(props: { source: "windows" | "linux" }) {
-    const source = sources[props.source];
+    const source = sources[props.source || "windows"];
     return (
         <a
             href={source.link}

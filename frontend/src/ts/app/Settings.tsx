@@ -83,10 +83,8 @@ export class Settings extends React.Component {
             showModal(
                 <EditEmailModal
                     currentEmail={email}
-                    emailUpdated={async (newEmail: string) => {
-                        if (await updateEmail(newEmail)) {
-                            hideModal();
-                        }
+                    emailUpdated={() => {
+                        hideModal();
                     }}
                     onCancel={() => {
                         hideModal();
