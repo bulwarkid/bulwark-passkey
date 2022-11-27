@@ -11,9 +11,10 @@ import (
 )
 
 func startFIDOServer(client *Client) {
-	log_fd, _ := os.Create("device.log")
-	defer log_fd.Close()
-	virtual_fido.SetLogOutput(log_fd)
+	logFile, err := os.OpenFile(configFilePath("device.log"), os.O_RDWR | os.O_CREATE | os.O_TRUNC, 0755)
+	checkErr(err, "Could not open device log")
+	defer logFile.Close()
+	virtual_fido.SetLogOutput(logFile)
 
 	go attachUSBIPServer()
 	virtual_fido.Start(client)

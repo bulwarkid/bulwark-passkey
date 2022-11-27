@@ -24,30 +24,30 @@ type Logger struct {
 }
 
 func (logger *Logger) printInternal(format string, args ...interface{}) {
-	fmt.Println(fmt.Sprintf(format, args...))
+	fmt.Printf(fmt.Sprintf(format, args...))
 	logger.log.Printf(format, args...)
 }
 
 func (logger *Logger) Print(message string) {
-	logger.printInternal("[PRINT] %s", message)
+	logger.printInternal("[PRINT] %s\n", message)
 }
 func (logger *Logger) Trace(message string) {
-	logger.printInternal("[TRACE] %s", message)
+	logger.printInternal("[TRACE] %s\n", message)
 }
 func (logger *Logger) Debug(message string) {
-	logger.printInternal("[DEBUG] %s", message)
+	logger.printInternal("[DEBUG] %s\n", message)
 }
 func (logger *Logger) Info(message string) {
-	logger.printInternal("[INFO] %s", message)
+	logger.printInternal("[INFO] %s\n", message)
 }
 func (logger *Logger) Warning(message string) {
-	logger.printInternal("[WARN] %s", message)
+	logger.printInternal("[WARN] %s\n", message)
 }
 func (logger *Logger) Error(message string) {
-	logger.printInternal("[ERROR] %s", message)
+	logger.printInternal("[ERROR] %s\n", message)
 }
 func (logger *Logger) Fatal(message string) {
-	errorMsg := fmt.Sprintf("[FATAL] %s", message)
-	fmt.Println(errorMsg)
+	errorMsg := fmt.Sprintf("[FATAL] %s\n", message)
+	fmt.Printf(errorMsg)
 	logger.log.Fatalf(errorMsg)
 }

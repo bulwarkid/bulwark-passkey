@@ -19,12 +19,16 @@ type VaultFile struct {
 func configDir() string {
 	configDirRoot, err := os.UserConfigDir()
 	checkErr(err, "Could not get user config directory")
-	return filepath.Join(configDirRoot, "BulwarkPasskey")
+	return filepath.Join(configDirRoot, "Bulwark Passkey")
 }
 
 func vaultFilename() string {
+	return configFilePath("vault.json")
+}
+
+func configFilePath(filename string) string {
 	configDir := configDir()
-	return filepath.Join(configDir, "vault.json")
+	return filepath.Join(configDir, filename)
 }
 
 func saveVaultToFile(vaultFile VaultFile) {
@@ -35,8 +39,7 @@ func saveVaultToFile(vaultFile VaultFile) {
 	if !os.IsExist(err) {
 		checkErr(err, "Could not create config directory")
 	}
-	vaultFilename := vaultFilename()
-	err = os.WriteFile(vaultFilename, data, 0700)
+	err = os.WriteFile(vaultFilename(), data, 0700)
 	checkErr(err, "Could not write vault file")
 }
 
