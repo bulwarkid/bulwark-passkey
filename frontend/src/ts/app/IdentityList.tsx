@@ -1,14 +1,9 @@
 import React from "react";
 import { Identity } from "../../proto/data";
 import * as identities from "../data/identities";
-import { InfoIcon } from "../icons/info";
 import { showModal } from "./ModalStack";
 import { IdentityInfoModal } from "./modals/IdentityInfo";
-import {
-    EllipsisHorizontalCircleIcon,
-    EllipsisHorizontalIcon,
-    EllipsisVerticalIcon,
-} from "@heroicons/react/20/solid";
+import { EllipsisHorizontalIcon } from "@heroicons/react/20/solid";
 import { Button, ButtonColor, ButtonSize } from "../components/Buttons";
 
 type ListItemProps = {
@@ -58,7 +53,7 @@ export class IdentityList extends React.Component<{}, ListState> {
         identities.update();
     }
     render() {
-        if (this.state.identities.length == 0) {
+        if (this.state.identities.length === 0) {
             return (
                 <div className="w-full h-full flex flex-col justify-center items-center text-lg text-gray-500">
                     No identities in vault.
@@ -69,11 +64,7 @@ export class IdentityList extends React.Component<{}, ListState> {
         for (const identity of this.state.identities) {
             items.push(<ListItem identity={identity} />);
         }
-        return (
-            <ul role="list" className="space-y-2 mx-2 mt-4">
-                {items}
-            </ul>
-        );
+        return <ul className="space-y-2 mx-2 mt-4">{items}</ul>;
     }
 
     refreshIdentities_ = (identities: Identity[]) => {

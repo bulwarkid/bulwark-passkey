@@ -104,7 +104,7 @@ export async function fetchRemoteVault(): Promise<[string, string]> {
     const { data, error, status } = await supabase
         .from("vaults")
         .select("data, updated_at");
-    if (error || status != 200) {
+    if (error || status !== 200) {
         // Request error
         LogDebug(
             "Vault remote fetch error: " + status + " - " + error?.message

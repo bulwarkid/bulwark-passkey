@@ -1,6 +1,4 @@
 import React, { FormEvent } from "react";
-import { Modal } from "../../components/Modal";
-import { TitleBar } from "../../components/TitleBar";
 import { callRPC } from "../../core/rpc";
 import { setPassphrase } from "../../data/passphrase";
 import { hideModal, showModal } from "../ModalStack";

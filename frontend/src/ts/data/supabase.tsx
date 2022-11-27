@@ -147,7 +147,7 @@ export async function getEmail(): Promise<string | undefined> {
 }
 
 export async function updateEmail(email: string): Promise<string | null> {
-    const { data, error } = await supabase.auth.updateUser({ email });
+    const { error } = await supabase.auth.updateUser({ email });
     if (error) {
         LogDebug(error.message);
         return error.message;
@@ -158,7 +158,7 @@ export async function updateEmail(email: string): Promise<string | null> {
 export async function updateAccountPassphrase(
     passphrase: string
 ): Promise<boolean> {
-    const { data, error } = await supabase.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
         password: passphrase,
     });
     if (error) {

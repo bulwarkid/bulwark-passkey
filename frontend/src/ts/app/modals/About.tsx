@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
-import { CardModal, CardModalTitle, Modal } from "../../components/Modal";
-import { TitleBar, TitleBarButton } from "../../components/TitleBar";
+import { CardModal, CardModalTitle } from "../../components/Modal";
 
 type AboutModalProps = {
     onCancel: () => void;

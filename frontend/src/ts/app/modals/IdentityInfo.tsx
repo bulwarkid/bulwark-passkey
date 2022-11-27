@@ -1,13 +1,9 @@
 import React from "react";
-import { FormDisplay, FormData } from "../../components/FormDisplay";
-import { TitleBar } from "../../components/TitleBar";
 import { bytesToBase64, classNames } from "../../core/util";
 import { Identity } from "../../../proto/data";
-import { XIcon } from "../../icons/x";
 import { hideModal } from "../ModalStack";
 import * as identities from "../../data/identities";
-import { CardModal, CardModalTitle, Modal } from "../../components/Modal";
-import { CalendarDaysIcon } from "@heroicons/react/20/solid";
+import { CardModal, CardModalTitle } from "../../components/Modal";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 
 type IdentityInfoModalProps = {

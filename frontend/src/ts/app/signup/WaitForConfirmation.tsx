@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, ButtonColor, ButtonSize } from "../../components/Buttons";
 import { CardModal, CardModalTitle } from "../../components/Modal";
-import { TitleBar, TitleBarButton } from "../../components/TitleBar";
 
 type WaitForConfirmationModalProps = {
     onCancel: () => void;

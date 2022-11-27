@@ -1,13 +1,11 @@
 import React from "react";
 import { EditPassphraseModal } from "./modals/EditPassphrase";
-import { TitleBar } from "../components/TitleBar";
 import { hideModal, showModal } from "./ModalStack";
 import { EditEmailModal } from "./modals/EditEmail";
 import {
     getEmail,
     isLoggedIn,
     updateAccountPassphrase,
-    updateEmail,
 } from "../data/supabase";
 import { changePassphrase, getPassphrase } from "../data/passphrase";
 import { AboutModal } from "./modals/About";
@@ -42,9 +40,7 @@ export class Settings extends React.Component {
             <div className="w-full">
                 <div className="p-4">
                     <div className="overflow-hidden bg-white shadow rounded-md">
-                        <ul role="list" className="divide-y divide-gray-200">
-                            {settings}
-                        </ul>
+                        <ul className="divide-y divide-gray-200">{settings}</ul>
                     </div>
                 </div>
             </div>

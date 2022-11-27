@@ -8,9 +8,5 @@ module.exports = {
             },
         },
     },
-    plugins: [require("daisyui"), require("@tailwindcss/forms")],
-    daisyui: {
-        base: false,
-        prefix: "daisy-",
-    },
+    plugins: [require("@tailwindcss/forms")],
 };
