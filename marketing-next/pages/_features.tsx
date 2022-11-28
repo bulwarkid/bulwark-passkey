@@ -71,13 +71,13 @@ export default function Features() {
                         Passkeys
                     </h2>
                     <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-                        Software-Based Passkeys
+                        Authentication without Passwords
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Bulwark Passkey is a software-based implementation of a
-                        FIDO device (similar to a Yubikey), which supports two
-                        factor authentication as well as WebAuthN, otherwise
-                        known as passkeys.
+                        FIDO devices (such as Yubikeys or Bulwark Passkey)
+                        support passkeys, which allow you to log into websites
+                        or add a second factor of authentication without the
+                        need for copying any codes or passwords.
                     </p>
                 </div>
 
