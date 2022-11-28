@@ -11,7 +11,7 @@ import (
 )
 
 func startFIDOServer(client *Client) {
-	logFile, err := os.OpenFile(configFilePath("device.log"), os.O_RDWR | os.O_CREATE | os.O_TRUNC, 0755)
+	logFile, err := os.OpenFile(configFilePath("device.log"), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	checkErr(err, "Could not open device log")
 	defer logFile.Close()
 	virtual_fido.SetLogOutput(logFile)
@@ -40,7 +40,7 @@ func runCommand(commandList []string) {
 	prog.Stderr = os.Stderr
 	err := prog.Run()
 	if err != nil {
-		fatalf("Error: %s\n", err)
+		debugf("Error: %s\n", err)
 	}
 }
 
