@@ -30,6 +30,26 @@ export default function ContactInfo() {
                                     </div>
                                 </dl>
                             </div>
+                            <div>
+                                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                    Github Discussion/Questions
+                                </h3>
+                                <dl className="mt-2 text-base text-gray-500">
+                                    <div>
+                                        <dt className="sr-only">
+                                            Github Issues
+                                        </dt>
+                                        <dd>
+                                            <a
+                                                className="underline"
+                                                href="https://github.com/bulwarkid/bulwark-issues/issues"
+                                            >
+                                                github.com/bulwarkid/bulwark-issues
+                                            </a>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
                         </div>
                     </div>
                 </div>
