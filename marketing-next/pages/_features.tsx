@@ -7,13 +7,13 @@ import {
 
 const features = [
     {
-        name: "Unphishable Login and Two Factor Authentication",
+        name: "Unphishable Two Factor Authentication",
         description: (
             <>
-                Bulwark Passkey supports passkeys, which allows for secure
-                cryptographic authentication without the need for passwords or
-                one-time codes. Just click “Approve” without the need to copy
-                anything!
+                Bulwark Passkey uses the U2F/FIDO protocols, which allow for
+                secure cryptographic authentication without the need for
+                passwords or one-time codes. Just click “Approve” without the
+                need to copy anything!
             </>
         ),
         icon: LockClosedIcon,
@@ -22,21 +22,21 @@ const features = [
         name: "Sync Across Your Devices",
         description: (
             <>
-                Bulwark Passkey is implemented virtually in software, so
-                credentials can be securely and easily synced between your
-                devices.. Windows is currently supported, with Mac and Linux
-                support coming soon.
+                Bulwark Passkey is a pure software implementation, so
+                credentials are securely synced between your devices using a
+                master passphrase. Windows is currently supported, with Mac and
+                Linux support coming soon.
             </>
         ),
         icon: ComputerDesktopIcon,
     },
     {
-        name: "Log into websites without passwords",
+        name: "Log into websites with WebAuthN",
         description: (
             <>
-                Bulwark Passkey supports the new FIDO2 industry standard, which
-                allows you to log into supporting websites with just a click. No
-                passwords or codes required!
+                Bulwark Passkey supports the new FIDO2 protocol, which allows
+                you to log into supporting websites without the need for any
+                passwords.
             </>
         ),
         icon: GlobeAltIcon,
@@ -52,9 +52,10 @@ const features = [
                 >
                     Virtual FIDO
                 </a>
-                , an open source virtual FIDO device with a standard credential
-                storage format. You can easily export your credentials out of
-                Bulwark Passkey (as long as you have your master passphrase!).
+                , an open source USB emulation of a U2F/FIDO device with a
+                standard credential encryption/storage format. You can easily
+                export your credentials out of Bulwark Passkey as long as you
+                have your master passphrase.
             </>
         ),
         icon: MagnifyingGlassIcon,
@@ -70,12 +71,13 @@ export default function Features() {
                         Passkeys
                     </h2>
                     <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-                        The Passwordless Future
+                        Authentication without Passwords
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Passkeys are an industry standard that allows you to log
-                        into websites without any passwords or codes, instead
-                        relying on the credentials stored on your device.
+                        FIDO devices (such as Yubikeys or Bulwark Passkey)
+                        support passkeys, which allow you to log into websites
+                        or add a second factor of authentication without the
+                        need for copying any codes or passwords.
                     </p>
                 </div>
 
