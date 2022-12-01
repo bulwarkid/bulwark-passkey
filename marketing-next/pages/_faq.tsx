@@ -55,18 +55,23 @@ const faqs = [
         question: "Can I see the source code?",
         answer: (
             <>
-                Sure! Bulwark Passkey is built on top of an open source core
-                called{" "}
+                Sure! Bulwark Passkey is{" "}
+                <a
+                    className="underline"
+                    href="https://github.com/bulwarkid/bulwark-passkey"
+                >
+                    open source
+                </a>
+                , so you can examine the code whenever you want. In addition, it
+                is built on top of a library called{" "}
                 <a
                     className="underline"
                     href="https://github.com/bulwarkid/virtual-fido"
                 >
                     Virtual FIDO
                 </a>
-                , which contains the USB emulation and FIDO protocol code, as
-                well as the credential encryption and formatting. You can view
-                the safety critical parts of the code, as well as easily decrypt
-                and transfer your credentials out of the system.
+                , which is an open source library maintained by us to create
+                virtual FIDO devices like Bulwark Passkey.
             </>
         ),
     },

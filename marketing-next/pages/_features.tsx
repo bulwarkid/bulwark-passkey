@@ -10,10 +10,10 @@ const features = [
         name: "Unphishable Login and Two Factor Authentication",
         description: (
             <>
-                Bulwark Passkey supports passkeys, which allows for secure
-                cryptographic authentication without the need for passwords or
-                one-time codes. Just click “Approve” without the need to copy
-                anything!
+                Passkeys can be used either directly for logging in or as an
+                extra factor in multi-factor authentication. Better yet, since
+                passkeys don't have codes or passwords, they cannot be phished
+                at all. Just click “Approve” without the need to copy anything!
             </>
         ),
         icon: LockClosedIcon,
@@ -42,19 +42,18 @@ const features = [
         icon: GlobeAltIcon,
     },
     {
-        name: "Open Source Core - Export and Transfer your Data",
+        name: "Open Source - Control and Transfer your Data",
         description: (
             <>
-                Bulwark Passkey is built on top of{" "}
+                Bulwark Passkey is{" "}
                 <a
                     className="underline"
-                    href="https://github.com/bulwarkid/virtual-fido"
+                    href="https://github.com/bulwarkid/bulwark-passkey"
                 >
-                    Virtual FIDO
+                    open source
                 </a>
-                , an open source virtual FIDO device with a standard credential
-                storage format. You can easily export your credentials out of
-                Bulwark Passkey (as long as you have your master passphrase!).
+                , which means you can easily audit the code or export your data
+                from it. No vendor lock-in!
             </>
         ),
         icon: MagnifyingGlassIcon,
