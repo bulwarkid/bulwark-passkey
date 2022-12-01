@@ -12,8 +12,8 @@ const features = [
             <>
                 Passkeys can be used either directly for logging in or as an
                 extra factor in multi-factor authentication. Better yet, since
-                passkeys don't have codes or passwords, they cannot be phished
-                at all. Just click “Approve” without the need to copy anything!
+                passkeys dont have codes or passwords, they cannot be phished at
+                all. Just click “Approve” without the need to copy anything!
             </>
         ),
         icon: LockClosedIcon,
