@@ -17,10 +17,10 @@ const faqs = [
         question: "How is the data stored?",
         answer: (
             <>
-                Credentials are encrypted with a master passphrase before being
-                stored on disk or synced up to Bulwark servers. Data can also be
-                stored only in a local file, and never synced up to Bulwark
-                servers.
+                Credentials are encrypted with industry standard AES-256 using a
+                master passphrase before being stored on disk or synced up to
+                the cloud. Data can also be stored only in a local file, and
+                never synced up to Bulwark servers.
             </>
         ),
     },
@@ -31,9 +31,9 @@ const faqs = [
                 Credentials are encrypted at-rest with a master passphrase on
                 the local filesystem and backed up and synced to Bulwark
                 servers. While credentials stored in software are not as secure
-                as credentials stored in a hardware device where they cannot be
-                physically exported, this software based method completely
-                eliminates phishing attacks and removes the need for copying
+                as credentials stored in a hardware device, where they cannot be
+                physically exported, our method still completely eliminates
+                phishing attacks and removes the need for copying
                 passwords/codes. In addition, being stored in software means
                 that the same credentials can be synced between devices for much
                 better ease-of-use, much like a password manager.
