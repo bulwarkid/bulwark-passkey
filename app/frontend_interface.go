@@ -57,6 +57,7 @@ func loadFrontendHandlers() {
 	registerHandler(app.ctx, "passphraseChanged", handlePassphraseChanged)
 	registerHandler(app.ctx, "tryPassphrase", handleTryPassphrase)
 	registerHandler(app.ctx, "remoteVaultUpdated", handleRemoteVaultUpdated)
+	registerHandler(app.ctx, "getFavicon", handleGetFavicon)
 }
 
 func demoIdentities() [][]byte {
@@ -149,4 +150,13 @@ func handleRemoteVaultUpdated(args ...interface{}) interface{} {
 	lastUpdated := args[1].(string)
 	app.client.updateData([]byte(vaultData), lastUpdated)
 	return nil
+}
+
+func handleGetFavicon(args ...interface{}) interface{} {
+	domain := args[0].(string)
+	favicon, err := getFavicon(domain)
+	if err != nil {
+		return nil
+	}
+	return favicon
 }

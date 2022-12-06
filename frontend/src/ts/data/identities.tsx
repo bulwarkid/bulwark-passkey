@@ -118,3 +118,7 @@ export async function fetchRemoteVault(): Promise<[string, string]> {
     }
     return [data[0].data, data[0].updated_at];
 }
+
+export async function getFavicon(domain: string): Promise<string | null> {
+    return await callRPC("getFavicon", domain);
+}

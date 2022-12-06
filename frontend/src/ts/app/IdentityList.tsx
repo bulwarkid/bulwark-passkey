@@ -10,17 +10,32 @@ type ListItemProps = {
     identity: Identity;
 };
 
-class ListItem extends React.Component<ListItemProps> {
+type ListItemState = {
+    icon?: string;
+};
+
+class ListItem extends React.Component<ListItemProps, ListItemState> {
+    constructor(props: ListItemProps) {
+        super(props);
+        this.state = {};
+        this.loadFavicon(props);
+    }
     render() {
+        let icon = this.state.icon ? (
+            <img className="h-5 w-5" src={this.state.icon} />
+        ) : undefined;
         return (
             <li className="overflow-hidden rounded-md bg-white px-4 py-2 shadow">
                 <div className="flex justify-between items-center">
-                    <div className="flex flex-col items-start pl-2">
-                        <div className="text-md">
-                            {this.props.identity.website?.name}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                            {this.props.identity.user?.displayName}
+                    <div className="flex items-center">
+                        {icon}
+                        <div className="flex flex-col items-start pl-4">
+                            <div className="text-md">
+                                {this.props.identity.website?.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                                {this.props.identity.user?.displayName}
+                            </div>
                         </div>
                     </div>
                     <Button
@@ -33,6 +48,16 @@ class ListItem extends React.Component<ListItemProps> {
             </li>
         );
     }
+
+    loadFavicon = (props: ListItemProps) => {
+        if (props.identity.website?.id) {
+            identities.getFavicon(props.identity.website?.id).then((data) => {
+                if (data) {
+                    this.setState({ icon: data });
+                }
+            });
+        }
+    };
 
     onClick_ = () => {
         showModal(<IdentityInfoModal identity={this.props.identity} />);

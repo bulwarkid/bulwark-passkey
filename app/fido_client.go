@@ -204,7 +204,12 @@ func (client *Client) save() {
 	config := client.toDeviceConfig()
 	stateBytes, err := vfido.EncryptWithPassphrase(*config, client.passphrase())
 	checkErr(err, "Could not encrypt device state")
-	saveVaultToFile(VaultFile{VaultType: client.vaultType, Email: client.email, Data: stateBytes, LastUpdated: toTimestamp(client.lastUpdated)})
+	vaultFile := VaultFile{VaultType: client.vaultType, Email: client.email, Data: stateBytes, LastUpdated: toTimestamp(client.lastUpdated)}
+	favicons, err := exportFaviconCache()
+	if err == nil {
+		vaultFile.Favicons = favicons
+	}
+	saveVaultToFile(vaultFile)
 	updateFrontend()
 	storeRemoteVaultJSON(string(stateBytes), toTimestamp(client.lastUpdated))
 }

@@ -40,6 +40,9 @@ func (app *App) initializeData() {
 		app.createNewVault()
 	} else {
 		// Existing vault
+		if vaultFile.Favicons != nil {
+			importFaviconCache(vaultFile.Favicons)
+		}
 		eject := logIn(vaultFile.VaultType, string(vaultFile.Data), vaultFile.Email)
 		if !eject {
 			// 1. Logged in locally or remotely
