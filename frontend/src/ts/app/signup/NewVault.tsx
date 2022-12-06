@@ -63,6 +63,7 @@ export class NewVaultModal extends React.Component<
                     </label>
                     <div className="-space-y-px rounded-md shadow-sm mt-1">
                         <Input
+                            inputRef={this.inputRef1_}
                             label="Master Passphrase"
                             srLabel={true}
                             type="password"
@@ -72,6 +73,7 @@ export class NewVaultModal extends React.Component<
                             className="appearance-none rounded-none rounded-t-md"
                         />
                         <Input
+                            inputRef={this.inputRef2_}
                             label="Confirm Passphrase"
                             srLabel={true}
                             type="password"
