@@ -17,7 +17,7 @@ func callRPC(ctx context.Context, name string, args ...interface{}) interface{} 
 		responseChan <- data[0]
 	}
 	runtime.EventsOnce(ctx, "response-backend-"+responseId, responseHandler)
-	data := append([]interface{}{responseId},args...)
+	data := append([]interface{}{responseId}, args...)
 	runtime.EventsEmit(ctx, name+"-request", data)
 	response := <-responseChan
 	debugf("GO -> JS: %s(%v) -> %v\n", name, args, response)

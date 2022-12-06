@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/bulwarkid/virtual-fido/virtual_fido"
 	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
 )
 
@@ -21,10 +22,19 @@ type Client struct {
 	certPrivateKey        *ecdsa.PrivateKey
 	encryptionKey         []byte
 	authenticationCounter uint32
+
+	pinHash []byte
+	pinRetries int32
+	pinKeyAgreement *virtual_fido.ECDHKey
+	pinToken []byte
 }
 
 func newClient() *Client {
 	return &Client{
+		pinToken: randomBytes(16),
+		pinRetries: 8,
+		pinHash: nil,
+		pinKeyAgreement: virtual_fido.GenerateECDHKey(),
 		vault: vfido.NewIdentityVault(),
 	}
 }
@@ -101,6 +111,30 @@ func (client *Client) ApproveU2FAuthentication(keyHandle *vfido.KeyHandle) bool 
 	return approveClientAction("u2f_authenticate", "", "")
 }
 
+func (client *Client) PINHash() []byte {
+	return client.pinHash
+}
+
+func (client *Client) SetPINHash(pin []byte) {
+	client.pinHash = pin
+}
+
+func (client *Client) PINRetries() int32 {
+	return client.pinRetries
+}
+
+func (client *Client) SetPINRetries(retries int32) {
+	client.pinRetries = retries
+}
+
+func (client *Client) PINKeyAgreement() *virtual_fido.ECDHKey {
+	return client.pinKeyAgreement
+}
+
+func (client *Client) PINToken() []byte {
+	return client.pinToken
+}
+
 func (client *Client) deleteIdentity(id []byte) bool {
 	success := client.vault.DeleteIdentity(id)
 	if success {
@@ -111,6 +145,17 @@ func (client *Client) deleteIdentity(id []byte) bool {
 
 func (client *Client) identities() []*vfido.CredentialSource {
 	return client.vault.CredentialSources
+}
+
+func (client *Client) passphrase() string {
+	passphrase := getPassphrase()
+	assert(passphrase != "", "Passphrase cannot be empty")
+	return passphrase
+}
+
+func (client *Client) passphraseChanged() {
+	client.lastUpdated = now()
+	client.save()
 }
 
 func (client *Client) configureNewDevice(vaultType string) {
@@ -161,6 +206,7 @@ func (client *Client) loadData(vaultType string, data []byte, lastUpdated string
 	client.certificateAuthority = cert
 	client.certPrivateKey = privateKey
 	client.encryptionKey = config.EncryptionKey
+	client.pinHash = config.PINHash
 	client.vault = vfido.NewIdentityVault()
 	client.vault.Import(config.Sources)
 	client.save()
@@ -195,6 +241,7 @@ func (client *Client) toDeviceConfig() *vfido.FIDODeviceConfig {
 		AttestationCertificate: client.certificateAuthority.Raw,
 		AttestationPrivateKey:  privateKey,
 		EncryptionKey:          client.encryptionKey,
+		PINHash: client.pinHash,
 		Sources:                client.vault.Export(),
 	}
 	return &config
@@ -212,15 +259,4 @@ func (client *Client) save() {
 	saveVaultToFile(vaultFile)
 	updateFrontend()
 	storeRemoteVaultJSON(string(stateBytes), toTimestamp(client.lastUpdated))
-}
-
-func (client *Client) passphrase() string {
-	passphrase := getPassphrase()
-	assert(passphrase != "", "Passphrase cannot be empty")
-	return passphrase
-}
-
-func (client *Client) passphraseChanged() {
-	client.lastUpdated = now()
-	client.save()
 }

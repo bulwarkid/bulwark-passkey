@@ -20,6 +20,11 @@ class ListItem extends React.Component<ListItemProps, ListItemState> {
         this.state = {};
         this.loadFavicon(props);
     }
+    componentDidUpdate(prevProps: ListItemProps) {
+        if (this.props.identity.website?.id != prevProps.identity.website?.id) {
+            this.loadFavicon(this.props);
+        }
+    }
     render() {
         let icon = this.state.icon ? (
             <img className="h-5 w-5" src={this.state.icon} />

@@ -14,7 +14,7 @@ type VaultFile struct {
 	Data        []byte `json:"data"`
 	LastUpdated string `json:"last_updated"`
 	Email       string `json:"email"`
-	Favicons	[]byte `json:"favicons,omitempty"`
+	Favicons    []byte `json:"favicons,omitempty"`
 }
 
 func configDir() string {
