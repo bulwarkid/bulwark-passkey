@@ -8,8 +8,8 @@ const faqs = [
             <>
                 Bulwark Passkey uses USB/IP to emulate a USB device that
                 implements the FIDO2 and U2F protocols. These protocols enable
-                support for both Two Factor Authentication and WebAuthN,
-                independent of your browser or OS support.
+                us to support passkeys for Two Factor Authentication and
+                WebAuthN, independent of what browser or client you use.
             </>
         ),
     },
@@ -19,8 +19,9 @@ const faqs = [
             <>
                 Credentials are encrypted with industry standard AES-256 using a
                 master passphrase before being stored on disk or synced up to
-                the cloud. Data can also be stored only in a local file, and
-                never synced up to Bulwark servers.
+                the cloud. Since your data is end-to-end encrypted, we do not
+                have the ability to access your data. Data can also be stored
+                only in a local file, and never synced up to Bulwark servers.
             </>
         ),
     },
@@ -28,15 +29,13 @@ const faqs = [
         question: "Is this method secure?",
         answer: (
             <>
-                Credentials are encrypted at-rest with a master passphrase on
-                the local filesystem and backed up and synced to Bulwark
-                servers. While credentials stored in software are not as secure
-                as credentials stored in a hardware device, where they cannot be
-                physically exported, our method still completely eliminates
-                phishing attacks and removes the need for copying
-                passwords/codes. In addition, being stored in software means
-                that the same credentials can be synced between devices for much
-                better ease-of-use, much like a password manager.
+                Credentials stored in a virtual device like Bulwark Passkey are
+                not as secure as credentials stored in a hardware device, where
+                they cannot be physically exported. However, a virtual device
+                still completely eliminates phishing attacks and removes the
+                need for copying passwords/codes, while also allowing you to
+                transfer your credentials or recover your access should you lose
+                your device.
             </>
         ),
     },
