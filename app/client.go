@@ -1,16 +1,10 @@
 package main
 
 import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
-	"crypto/x509"
-	"crypto/x509/pkix"
+	"bytes"
 	"encoding/json"
-	"math/big"
 	"time"
 
-	"github.com/bulwarkid/virtual-fido/virtual_fido"
 	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
 )
 
@@ -18,136 +12,28 @@ type Client struct {
 	vaultType             string
 	email                 string
 	lastUpdated           time.Time
-	vault                 *vfido.IdentityVault
 	deletedSources [][]byte
-	certificateAuthority  *x509.Certificate
-	certPrivateKey        *ecdsa.PrivateKey
-	encryptionKey         []byte
-	authenticationCounter uint32
-
-	pinHash []byte
-	pinRetries int32
-	pinKeyAgreement *virtual_fido.ECDHKey
-	pinToken []byte
+	fidoClient *FIDOClient
 }
 
 func newClient() *Client {
-	return &Client{
-		pinToken: randomBytes(16),
-		pinRetries: 8,
-		pinHash: nil,
-		pinKeyAgreement: virtual_fido.GenerateECDHKey(),
+	client := &Client{
 		deletedSources: make([][]byte,0),
-		vault: vfido.NewIdentityVault(),
 	}
-}
-
-func (client *Client) NewCredentialSource(relyingParty vfido.PublicKeyCredentialRpEntity, user vfido.PublicKeyCrendentialUserEntity) *vfido.CredentialSource {
-	id := client.vault.NewIdentity(relyingParty, user)
-	client.lastUpdated = now()
-	client.save()
-	return id
-}
-
-func (client *Client) GetAssertionSource(relyingPartyID string, allowList []vfido.PublicKeyCredentialDescriptor) *vfido.CredentialSource {
-	sources := client.vault.GetMatchingCredentialSources(relyingPartyID, allowList)
-	if len(sources) == 0 {
-		return nil
-	}
-
-	// TODO: Allow user to choose credential source
-	credentialSource := sources[0]
-	credentialSource.SignatureCounter++
-	client.lastUpdated = now()
-	client.save()
-	return credentialSource
-}
-
-func (client *Client) SealingEncryptionKey() []byte {
-	return client.encryptionKey
-}
-
-func (client *Client) NewPrivateKey() *ecdsa.PrivateKey {
-	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	checkErr(err, "Could not generate private key")
-	return privateKey
-}
-
-func (client *Client) NewAuthenticationCounterId() uint32 {
-	num := client.authenticationCounter
-	client.authenticationCounter++
-	client.lastUpdated = now()
-	return num
-}
-
-func (client *Client) CreateAttestationCertificiate(privateKey *ecdsa.PrivateKey) []byte {
-	// TODO: Fill in fields like SerialNumber and SubjectKeyIdentifier
-	templateCert := &x509.Certificate{
-		SerialNumber: big.NewInt(0),
-		Subject: pkix.Name{
-			Organization: []string{"Self-Signed Virtual FIDO"},
-			Country:      []string{"US"},
-		},
-		NotBefore:   now(),
-		NotAfter:    now().AddDate(10, 0, 0),
-		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-		KeyUsage:    x509.KeyUsageDigitalSignature,
-	}
-	certBytes, err := x509.CreateCertificate(rand.Reader, templateCert, client.certificateAuthority, &privateKey.PublicKey, client.certPrivateKey)
-	checkErr(err, "Could not generate attestation certificate")
-	return certBytes
-}
-
-func (client *Client) ApproveAccountCreation(relyingParty string) bool {
-	return approveClientAction("fido_make_credential", relyingParty, "")
-}
-
-func (client *Client) ApproveAccountLogin(credentialSource *vfido.CredentialSource) bool {
-	return approveClientAction("fido_get_assertion", credentialSource.RelyingParty.Name, credentialSource.User.DisplayName)
-}
-
-func (client *Client) ApproveU2FRegistration(keyHandle *vfido.KeyHandle) bool {
-	return approveClientAction("u2f_register", "", "")
-}
-
-func (client *Client) ApproveU2FAuthentication(keyHandle *vfido.KeyHandle) bool {
-	return approveClientAction("u2f_authenticate", "", "")
-}
-
-func (client *Client) PINHash() []byte {
-	return client.pinHash
-}
-
-func (client *Client) SetPINHash(pin []byte) {
-	client.pinHash = pin
-}
-
-func (client *Client) PINRetries() int32 {
-	return client.pinRetries
-}
-
-func (client *Client) SetPINRetries(retries int32) {
-	client.pinRetries = retries
-}
-
-func (client *Client) PINKeyAgreement() *virtual_fido.ECDHKey {
-	return client.pinKeyAgreement
-}
-
-func (client *Client) PINToken() []byte {
-	return client.pinToken
+	client.fidoClient = newFIDOClient(client)
+	return client
 }
 
 func (client *Client) deleteIdentity(id []byte) bool {
-	success := client.vault.DeleteIdentity(id)
+	success := client.fidoClient.vault.DeleteIdentity(id)
 	if success {
-		client.save()
+		client.FIDOUpdated()
 	}
 	return success
 }
 
 func (client *Client) identities() []*vfido.CredentialSource {
-	return client.vault.CredentialSources
+	return client.fidoClient.vault.CredentialSources
 }
 
 func (client *Client) passphrase() string {
@@ -162,37 +48,15 @@ func (client *Client) passphraseChanged() {
 }
 
 func (client *Client) configureNewDevice(vaultType string) {
-	authority := &x509.Certificate{
-		SerialNumber: big.NewInt(0),
-		Subject: pkix.Name{
-			Organization: []string{"Bulwark Passkey"},
-			Country:      []string{"US"},
-		},
-		NotBefore:             now(),
-		NotAfter:              now().AddDate(10, 0, 0),
-		IsCA:                  true,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
-		BasicConstraintsValid: true,
-	}
-	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	checkErr(err, "Could not generate attestation CA private key")
-	authorityCertBytes, err := x509.CreateCertificate(rand.Reader, authority, authority, &privateKey.PublicKey, privateKey)
-	checkErr(err, "Could not generate attestation CA cert bytes")
-	certificateAuthority, err := x509.ParseCertificate(authorityCertBytes)
-	checkErr(err, "Could not parse cert authority")
-	encryptionKey := randomBytes(32)
+	client.fidoClient.configureNewClient()
 	client.vaultType = vaultType
 	client.lastUpdated = now()
-	client.authenticationCounter = 0
-	client.certificateAuthority = certificateAuthority
-	client.certPrivateKey = privateKey
-	client.encryptionKey = encryptionKey
-	client.vault = vfido.NewIdentityVault()
 	client.save()
 }
 
 func (client *Client) loadData(vaultType string, data []byte, lastUpdated string, email string) {
+	// Check if data receives is in the old format
+	// TODO (Chris): Remove this by perhaps 6/2023, assuming nobody is using the old version
 	testState, err := vfido.DecryptFIDOState(data, client.passphrase())
 	if err == nil && testState.EncryptionKey != nil{
 		client.deprecatedLoadData(vaultType, data, lastUpdated, email)
@@ -205,20 +69,10 @@ func (client *Client) loadData(vaultType string, data []byte, lastUpdated string
 	lastUpdatedTime := now()
 	err = (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
 	checkErr(err, "Could not parse time")
-	cert, err := x509.ParseCertificate(config.AttestationCertificate)
-	checkErr(err, "Could not parse x509 cert")
-	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
-	checkErr(err, "Could not parse private key")
-	client.vault = vfido.NewIdentityVault()
 	client.vaultType = vaultType
 	client.email = email
 	client.lastUpdated = lastUpdatedTime
-	client.authenticationCounter = config.AuthenticationCounter
-	client.certificateAuthority = cert
-	client.certPrivateKey = privateKey
-	client.encryptionKey = config.EncryptionKey
-	client.pinHash = config.PINHash
-	client.vault.Import(config.Sources)
+	client.fidoClient.loadConfig(config)
 	client.save()
 }
 
@@ -250,37 +104,45 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 	lastUpdatedTime := now()
 	err = (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
 	checkErr(err, "Could not parse time")
-	cert, err := x509.ParseCertificate(config.AttestationCertificate)
-	checkErr(err, "Could not parse x509 cert")
-	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
-	checkErr(err, "Could not parse private key")
 	client.lastUpdated = lastUpdatedTime
-	client.authenticationCounter = config.AuthenticationCounter
-	client.authenticationCounter = config.AuthenticationCounter
-	client.certificateAuthority = cert
-	client.certPrivateKey = privateKey
-	client.encryptionKey = config.EncryptionKey
-	client.pinHash = config.PINHash
 	for _, sourceId := range savedState.DeletedSources {
 		if !containsArray(sourceId, client.deletedSources) {
 			client.deletedSources = append(client.deletedSources, sourceId)
-			client.vault.DeleteIdentity(sourceId)
 		}
 	}
+	// Merge old and new sources, avoiding deleted and existing ones
 	newSources := make([]vfido.SavedCredentialSource, 0)
-	for _, source := range config.Sources {
-		if !containsArray(source.ID, client.deletedSources) {
-			newSources = append(newSources, source)
+	addSources := func (sources []vfido.SavedCredentialSource) {
+		for _, source := range sources {
+			shouldAdd := !containsArray(source.ID, client.deletedSources)
+			if !shouldAdd {
+				continue
+			}
+			for _, existing := range newSources {
+				if bytes.Equal(source.ID, existing.ID) {
+					shouldAdd = false
+					break
+				}
+			}
+			if shouldAdd {
+				newSources = append(newSources, source)
+			}
 		}
 	}
-	if len(newSources) > 0 {
-		client.vault.Import(newSources)
-	}
+	addSources(client.fidoClient.vault.Export())
+	addSources(config.Sources)
+	config.Sources = newSources
+	client.fidoClient.loadConfig(config)
+}
+
+func (client *Client) FIDOUpdated() {
+	client.lastUpdated = now()
+	client.save()
 }
 
 type ClientSavedState struct {
 	VirtualFIDOConfig []byte
-	DeletedSources [][]byte
+	DeletedSources [][]byte 
 }
 
 func decryptSavedState(data []byte, passphrase string) (*ClientSavedState, error) {
@@ -297,17 +159,8 @@ func decryptSavedState(data []byte, passphrase string) (*ClientSavedState, error
 }
 
 func (client *Client) exportSavedState() []byte {
-	privateKey, err := x509.MarshalECPrivateKey(client.certPrivateKey)
-	checkErr(err, "Could not encode private key")
-	config := vfido.FIDODeviceConfig{
-		AuthenticationCounter:  client.authenticationCounter,
-		AttestationCertificate: client.certificateAuthority.Raw,
-		AttestationPrivateKey:  privateKey,
-		EncryptionKey:          client.encryptionKey,
-		PINHash: client.pinHash,
-		Sources:                client.vault.Export(),
-	}
-	encryptedConfig, err := vfido.EncryptFIDOState(config, client.passphrase())
+	config := client.fidoClient.exportConfig()
+	encryptedConfig, err := vfido.EncryptFIDOState(*config, client.passphrase())
 	state := ClientSavedState{
 		VirtualFIDOConfig: encryptedConfig,
 		DeletedSources: client.deletedSources,
@@ -341,20 +194,10 @@ func (client *Client) deprecatedLoadData(vaultType string, data []byte, lastUpda
 	checkErr(err, "Could not parse time")
 	config, err := vfido.DecryptFIDOState(data, client.passphrase())
 	checkErr(err, "Could not decrypt vault file")
-	cert, err := x509.ParseCertificate(config.AttestationCertificate)
-	checkErr(err, "Could not parse x509 cert")
-	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
-	checkErr(err, "Could not parse private key")
 	client.vaultType = vaultType
 	client.email = email
 	client.lastUpdated = lastUpdatedTime
-	client.authenticationCounter = config.AuthenticationCounter
-	client.certificateAuthority = cert
-	client.certPrivateKey = privateKey
-	client.encryptionKey = config.EncryptionKey
-	client.pinHash = config.PINHash
-	client.vault = vfido.NewIdentityVault()
-	client.vault.Import(config.Sources)
+	client.fidoClient.loadConfig(config)
 	client.save()
 }
 

@@ -10,7 +10,7 @@ import (
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
 )
 
-func startFIDOServer(client *Client) {
+func startFIDOServer(client *FIDOClient) {
 	logFile, err := os.OpenFile(configFilePath("device.log"), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	checkErr(err, "Could not open device log")
 	defer logFile.Close()

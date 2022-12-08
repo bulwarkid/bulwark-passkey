@@ -56,7 +56,7 @@ func (app *App) initializeData() {
 			app.createNewVault()
 		}
 	}
-	go startFIDOServer(app.client)
+	go startFIDOServer(app.client.fidoClient)
 }
 
 func (app *App) createNewVault() {
