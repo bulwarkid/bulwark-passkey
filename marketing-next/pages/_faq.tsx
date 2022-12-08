@@ -43,10 +43,9 @@ const faqs = [
         question: "What platforms are supported?",
         answer: (
             <>
-                Right now, only Windows is supported, with Linux support coming
-                very soon. We will be adding Mac support {"Soon™️"}, as Mac
-                currently does not support USB/IP, and are looking to add
-                support for iOS and Android in the future.
+                Right now, Windows and Linux support are supported. We will be
+                adding Mac support {"Soon™️"}, and are looking to add support
+                for iOS and Android in the future.
             </>
         ),
     },
