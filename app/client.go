@@ -9,16 +9,16 @@ import (
 )
 
 type Client struct {
-	vaultType             string
-	email                 string
-	lastUpdated           time.Time
+	vaultType      string
+	email          string
+	lastUpdated    time.Time
 	deletedSources [][]byte
-	fidoClient *FIDOClient
+	fidoClient     *FIDOClient
 }
 
 func newClient() *Client {
 	client := &Client{
-		deletedSources: make([][]byte,0),
+		deletedSources: make([][]byte, 0),
 	}
 	client.fidoClient = newFIDOClient(client)
 	return client
@@ -58,7 +58,7 @@ func (client *Client) loadData(vaultType string, data []byte, lastUpdated string
 	// Check if data receives is in the old format
 	// TODO (Chris): Remove this by perhaps 6/2023, assuming nobody is using the old version
 	testState, err := vfido.DecryptFIDOState(data, client.passphrase())
-	if err == nil && testState.EncryptionKey != nil{
+	if err == nil && testState.EncryptionKey != nil {
 		client.deprecatedLoadData(vaultType, data, lastUpdated, email)
 		return
 	}
@@ -112,7 +112,7 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 	}
 	// Merge old and new sources, avoiding deleted and existing ones
 	newSources := make([]vfido.SavedCredentialSource, 0)
-	addSources := func (sources []vfido.SavedCredentialSource) {
+	addSources := func(sources []vfido.SavedCredentialSource) {
 		for _, source := range sources {
 			shouldAdd := !containsArray(source.ID, client.deletedSources)
 			if !shouldAdd {
@@ -142,7 +142,7 @@ func (client *Client) FIDOUpdated() {
 
 type ClientSavedState struct {
 	VirtualFIDOConfig []byte
-	DeletedSources [][]byte 
+	DeletedSources    [][]byte
 }
 
 func decryptSavedState(data []byte, passphrase string) (*ClientSavedState, error) {
@@ -163,7 +163,7 @@ func (client *Client) exportSavedState() []byte {
 	encryptedConfig, err := vfido.EncryptFIDOState(*config, client.passphrase())
 	state := ClientSavedState{
 		VirtualFIDOConfig: encryptedConfig,
-		DeletedSources: client.deletedSources,
+		DeletedSources:    client.deletedSources,
 	}
 	stateBytes, err := json.Marshal(state)
 	checkErr(err, "Could not marshal JSON")

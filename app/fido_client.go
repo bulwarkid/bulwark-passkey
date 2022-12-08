@@ -10,6 +10,7 @@ import (
 
 	"github.com/bulwarkid/virtual-fido/virtual_fido"
 	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type FIDOClientDelegate interface {
@@ -25,21 +26,20 @@ type FIDOClient struct {
 	encryptionKey         []byte
 	authenticationCounter uint32
 
-	pinHash []byte
-	pinRetries int32
+	pinHash         []byte
+	pinRetries      int32
 	pinKeyAgreement *virtual_fido.ECDHKey
-	pinToken []byte
+	pinToken        []byte
 }
-
 
 func newFIDOClient(delegate FIDOClientDelegate) *FIDOClient {
 	return &FIDOClient{
-		delegate: delegate,
-		pinToken: randomBytes(16),
-		pinRetries: 8,
-		pinHash: nil,
+		delegate:        delegate,
+		pinToken:        randomBytes(16),
+		pinRetries:      8,
+		pinHash:         nil,
 		pinKeyAgreement: virtual_fido.GenerateECDHKey(),
-		vault: vfido.NewIdentityVault(),
+		vault:           vfido.NewIdentityVault(),
 	}
 }
 
@@ -93,12 +93,11 @@ func (client *FIDOClient) exportConfig() *vfido.FIDODeviceConfig {
 		AttestationCertificate: client.certificateAuthority.Raw,
 		AttestationPrivateKey:  privateKey,
 		EncryptionKey:          client.encryptionKey,
-		PINHash: client.pinHash,
+		PINHash:                client.pinHash,
 		Sources:                client.vault.Export(),
 	}
 	return &config
 }
-
 
 func (client *FIDOClient) NewCredentialSource(relyingParty vfido.PublicKeyCredentialRpEntity, user vfido.PublicKeyCrendentialUserEntity) *vfido.CredentialSource {
 	id := client.vault.NewIdentity(relyingParty, user)
@@ -154,20 +153,27 @@ func (client *FIDOClient) CreateAttestationCertificiate(privateKey *ecdsa.Privat
 	return certBytes
 }
 
+func (client *FIDOClient) getApproval(action, relyingParty, userName string) bool {
+	runtime.WindowShow(app.ctx)
+	approved := approveClientAction(action, relyingParty, userName)
+	runtime.WindowMinimise(app.ctx)
+	return approved
+}
+
 func (client *FIDOClient) ApproveAccountCreation(relyingParty string) bool {
-	return approveClientAction("fido_make_credential", relyingParty, "")
+	return client.getApproval("fido_make_credential", relyingParty, "")
 }
 
 func (client *FIDOClient) ApproveAccountLogin(credentialSource *vfido.CredentialSource) bool {
-	return approveClientAction("fido_get_assertion", credentialSource.RelyingParty.Name, credentialSource.User.DisplayName)
+	return client.getApproval("fido_get_assertion", credentialSource.RelyingParty.Name, credentialSource.User.DisplayName)
 }
 
 func (client *FIDOClient) ApproveU2FRegistration(keyHandle *vfido.KeyHandle) bool {
-	return approveClientAction("u2f_register", "", "")
+	return client.getApproval("u2f_register", "", "")
 }
 
 func (client *FIDOClient) ApproveU2FAuthentication(keyHandle *vfido.KeyHandle) bool {
-	return approveClientAction("u2f_authenticate", "", "")
+	return client.getApproval("u2f_authenticate", "", "")
 }
 
 func (client *FIDOClient) PINHash() []byte {
