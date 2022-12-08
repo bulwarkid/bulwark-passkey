@@ -26,7 +26,6 @@ func exportFaviconCache() ([]byte, error) {
 
 func getFavicon(domain string) (string, error) {
 	if val, ok := faviconCache[domain]; ok {
-		debugf("Cache hit - Domain %s has favicon %s", domain, val)
 		return val, nil
 	}
 	response, err := http.Get(
