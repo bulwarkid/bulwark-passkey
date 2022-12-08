@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/json"
 	"math/big"
 	"time"
 
@@ -18,6 +19,7 @@ type Client struct {
 	email                 string
 	lastUpdated           time.Time
 	vault                 *vfido.IdentityVault
+	deletedSources [][]byte
 	certificateAuthority  *x509.Certificate
 	certPrivateKey        *ecdsa.PrivateKey
 	encryptionKey         []byte
@@ -35,6 +37,7 @@ func newClient() *Client {
 		pinRetries: 8,
 		pinHash: nil,
 		pinKeyAgreement: virtual_fido.GenerateECDHKey(),
+		deletedSources: make([][]byte,0),
 		vault: vfido.NewIdentityVault(),
 	}
 }
@@ -190,10 +193,153 @@ func (client *Client) configureNewDevice(vaultType string) {
 }
 
 func (client *Client) loadData(vaultType string, data []byte, lastUpdated string, email string) {
+	testState, err := vfido.DecryptFIDOState(data, client.passphrase())
+	if err == nil && testState.EncryptionKey != nil{
+		client.deprecatedLoadData(vaultType, data, lastUpdated, email)
+		return
+	}
+	savedState, err := decryptSavedState(data, client.passphrase())
+	checkErr(err, "Could not load saved state data")
+	config, err := vfido.DecryptFIDOState(savedState.VirtualFIDOConfig, client.passphrase())
+	checkErr(err, "Could not decrypt saved FIDO state")
+	lastUpdatedTime := now()
+	err = (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
+	checkErr(err, "Could not parse time")
+	cert, err := x509.ParseCertificate(config.AttestationCertificate)
+	checkErr(err, "Could not parse x509 cert")
+	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
+	checkErr(err, "Could not parse private key")
+	client.vault = vfido.NewIdentityVault()
+	client.vaultType = vaultType
+	client.email = email
+	client.lastUpdated = lastUpdatedTime
+	client.authenticationCounter = config.AuthenticationCounter
+	client.certificateAuthority = cert
+	client.certPrivateKey = privateKey
+	client.encryptionKey = config.EncryptionKey
+	client.pinHash = config.PINHash
+	client.vault.Import(config.Sources)
+	client.save()
+}
+
+func (client *Client) updateData(data []byte, lastUpdated string) {
+	// Check if the data received is the old version
+	// TODO (Chris): remove this after a few months, perhaps 06/2023?
+	// Will have to check if anybody is using the old version of the app
+	testState, err := vfido.DecryptFIDOState(data, client.passphrase())
+	if err == nil && testState.EncryptionKey != nil {
+		client.deprecatedUpdateData(data, lastUpdated)
+		return
+	}
+	savedStateBytes, err := vfido.DecryptWithPassphrase(client.passphrase(), data)
+	if err != nil {
+		errorf("Invalid state data provided: %w", err)
+		return
+	}
+	savedState := ClientSavedState{}
+	err = json.Unmarshal(savedStateBytes, &savedState)
+	if err != nil {
+		errorf("Invalid state json data provided: %w", err)
+		return
+	}
+	config, err := vfido.DecryptFIDOState(savedState.VirtualFIDOConfig, client.passphrase())
+	if err != nil {
+		errorf("Invalid FIDO state in data: %w", err)
+		return
+	}
+	lastUpdatedTime := now()
+	err = (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
+	checkErr(err, "Could not parse time")
+	cert, err := x509.ParseCertificate(config.AttestationCertificate)
+	checkErr(err, "Could not parse x509 cert")
+	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
+	checkErr(err, "Could not parse private key")
+	client.lastUpdated = lastUpdatedTime
+	client.authenticationCounter = config.AuthenticationCounter
+	client.authenticationCounter = config.AuthenticationCounter
+	client.certificateAuthority = cert
+	client.certPrivateKey = privateKey
+	client.encryptionKey = config.EncryptionKey
+	client.pinHash = config.PINHash
+	for _, sourceId := range savedState.DeletedSources {
+		if !containsArray(sourceId, client.deletedSources) {
+			client.deletedSources = append(client.deletedSources, sourceId)
+			client.vault.DeleteIdentity(sourceId)
+		}
+	}
+	newSources := make([]vfido.SavedCredentialSource, 0)
+	for _, source := range config.Sources {
+		if !containsArray(source.ID, client.deletedSources) {
+			newSources = append(newSources, source)
+		}
+	}
+	if len(newSources) > 0 {
+		client.vault.Import(newSources)
+	}
+}
+
+type ClientSavedState struct {
+	VirtualFIDOConfig []byte
+	DeletedSources [][]byte
+}
+
+func decryptSavedState(data []byte, passphrase string) (*ClientSavedState, error) {
+	savedStateBytes, err := vfido.DecryptWithPassphrase(passphrase, data)
+	if err != nil {
+		return nil, err
+	}
+	savedState := ClientSavedState{}
+	err = json.Unmarshal(savedStateBytes, &savedState)
+	if err != nil {
+		return nil, err
+	}
+	return &savedState, nil
+}
+
+func (client *Client) exportSavedState() []byte {
+	privateKey, err := x509.MarshalECPrivateKey(client.certPrivateKey)
+	checkErr(err, "Could not encode private key")
+	config := vfido.FIDODeviceConfig{
+		AuthenticationCounter:  client.authenticationCounter,
+		AttestationCertificate: client.certificateAuthority.Raw,
+		AttestationPrivateKey:  privateKey,
+		EncryptionKey:          client.encryptionKey,
+		PINHash: client.pinHash,
+		Sources:                client.vault.Export(),
+	}
+	encryptedConfig, err := vfido.EncryptFIDOState(config, client.passphrase())
+	state := ClientSavedState{
+		VirtualFIDOConfig: encryptedConfig,
+		DeletedSources: client.deletedSources,
+	}
+	stateBytes, err := json.Marshal(state)
+	checkErr(err, "Could not marshal JSON")
+	encryptedState, err := vfido.EncryptWithPassphrase(client.passphrase(), stateBytes)
+	checkErr(err, "Could not encrypt state")
+	return encryptedState
+}
+
+func (client *Client) save() {
+	config := client.exportSavedState()
+	vaultFile := VaultFile{VaultType: client.vaultType, Email: client.email, Data: config, LastUpdated: toTimestamp(client.lastUpdated)}
+	favicons, err := exportFaviconCache()
+	if err == nil {
+		vaultFile.Favicons = favicons
+	}
+	saveVaultToFile(vaultFile)
+	updateFrontend()
+	storeRemoteVaultJSON(string(config), toTimestamp(client.lastUpdated))
+}
+
+// --------------------------
+// Deprecated Methods
+// --------------------------
+
+func (client *Client) deprecatedLoadData(vaultType string, data []byte, lastUpdated string, email string) {
 	lastUpdatedTime := now()
 	err := (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
 	checkErr(err, "Could not parse time")
-	config, err := vfido.DecryptWithPassphrase(data, client.passphrase())
+	config, err := vfido.DecryptFIDOState(data, client.passphrase())
 	checkErr(err, "Could not decrypt vault file")
 	cert, err := x509.ParseCertificate(config.AttestationCertificate)
 	checkErr(err, "Could not parse x509 cert")
@@ -212,12 +358,12 @@ func (client *Client) loadData(vaultType string, data []byte, lastUpdated string
 	client.save()
 }
 
-func (client *Client) updateData(data []byte, lastUpdated string) {
+func (client *Client) deprecatedUpdateData(data []byte, lastUpdated string) {
 	newLastUpdated := parseTimestamp(lastUpdated)
 	if !client.lastUpdated.Before(*newLastUpdated) {
 		return
 	}
-	_, err := vfido.DecryptWithPassphrase(data, client.passphrase())
+	_, err := vfido.DecryptFIDOState(data, client.passphrase())
 	if err != nil {
 		// Passphrase might have changed, get user to log in again
 		eject := logIn(accountVaultType, string(data), client.email)
@@ -225,38 +371,9 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 			deleteVaultFile()
 			app.createNewVault()
 		} else {
-			_, err = vfido.DecryptWithPassphrase(data, client.passphrase())
+			_, err = vfido.DecryptFIDOState(data, client.passphrase())
 			checkErr(err, "Could not decrypt new vault")
 		}
 	}
-	client.loadData(accountVaultType, data, lastUpdated, client.email)
-
-}
-
-func (client *Client) toDeviceConfig() *vfido.FIDODeviceConfig {
-	privateKey, err := x509.MarshalECPrivateKey(client.certPrivateKey)
-	checkErr(err, "Could not encode private key")
-	config := vfido.FIDODeviceConfig{
-		AuthenticationCounter:  client.authenticationCounter,
-		AttestationCertificate: client.certificateAuthority.Raw,
-		AttestationPrivateKey:  privateKey,
-		EncryptionKey:          client.encryptionKey,
-		PINHash: client.pinHash,
-		Sources:                client.vault.Export(),
-	}
-	return &config
-}
-
-func (client *Client) save() {
-	config := client.toDeviceConfig()
-	stateBytes, err := vfido.EncryptWithPassphrase(*config, client.passphrase())
-	checkErr(err, "Could not encrypt device state")
-	vaultFile := VaultFile{VaultType: client.vaultType, Email: client.email, Data: stateBytes, LastUpdated: toTimestamp(client.lastUpdated)}
-	favicons, err := exportFaviconCache()
-	if err == nil {
-		vaultFile.Favicons = favicons
-	}
-	saveVaultToFile(vaultFile)
-	updateFrontend()
-	storeRemoteVaultJSON(string(stateBytes), toTimestamp(client.lastUpdated))
+	client.deprecatedLoadData(accountVaultType, data, lastUpdated, client.email)
 }

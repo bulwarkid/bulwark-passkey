@@ -141,7 +141,7 @@ func handlePassphraseChanged(data ...interface{}) interface{} {
 func handleTryPassphrase(args ...interface{}) interface{} {
 	passphrase := args[0].(string)
 	data := args[1].(string)
-	_, err := vfido.DecryptWithPassphrase([]byte(data), passphrase)
+	_, err := vfido.DecryptWithPassphrase(passphrase, []byte(data))
 	return err == nil
 }
 

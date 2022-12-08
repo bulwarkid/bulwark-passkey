@@ -45,3 +45,19 @@ func toTimestamp(t time.Time) string {
 func now() time.Time {
 	return time.Now().UTC()
 }
+
+func containsArray[T comparable](arr []T, others [][]T) bool {
+	for _, otherArr := range others {
+		matches := true
+		for i := range arr {
+			if i >= len(otherArr) || otherArr[i] != arr[i] {
+				matches = false
+				break
+			}
+		}
+		if matches {
+			return true
+		}
+	}
+	return false
+}

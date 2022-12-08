@@ -15,6 +15,10 @@ func debugf(format string, args ...interface{}) {
 	runtime.LogDebugf(app.ctx, format, args...)
 }
 
+func errorf(format string, args ...interface{}) {
+	runtime.LogErrorf(app.ctx, format, args...)
+}
+
 func fatalf(format string, args ...interface{}) {
 	runtime.LogFatalf(app.ctx, format, args...)
 }
