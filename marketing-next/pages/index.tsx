@@ -1,6 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
 import ContactInfo from "./_contact";
 import CallToAction from "./_cta";
 import FAQ from "./_faq";
@@ -9,6 +7,8 @@ import Footer from "./_footer";
 import Header from "./_header";
 import HeroSection from "./_hero";
 import Newsletter from "./_newsletter";
+import Passkeys from "./_passkeys";
+import DevFeatures from "./_dev_features";
 
 export default function Home() {
     const backgroundDots = (
@@ -74,6 +74,10 @@ export default function Home() {
                 <HeroSection />
                 <div className="mt-12" />
                 <Features />
+                <div className="mt-12" />
+                <Passkeys />
+                <div className="mt-12" />
+                <DevFeatures />
                 <div className="mt-12" />
                 <FAQ />
                 <div className="mt-12" />

@@ -7,13 +7,12 @@ import {
 
 const features = [
     {
-        name: "Unphishable Login and Two Factor Authentication",
+        name: "Unphishable Authentication",
         description: (
             <>
-                Passkeys can be used either directly for logging in or as an
-                extra factor in multi-factor authentication. Better yet, since
-                passkeys dont have codes or passwords, they cannot be phished at
-                all. Just click “Approve” without the need to copy anything!
+                Passkeys allow you to log in or add a second factor of
+                authentication, without any secret passwords or one-time codes.
+                Just hit "Approve" on the app!
             </>
         ),
         icon: LockClosedIcon,
@@ -22,27 +21,25 @@ const features = [
         name: "Sync Across Your Devices",
         description: (
             <>
-                Bulwark Passkey is implemented virtually in software, so
-                credentials can be securely and easily synced between your
-                devices. Windows and Linux are currently supported, with Mac
-                support coming soon.
+                Bulwark Passkey syncs your credentials across all your devices.
+                Windows and Linux are currently supported, with Mac support
+                coming soon.
             </>
         ),
         icon: ComputerDesktopIcon,
     },
     {
-        name: "Log into websites without passwords",
+        name: "One Click Approval",
         description: (
             <>
-                Bulwark Passkey supports the new FIDO2 industry standard, which
-                allows you to log into supporting websites with just a click. No
-                passwords or codes required!
+                No need to grab your phone, open your email, or copy any codes.
+                Just hit "Approve" and you're in!
             </>
         ),
         icon: GlobeAltIcon,
     },
     {
-        name: "Open Source - Control and Transfer your Data",
+        name: "Completely Open Source",
         description: (
             <>
                 Bulwark Passkey is{" "}
@@ -66,15 +63,15 @@ export default function Features() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="lg:text-center">
                     <h2 className="text-lg font-semibold text-indigo-600">
-                        Passkeys
+                        Easy and Secure
                     </h2>
                     <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-                        The Passwordless Future
+                        A New Passkey Manager
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-                        Passkeys are an industry standard that allows you to log
-                        into websites without any passwords or codes, instead
-                        relying on the credentials stored on your device.
+                        Bulwark Passkey allows you to experience the ease-of-use
+                        and security of passkeys without the need for a physical
+                        device.
                     </p>
                 </div>
 

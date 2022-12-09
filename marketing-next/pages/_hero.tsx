@@ -1,11 +1,12 @@
 import Image from "next/image";
 import DownloadLink from "./_download_link";
+import { AppleIcon } from "./_icons";
 
 export default function HeroSection() {
     return (
         <div className="relative mx-auto mt-16 max-w-7xl px-4 sm:mt-24">
             <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-                <div className="lg:col-span-6 flex flex-col justify-center mx-12">
+                <div className="lg:col-span-6 flex flex-col justify-center ml-12 mr-0">
                     <p className="text-lg font-semibold text-indigo-600">
                         Now in Beta!
                     </p>
@@ -16,12 +17,18 @@ export default function HeroSection() {
                         An open-source passkey manager for the future of
                         passwordless logins.
                     </p>
-                    <div className="mt-5 max-w-md sm:flex md:mt-8 space-x-2">
+                    <div className="mt-5 max-w-lg sm:flex md:mt-8 space-x-2">
                         <div className="rounded-md shadow">
                             <DownloadLink source="windows" />
                         </div>
                         <div className="rounded-md shadow">
                             <DownloadLink source="linux" />
+                        </div>
+                        <div className="rounded-md shadow">
+                            <div className="inline-flex items-center rounded-md border border-transparent bg-indigo-400 px-6 py-3 text-base font-medium text-white shadow-sm">
+                                <AppleIcon />
+                                Coming Soon
+                            </div>
                         </div>
                     </div>
                 </div>
