@@ -1,5 +1,5 @@
 import DownloadLink from "./_download_link";
-import { AppleIcon } from "./_icons";
+import AppleIcon from "./_icons";
 
 export default function CallToAction() {
     return (

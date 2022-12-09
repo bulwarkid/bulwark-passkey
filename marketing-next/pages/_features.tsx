@@ -12,7 +12,7 @@ const features = [
             <>
                 Passkeys allow you to log in or add a second factor of
                 authentication, without any secret passwords or one-time codes.
-                Just hit "Approve" on the app!
+                Just hit {'"Approve"'} on the app!
             </>
         ),
         icon: LockClosedIcon,
@@ -33,7 +33,7 @@ const features = [
         description: (
             <>
                 No need to grab your phone, open your email, or copy any codes.
-                Just hit "Approve" and you're in!
+                Just hit {'"Approve"'} and {"you're"} in!
             </>
         ),
         icon: GlobeAltIcon,

@@ -23,7 +23,8 @@ const features = [
         description: (
             <>
                 Passkeys are based on strong encryption keys stored in software,
-                and don't require you to enter any passwords or codes to login.
+                and {"don't"} require you to enter any passwords or codes to
+                login.
             </>
         ),
         icon: ComputerDesktopIcon,

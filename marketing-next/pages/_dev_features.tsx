@@ -51,8 +51,8 @@ const features = [
         name: "Supports local-only storage",
         description: (
             <>
-                Don't want to store your credentials on an account, or need to
-                test something without internet? No problem! Bulwark Passkey
+                Don{"'"}t want to store your credentials on an account, or need
+                to test something without internet? No problem! Bulwark Passkey
                 supports storing your credentials only on the single device the
                 app is running on.
             </>
@@ -147,8 +147,8 @@ const features2 = [
         name: "Local-only storage",
         description: (
             <>
-                Don't want to store your credentials on an account, or need to
-                test something without internet? No problem! Bulwark Passkey
+                Don{"'"}t want to store your credentials on an account, or need
+                to test something without internet? No problem! Bulwark Passkey
                 supports storing your credentials only on the single device the
                 app is running on.
             </>
