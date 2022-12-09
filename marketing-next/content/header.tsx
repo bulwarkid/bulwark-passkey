@@ -2,7 +2,7 @@ import { Menu, Popover, Transition } from "@headlessui/react";
 import { WindowsLogoIcon } from "@fluentui/react-icons-mdl2-branded";
 import Image from "next/image";
 import Link from "next/link";
-import DownloadLink, { sources } from "./_download_link";
+import DownloadLink, { sources } from "./download_link";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 function DownloadDropdown() {

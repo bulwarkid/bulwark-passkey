@@ -1,14 +1,14 @@
 import Head from "next/head";
-import ContactInfo from "./_contact";
-import CallToAction from "./_cta";
-import FAQ from "./_faq";
-import Features from "./_features";
-import Footer from "./_footer";
-import Header from "./_header";
-import HeroSection from "./_hero";
-import Newsletter from "./_newsletter";
-import Passkeys from "./_passkeys";
-import DevFeatures from "./_dev_features";
+import ContactInfo from "../content/contact";
+import CallToAction from "../content/cta";
+import FAQ from "../content/faq";
+import Features from "../content/features";
+import Footer from "../content/footer";
+import Header from "../content/header";
+import HeroSection from "../content/hero";
+import Newsletter from "../content/newsletter";
+import Passkeys from "../content/passkeys";
+import DevFeatures from "../content/dev_features";
 
 export default function Home() {
     const backgroundDots = (

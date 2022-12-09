@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import Footer from "./_footer";
-import Header from "./_header";
+import Footer from "../content/footer";
+import Header from "../content/header";
 
 export default function Page404() {
     return (

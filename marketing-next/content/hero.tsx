@@ -1,6 +1,6 @@
 import Image from "next/image";
-import DownloadLink from "./_download_link";
-import AppleIcon from "./_icons";
+import DownloadLink from "./download_link";
+import AppleIcon from "./icons";
 
 export default function HeroSection() {
     return (
