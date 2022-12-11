@@ -1,6 +1,6 @@
 import Image from "next/image";
-import DownloadLink from "../components/download_link";
-import { AppleIcon } from "../components/icons";
+import DownloadLink from "../../components/download_link";
+import { AppleIcon } from "../../components/icons";
 
 export default function HeroSection() {
     return (
@@ -14,8 +14,8 @@ export default function HeroSection() {
                         <span className="block xl:inline">Bulwark Passkey</span>
                     </h1>
                     <p className="mx-auto mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
-                        An open-source passkey manager for the future of
-                        passwordless logins.
+                        An virtual USB device for testing WebAuthN and Two
+                        Factor Authentication.
                     </p>
                     <div className="mt-5 max-w-lg sm:flex md:mt-8 space-x-2">
                         <div className="rounded-md shadow">

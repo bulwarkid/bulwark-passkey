@@ -1,4 +1,4 @@
-export default function AppleIcon() {
+export function AppleIcon() {
     return (
         <svg
             className="mr-2"
