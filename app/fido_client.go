@@ -8,8 +8,9 @@ import (
 	"crypto/x509/pkix"
 	"math/big"
 
-	"github.com/bulwarkid/virtual-fido/virtual_fido"
-	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
+	vfido_crypto "github.com/bulwarkid/virtual-fido/crypto"
+	"github.com/bulwarkid/virtual-fido/fido_client"
+	"github.com/bulwarkid/virtual-fido/webauthn"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -20,7 +21,7 @@ type FIDOClientDelegate interface {
 type FIDOClient struct {
 	delegate FIDOClientDelegate
 
-	vault                 *vfido.IdentityVault
+	vault                 *fido_client.IdentityVault
 	certificateAuthority  *x509.Certificate
 	certPrivateKey        *ecdsa.PrivateKey
 	encryptionKey         []byte
@@ -28,7 +29,7 @@ type FIDOClient struct {
 
 	pinHash         []byte
 	pinRetries      int32
-	pinKeyAgreement *virtual_fido.ECDHKey
+	pinKeyAgreement *vfido_crypto.ECDHKey
 	pinToken        []byte
 }
 
@@ -38,8 +39,8 @@ func newFIDOClient(delegate FIDOClientDelegate) *FIDOClient {
 		pinToken:        randomBytes(16),
 		pinRetries:      8,
 		pinHash:         nil,
-		pinKeyAgreement: virtual_fido.GenerateECDHKey(),
-		vault:           vfido.NewIdentityVault(),
+		pinKeyAgreement: vfido_crypto.GenerateECDHKey(),
+		vault:           fido_client.NewIdentityVault(),
 	}
 }
 
@@ -68,10 +69,10 @@ func (client *FIDOClient) configureNewClient() {
 	client.certificateAuthority = certificateAuthority
 	client.certPrivateKey = privateKey
 	client.encryptionKey = encryptionKey
-	client.vault = vfido.NewIdentityVault()
+	client.vault = fido_client.NewIdentityVault()
 }
 
-func (client *FIDOClient) loadConfig(config *vfido.FIDODeviceConfig) {
+func (client *FIDOClient) loadConfig(config *fido_client.FIDODeviceConfig) {
 	cert, err := x509.ParseCertificate(config.AttestationCertificate)
 	checkErr(err, "Could not parse x509 cert")
 	privateKey, err := x509.ParseECPrivateKey(config.AttestationPrivateKey)
@@ -81,14 +82,14 @@ func (client *FIDOClient) loadConfig(config *vfido.FIDODeviceConfig) {
 	client.certPrivateKey = privateKey
 	client.encryptionKey = config.EncryptionKey
 	client.pinHash = config.PINHash
-	client.vault = vfido.NewIdentityVault()
+	client.vault = fido_client.NewIdentityVault()
 	client.vault.Import(config.Sources)
 }
 
-func (client *FIDOClient) exportConfig() *vfido.FIDODeviceConfig {
+func (client *FIDOClient) exportConfig() *fido_client.FIDODeviceConfig {
 	privateKey, err := x509.MarshalECPrivateKey(client.certPrivateKey)
 	checkErr(err, "Could not encode private key")
-	config := vfido.FIDODeviceConfig{
+	config := fido_client.FIDODeviceConfig{
 		AuthenticationCounter:  client.authenticationCounter,
 		AttestationCertificate: client.certificateAuthority.Raw,
 		AttestationPrivateKey:  privateKey,
@@ -99,13 +100,13 @@ func (client *FIDOClient) exportConfig() *vfido.FIDODeviceConfig {
 	return &config
 }
 
-func (client *FIDOClient) NewCredentialSource(relyingParty vfido.PublicKeyCredentialRpEntity, user vfido.PublicKeyCrendentialUserEntity) *vfido.CredentialSource {
+func (client *FIDOClient) NewCredentialSource(relyingParty webauthn.PublicKeyCredentialRpEntity, user webauthn.PublicKeyCrendentialUserEntity) *fido_client.CredentialSource {
 	id := client.vault.NewIdentity(relyingParty, user)
 	client.delegate.FIDOUpdated()
 	return id
 }
 
-func (client *FIDOClient) GetAssertionSource(relyingPartyID string, allowList []vfido.PublicKeyCredentialDescriptor) *vfido.CredentialSource {
+func (client *FIDOClient) GetAssertionSource(relyingPartyID string, allowList []webauthn.PublicKeyCredentialDescriptor) *fido_client.CredentialSource {
 	sources := client.vault.GetMatchingCredentialSources(relyingPartyID, allowList)
 	if len(sources) == 0 {
 		return nil
@@ -164,15 +165,15 @@ func (client *FIDOClient) ApproveAccountCreation(relyingParty string) bool {
 	return client.getApproval("fido_make_credential", relyingParty, "")
 }
 
-func (client *FIDOClient) ApproveAccountLogin(credentialSource *vfido.CredentialSource) bool {
+func (client *FIDOClient) ApproveAccountLogin(credentialSource *fido_client.CredentialSource) bool {
 	return client.getApproval("fido_get_assertion", credentialSource.RelyingParty.Name, credentialSource.User.DisplayName)
 }
 
-func (client *FIDOClient) ApproveU2FRegistration(keyHandle *vfido.KeyHandle) bool {
+func (client *FIDOClient) ApproveU2FRegistration(keyHandle *webauthn.KeyHandle) bool {
 	return client.getApproval("u2f_register", "", "")
 }
 
-func (client *FIDOClient) ApproveU2FAuthentication(keyHandle *vfido.KeyHandle) bool {
+func (client *FIDOClient) ApproveU2FAuthentication(keyHandle *webauthn.KeyHandle) bool {
 	return client.getApproval("u2f_authenticate", "", "")
 }
 
@@ -194,7 +195,7 @@ func (client *FIDOClient) SetPINRetries(retries int32) {
 	client.pinRetries = retries
 }
 
-func (client *FIDOClient) PINKeyAgreement() *virtual_fido.ECDHKey {
+func (client *FIDOClient) PINKeyAgreement() *vfido_crypto.ECDHKey {
 	return client.pinKeyAgreement
 }
 

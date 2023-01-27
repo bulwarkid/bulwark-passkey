@@ -6,8 +6,7 @@ import (
 	"encoding/base64"
 
 	pb "github.com/bulwarkid/bulwark-passkey/app/proto"
-	"github.com/bulwarkid/virtual-fido/virtual_fido"
-	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
+	"github.com/bulwarkid/virtual-fido/fido_client"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -88,7 +87,7 @@ func demoIdentities() [][]byte {
 	return ids
 }
 
-func credentialSourceToIdentity(source *virtual_fido.CredentialSource) *pb.Identity {
+func credentialSourceToIdentity(source *fido_client.CredentialSource) *pb.Identity {
 	publicKeyBytes := elliptic.Marshal(elliptic.P256(), source.PrivateKey.PublicKey.X, source.PrivateKey.PublicKey.Y)
 	privateKeyBytes, err := x509.MarshalECPrivateKey(source.PrivateKey)
 	checkErr(err, "Could not marshal private key")
@@ -141,7 +140,7 @@ func handlePassphraseChanged(data ...interface{}) interface{} {
 func handleTryPassphrase(args ...interface{}) interface{} {
 	passphrase := args[0].(string)
 	data := args[1].(string)
-	_, err := vfido.DecryptWithPassphrase(passphrase, []byte(data))
+	_, err := fido_client.DecryptWithPassphrase(passphrase, []byte(data))
 	return err == nil
 }
 

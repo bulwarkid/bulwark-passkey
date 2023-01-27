@@ -2,3 +2,4 @@ output
 *node_modules*
 device.log
 main.log
+.DS_Store

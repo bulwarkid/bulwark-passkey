@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
-	vfido "github.com/bulwarkid/virtual-fido/virtual_fido"
+	"github.com/bulwarkid/virtual-fido/fido_client"
 )
 
 type Client struct {
@@ -32,7 +32,7 @@ func (client *Client) deleteIdentity(id []byte) bool {
 	return success
 }
 
-func (client *Client) identities() []*vfido.CredentialSource {
+func (client *Client) identities() []*fido_client.CredentialSource {
 	return client.fidoClient.vault.CredentialSources
 }
 
@@ -57,14 +57,14 @@ func (client *Client) configureNewDevice(vaultType string) {
 func (client *Client) loadData(vaultType string, data []byte, lastUpdated string, email string) {
 	// Check if data receives is in the old format
 	// TODO (Chris): Remove this by perhaps 6/2023, assuming nobody is using the old version
-	testState, err := vfido.DecryptFIDOState(data, client.passphrase())
+	testState, err := fido_client.DecryptFIDOState(data, client.passphrase())
 	if err == nil && testState.EncryptionKey != nil {
 		client.deprecatedLoadData(vaultType, data, lastUpdated, email)
 		return
 	}
 	savedState, err := decryptSavedState(data, client.passphrase())
 	checkErr(err, "Could not load saved state data")
-	config, err := vfido.DecryptFIDOState(savedState.VirtualFIDOConfig, client.passphrase())
+	config, err := fido_client.DecryptFIDOState(savedState.VirtualFIDOConfig, client.passphrase())
 	checkErr(err, "Could not decrypt saved FIDO state")
 	lastUpdatedTime := now()
 	err = (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
@@ -80,12 +80,12 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 	// Check if the data received is the old version
 	// TODO (Chris): remove this after a few months, perhaps 06/2023?
 	// Will have to check if anybody is using the old version of the app
-	testState, err := vfido.DecryptFIDOState(data, client.passphrase())
+	testState, err := fido_client.DecryptFIDOState(data, client.passphrase())
 	if err == nil && testState.EncryptionKey != nil {
 		client.deprecatedUpdateData(data, lastUpdated)
 		return
 	}
-	savedStateBytes, err := vfido.DecryptWithPassphrase(client.passphrase(), data)
+	savedStateBytes, err := fido_client.DecryptWithPassphrase(client.passphrase(), data)
 	if err != nil {
 		errorf("Invalid state data provided: %w", err)
 		return
@@ -96,7 +96,7 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 		errorf("Invalid state json data provided: %w", err)
 		return
 	}
-	config, err := vfido.DecryptFIDOState(savedState.VirtualFIDOConfig, client.passphrase())
+	config, err := fido_client.DecryptFIDOState(savedState.VirtualFIDOConfig, client.passphrase())
 	if err != nil {
 		errorf("Invalid FIDO state in data: %w", err)
 		return
@@ -111,8 +111,8 @@ func (client *Client) updateData(data []byte, lastUpdated string) {
 		}
 	}
 	// Merge old and new sources, avoiding deleted and existing ones
-	newSources := make([]vfido.SavedCredentialSource, 0)
-	addSources := func(sources []vfido.SavedCredentialSource) {
+	newSources := make([]fido_client.SavedCredentialSource, 0)
+	addSources := func(sources []fido_client.SavedCredentialSource) {
 		for _, source := range sources {
 			shouldAdd := !containsArray(source.ID, client.deletedSources)
 			if !shouldAdd {
@@ -146,7 +146,7 @@ type ClientSavedState struct {
 }
 
 func decryptSavedState(data []byte, passphrase string) (*ClientSavedState, error) {
-	savedStateBytes, err := vfido.DecryptWithPassphrase(passphrase, data)
+	savedStateBytes, err := fido_client.DecryptWithPassphrase(passphrase, data)
 	if err != nil {
 		return nil, err
 	}
@@ -160,14 +160,14 @@ func decryptSavedState(data []byte, passphrase string) (*ClientSavedState, error
 
 func (client *Client) exportSavedState() []byte {
 	config := client.fidoClient.exportConfig()
-	encryptedConfig, err := vfido.EncryptFIDOState(*config, client.passphrase())
+	encryptedConfig, err := fido_client.EncryptFIDOState(*config, client.passphrase())
 	state := ClientSavedState{
 		VirtualFIDOConfig: encryptedConfig,
 		DeletedSources:    client.deletedSources,
 	}
 	stateBytes, err := json.Marshal(state)
 	checkErr(err, "Could not marshal JSON")
-	encryptedState, err := vfido.EncryptWithPassphrase(client.passphrase(), stateBytes)
+	encryptedState, err := fido_client.EncryptWithPassphrase(client.passphrase(), stateBytes)
 	checkErr(err, "Could not encrypt state")
 	return encryptedState
 }
@@ -192,7 +192,7 @@ func (client *Client) deprecatedLoadData(vaultType string, data []byte, lastUpda
 	lastUpdatedTime := now()
 	err := (&lastUpdatedTime).UnmarshalText([]byte(lastUpdated))
 	checkErr(err, "Could not parse time")
-	config, err := vfido.DecryptFIDOState(data, client.passphrase())
+	config, err := fido_client.DecryptFIDOState(data, client.passphrase())
 	checkErr(err, "Could not decrypt vault file")
 	client.vaultType = vaultType
 	client.email = email
@@ -206,7 +206,7 @@ func (client *Client) deprecatedUpdateData(data []byte, lastUpdated string) {
 	if !client.lastUpdated.Before(*newLastUpdated) {
 		return
 	}
-	_, err := vfido.DecryptFIDOState(data, client.passphrase())
+	_, err := fido_client.DecryptFIDOState(data, client.passphrase())
 	if err != nil {
 		// Passphrase might have changed, get user to log in again
 		eject := logIn(accountVaultType, string(data), client.email)
@@ -214,7 +214,7 @@ func (client *Client) deprecatedUpdateData(data []byte, lastUpdated string) {
 			deleteVaultFile()
 			app.createNewVault()
 		} else {
-			_, err = vfido.DecryptFIDOState(data, client.passphrase())
+			_, err = fido_client.DecryptFIDOState(data, client.passphrase())
 			checkErr(err, "Could not decrypt new vault")
 		}
 	}

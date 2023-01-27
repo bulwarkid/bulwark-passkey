@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bulwarkid/virtual-fido/virtual_fido"
+	virtual_fido "github.com/bulwarkid/virtual-fido"
 )
 
 func startFIDOServer(client *FIDOClient) {
@@ -26,6 +26,8 @@ func attachUSBIPServer() {
 		attachUSBIPWindows()
 	} else if runtime.GOOS == "linux" {
 		attachUSBIPLinux()
+	} else if runtime.GOOS == "darwin" {
+		// No-op: Mac uses a virtual USB driver instead of USB/IP
 	} else {
 		debugf("Could not find USBIP command for OS %s\n", runtime.GOOS)
 		return
