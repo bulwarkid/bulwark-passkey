@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bulwarkid/bulwark-passkey/app/mac"
 	virtual_fido "github.com/bulwarkid/virtual-fido"
 )
 
@@ -16,8 +17,15 @@ func startFIDOServer(client *FIDOClient) {
 	defer logFile.Close()
 	virtual_fido.SetLogOutput(logFile)
 
+	installVirtualUSBDriverIfNecessary()
 	go attachUSBIPServer()
 	virtual_fido.Start(client)
+}
+
+func installVirtualUSBDriverIfNecessary() {
+	if runtime.GOOS == "darwin" {
+		mac.InstallVirtualUSBDriver()
+	}
 }
 
 func attachUSBIPServer() {
@@ -27,7 +35,7 @@ func attachUSBIPServer() {
 	} else if runtime.GOOS == "linux" {
 		attachUSBIPLinux()
 	} else if runtime.GOOS == "darwin" {
-		// No-op: Mac uses a virtual USB driver instead of USB/IP
+		// No USB/IP server on Mac; it uses a virtual USB device driver instead
 	} else {
 		debugf("Could not find USBIP command for OS %s\n", runtime.GOOS)
 		return
