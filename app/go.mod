@@ -3,7 +3,7 @@ module github.com/bulwarkid/bulwark-passkey/app
 go 1.18
 
 require (
-	github.com/bulwarkid/virtual-fido v0.2.1-beta.2.0.20230206223327-44e6dbf9ae1d
+	github.com/bulwarkid/virtual-fido v0.2.1-beta.2.0.20230228002418-2ebf6ee06143
 	github.com/wailsapp/wails/v2 v2.3.1
 	google.golang.org/protobuf v1.28.1
 )
@@ -31,11 +31,11 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/exp v0.0.0-20230126173853-a67bb567ff2e // indirect
-	golang.org/x/net v0.5.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.0.0 => /Users/cmdli/go/pkg/mod

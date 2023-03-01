@@ -1,4 +1,5 @@
 import { LogDebug } from "../wailsjs/runtime/runtime";
+import { callRPC } from "./rpc";
 
 // TODO: Replace this base64 mess with something more efficient/better
 // Base64 in JS/Node is an entire mess of things; see
@@ -64,4 +65,15 @@ let htmlIdCounter = 0;
 export function htmlId(): string {
     htmlIdCounter++;
     return `htmlId-${htmlIdCounter}`;
+}
+
+let logsEnabled = false;
+
+export function isDebugLogsEnabled(): boolean {
+    return logsEnabled;
+}
+
+export function toggleDebugLogs() {
+    logsEnabled = !logsEnabled;
+    callRPC("setDebugLogs", logsEnabled);
 }

@@ -10,6 +10,7 @@ import {
 import { changePassphrase, getPassphrase } from "../data/passphrase";
 import { AboutModal } from "./modals/About";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
+import { DeveloperModal } from "./modals/Developer";
 
 export class Settings extends React.Component {
     render() {
@@ -35,6 +36,9 @@ export class Settings extends React.Component {
                 />
             );
         }
+        settings.push(
+            <SettingsItem text="Developer" onClick={this.showDeveloper_} />
+        );
         settings.push(<SettingsItem text="About" onClick={this.showAbout_} />);
         return (
             <div className="w-full">
@@ -66,6 +70,16 @@ export class Settings extends React.Component {
     showAbout_ = () => {
         showModal(
             <AboutModal
+                onCancel={() => {
+                    hideModal();
+                }}
+            />
+        );
+    };
+
+    showDeveloper_ = () => {
+        showModal(
+            <DeveloperModal
                 onCancel={() => {
                     hideModal();
                 }}
