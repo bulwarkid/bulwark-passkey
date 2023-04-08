@@ -14,7 +14,7 @@ export default function Page404() {
                             <span className="sr-only">Your Company</span>
                             <Image
                                 className="h-12 w-auto"
-                                src="img/logo.svg"
+                                src="/img/logo.svg"
                                 alt=""
                                 width={12}
                                 height={12}

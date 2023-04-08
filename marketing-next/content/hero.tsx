@@ -36,7 +36,7 @@ export default function HeroSection() {
                     <Image
                         alt=""
                         className="rounded-xl shadow-lg border-4 border-gray-300"
-                        src="img/app_screenshot.png"
+                        src="/img/app_screenshot.png"
                         height={100}
                         width={400}
                     />

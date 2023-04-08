@@ -33,7 +33,7 @@ function DownloadDropdown() {
                         >
                             <Image
                                 className="mr-2"
-                                src="img/linux-dark.svg"
+                                src="/img/linux-dark.svg"
                                 alt="Linux Logo"
                                 width={20}
                                 height={20}
@@ -53,7 +53,7 @@ export default function Header() {
             <Link href="/" className="flex items-center space-x-3">
                 <Image
                     className="h-8 w-auto sm:h-10"
-                    src="img/logo.svg"
+                    src="/img/logo.svg"
                     alt=""
                     width={10}
                     height={10}
@@ -74,22 +74,29 @@ export default function Header() {
                         className="hidden space-x-10 md:flex"
                     >
                         <a
-                            href="#features"
+                            href="/#features"
                             className="text-base font-medium text-gray-500 hover:text-gray-900"
                         >
                             Features
                         </a>
                         <a
-                            href="#faq"
+                            href="/#faq"
                             className="text-base font-medium text-gray-500 hover:text-gray-900"
                         >
                             FAQ
                         </a>
                         <a
-                            href="#contact"
+                            href="/#contact"
                             className="text-base font-medium text-gray-500 hover:text-gray-900"
                         >
                             Contact
+                        </a>
+
+                        <a
+                            href="/blog"
+                            className="text-base font-medium text-gray-500 hover:text-gray-900"
+                        >
+                            Blog
                         </a>
                     </Popover.Group>
                     <div className="hidden items-center justify-end md:flex md:flex-1 lg:w-0">

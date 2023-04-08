@@ -11,7 +11,7 @@ export const sources = {
         logo: (
             <Image
                 className="mr-2"
-                src="img/linux.svg"
+                src="/img/linux.svg"
                 alt="Linux Logo"
                 width={20}
                 height={20}
