@@ -58,6 +58,7 @@ clean-Linux:
 	bash -x ./build/linux/clean.sh
 
 dpkg: build
+	mkdir -p ./linux_pkg/bulwark-passkey/usr/bin/
 	cp ./output/bulwark_passkey ./linux_pkg/bulwark-passkey/usr/bin/
 	dpkg-deb --build ./linux_pkg/bulwark-passkey
 	mv ./linux_pkg/bulwark-passkey.deb ./output/

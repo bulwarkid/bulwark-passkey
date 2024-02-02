@@ -3,6 +3,7 @@
 set -e
 
 cd frontend
+mkdir -p src/proto || true
 npm run build
 cd ..
 

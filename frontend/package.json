@@ -26,7 +26,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "proto": "protoc --experimental_allow_proto3_optional --ts_out src/proto --proto_path ../proto/src ../proto/src/*.proto",
+        "proto": "protoc --experimental_allow_proto3_optional --go_out=../app/ --ts_out src/proto --proto_path ../proto/src ../proto/src/*.proto",
         "build": "npm run proto && react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
